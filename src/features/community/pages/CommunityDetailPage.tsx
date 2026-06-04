@@ -86,8 +86,8 @@ export default function CommunityDetailPage() {
   const memberCount = community.members?.length || 0;
 
   return (
-    <div className="min-h-screen pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 overflow-hidden" style={{ backgroundColor: '#0B1020' }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+    <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16 overflow-hidden" style={{ backgroundColor: '#0B1020' }}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3">
         {/* Back link */}
         <Link to="/communities" className="inline-flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm mb-4 transition-colors group">
           <ChevronRight className="w-3.5 h-3.5 rotate-180 group-hover:-translate-x-0.5 transition-transform" /> All Communities

@@ -209,7 +209,7 @@ export default function QuestionDetailPage() {
 
   if (requiresPremium && lockedInfo) {
     return (
-      <div className="min-h-screen pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16" style={{ backgroundColor: '#0B1020' }}>
+      <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16" style={{ backgroundColor: '#0B1020' }}>
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
             <Link to="/questions" className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-primary-400 mb-8">

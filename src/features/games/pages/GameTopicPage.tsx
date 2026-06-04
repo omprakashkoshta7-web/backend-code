@@ -49,7 +49,7 @@ export default function GameTopicPage() {
       </div>
       <div className="fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12 sm:pb-16">
         {/* Top bar: back link + stats */}
         <div className="flex items-center justify-between gap-2 mb-5">
           <Link to="/games" className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white transition">

@@ -62,7 +62,7 @@ export default function PaymentPage() {
   };
 
   return (
-    <div className="min-h-screen pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 relative overflow-hidden">
+    <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16 relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
       <div className="absolute top-40 left-20 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
       <div className="absolute bottom-40 right-20 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />

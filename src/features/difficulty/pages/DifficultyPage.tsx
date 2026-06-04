@@ -33,7 +33,7 @@ export default function DifficultyPage() {
 
   if (!isPremium && level !== 'easy') {
     return (
-      <div className="min-h-screen pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 relative overflow-hidden">
+      <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16 relative overflow-hidden">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Link to="/" className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-primary-400 mb-8 transition-colors">
