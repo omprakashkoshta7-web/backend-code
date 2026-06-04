@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, ArrowRight, Layers, Hash, Target, GitBranch, Network, Zap, Puzzle, RefreshCw, Maximize2, CircleDot, MoveVertical, Link2, Database, Trello, Braces, Code2, BookOpen } from 'lucide-react';
+import { Search, Layers, Hash, Target, GitBranch, Network, Zap, Puzzle, RefreshCw, Maximize2, CircleDot, MoveVertical, Link2, Database, Trello, Braces, Code2, BookOpen, Sparkles, ArrowRight, Filter } from 'lucide-react';
 
 const patternIcons: Record<string, any> = {
   'HashMap Lookup': Hash, 'Hash Set': Hash, 'HashMap': Hash, 'Dual HashMap': Hash,
@@ -68,6 +68,7 @@ export default function PatternsPage() {
   const [patterns, setPatterns] = useState<{ name: string; count: number; questions: any[] }[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
     fetch('/api/questions')
@@ -101,21 +102,27 @@ export default function PatternsPage() {
 
   const categoryOrder = ['Array', 'HashMap', 'Two Pointers', 'Sliding Window', 'Stack', 'Queue', 'Heap', 'DFS', 'BFS', 'DP', 'Greedy', 'Backtracking', 'Sorting', 'Linked List', 'Tree', 'Graph', 'Design', 'Other'];
 
-  return (
-    <div className="min-h-screen relative">
-      <div className="absolute inset-0 bg-[#0B1020]" />
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-emerald-500/8 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/3 w-[500px] h-[500px] bg-teal-500/8 rounded-full blur-3xl" />
-      </div>
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+  const availableCategories = ['All', ...categoryOrder.filter(c => groupedByCategory[c] && groupedByCategory[c].length > 0)];
 
-      {/* Hero */}
+  const displayedCategories = activeCategory === 'All' ? categoryOrder : [activeCategory];
+
+  return (
+    <div className="min-h-screen relative overflow-hidden">
+      <div className="fixed inset-0" style={{ backgroundColor: '#0B1020' }}>
+        <div className="absolute top-0 left-1/4 w-[700px] h-[700px] bg-emerald-500/8 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-[700px] h-[700px] bg-teal-500/8 rounded-full blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[100px]" />
+      </div>
+      <div className="fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
+
+      <div className="fixed top-32 right-10 w-20 h-20 border border-emerald-500/15 rounded-2xl rotate-12 opacity-30 hidden lg:block" />
+      <div className="fixed bottom-40 left-10 w-16 h-16 border border-teal-500/15 rounded-xl -rotate-6 opacity-30 hidden lg:block" />
+
       <section className="relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-8 sm:pb-12">
           <div className="text-center max-w-4xl mx-auto">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
                 <Layers className="w-4 h-4" /> DSA Patterns
               </span>
             </motion.div>
@@ -124,7 +131,7 @@ export default function PatternsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mt-6 sm:mt-8 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight"
+              className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
             >
               <span className="text-white">Master </span>
               <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">Patterns</span>
@@ -134,26 +141,25 @@ export default function PatternsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="mt-4 sm:mt-6 text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed px-2"
+              className="mt-4 sm:mt-6 text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed px-4"
             >
-              Learn algorithmic patterns to solve any coding problem.
-              Each pattern includes multiple practice questions.
+              Learn algorithmic patterns to solve any coding problem. Each pattern includes multiple practice questions.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="mt-8 sm:mt-10 flex justify-center px-2"
+              className="mt-6 sm:mt-8 flex justify-center px-4"
             >
               <div className="relative w-full max-w-md">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Search patterns..."
-                  className="w-full px-10 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-emerald-500/50 transition-colors"
+                  className="w-full pl-11 pr-4 py-3 bg-white/[0.04] border border-white/10 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-emerald-500/50 transition-colors"
                 />
               </div>
             </motion.div>
@@ -162,21 +168,52 @@ export default function PatternsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-white/40"
+              className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
             >
-              <span className="flex items-center gap-2"><Layers className="w-4 h-4 text-emerald-400" /> {patterns.length} Patterns</span>
-              <span className="flex items-center gap-2"><Code2 className="w-4 h-4 text-blue-400" /> {patterns.reduce((s, p) => s + p.count, 0)}+ Questions</span>
+              {[
+                { label: 'Patterns', value: patterns.length, color: 'text-emerald-400' },
+                { label: 'Questions', value: patterns.reduce((s, p) => s + p.count, 0), color: 'text-blue-400' },
+                { label: 'Categories', value: availableCategories.length - 1, color: 'text-violet-400' },
+              ].map((s) => (
+                <div key={s.label} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/5">
+                  <span className={`text-sm font-bold ${s.color}`}>{s.value}+</span>
+                  <span className="text-xs text-white/40">{s.label}</span>
+                </div>
+              ))}
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Patterns by category */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16 space-y-10 sm:space-y-12 lg:space-y-16">
+      {!loading && availableCategories.length > 1 && (
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+            <Filter className="w-4 h-4 text-white/30 shrink-0" />
+            {availableCategories.map((cat) => {
+              const isActive = activeCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                    isActive
+                      ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
+                      : 'bg-white/[0.03] border-white/[0.06] text-white/50 hover:bg-white/[0.06] hover:text-white/70'
+                  }`}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 space-y-10 sm:space-y-12 lg:space-y-16">
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className="p-6 rounded-2xl bg-white/5 animate-pulse">
+              <div key={i} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 animate-pulse">
                 <div className="w-10 h-10 bg-white/10 rounded-xl mb-4" />
                 <div className="h-4 bg-white/10 rounded w-3/4 mb-2" />
                 <div className="h-3 bg-white/5 rounded w-1/2" />
@@ -185,30 +222,40 @@ export default function PatternsPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
-            <Search className="w-12 h-12 text-white/10 mx-auto mb-4" />
+            <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center mx-auto mb-4">
+              <Search className="w-7 h-7 text-white/20" />
+            </div>
             <p className="text-white/40 font-medium">No patterns found</p>
             <p className="text-white/20 text-sm mt-1">Try a different search term</p>
           </div>
         ) : (
-          categoryOrder.map(cat => {
+          displayedCategories.map(cat => {
             const items = groupedByCategory[cat];
             if (!items || items.length === 0) return null;
             const meta = patternCategories[cat] || patternCategories['Other'];
             const Icon = patternIcons[items[0]?.name] || Layers;
 
             return (
-              <div key={cat}>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${meta.color} flex items-center justify-center`}>
+              <motion.div
+                key={cat}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+              >
+                <div className="flex items-center gap-3 mb-5 sm:mb-6">
+                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${meta.color} flex items-center justify-center shadow-lg`}>
                     <Icon className="w-5 h-5 text-white" />
                   </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-white">{cat}</h2>
-                    <p className="text-sm text-white/40">{meta.desc}</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-lg sm:text-xl font-bold text-white">{cat}</h2>
+                      <span className="text-xs text-white/30 font-mono">{items.length}</span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-white/40 truncate">{meta.desc}</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   {items.map((pattern, i) => {
                     const diffCounts = { Easy: 0, Medium: 0, Hard: 0 };
                     pattern.questions.forEach((q: { difficulty: string }) => {
@@ -221,32 +268,36 @@ export default function PatternsPage() {
                     return (
                       <motion.div
                         key={pattern.name}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 15 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
                         transition={{ delay: i * 0.03 }}
                       >
                         <Link
                           to={`/patterns/${encodeURIComponent(pattern.name)}`}
-                          className="block p-5 rounded-2xl bg-[#111827]/80 border border-white/5 hover:bg-[#111827] hover:border-white/10 hover:shadow-xl transition-all duration-200 group"
+                          className="block p-5 rounded-2xl bg-[#0d0f1f] border border-white/[0.06] hover:bg-[#111827] hover:border-white/[0.12] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 group"
                         >
                           <div className="flex items-start justify-between mb-3">
-                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${meta.color} flex items-center justify-center`}>
+                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${meta.color} flex items-center justify-center shadow-md`}>
                               <Icon className="w-5 h-5 text-white" />
                             </div>
-                            <span className="text-xs text-white/30 font-mono">{pattern.count} Q</span>
+                            <span className="text-[10px] font-mono text-white/30 px-1.5 py-0.5 rounded bg-white/[0.04]">{pattern.count} Q</span>
                           </div>
-                          <h3 className="font-semibold text-white mb-2 group-hover:text-emerald-400 transition-colors">{pattern.name}</h3>
-                          <div className="flex items-center gap-2">
-                            {hasEasy && <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-medium">Easy</span>}
-                            {hasMedium && <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium">Medium</span>}
-                            {hasHard && <span className="text-[10px] px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 font-medium">Hard</span>}
+                          <h3 className="font-semibold text-white mb-3 group-hover:text-emerald-400 transition-colors text-sm">{pattern.name}</h3>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                              {hasEasy && <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-medium border border-emerald-500/20">E</span>}
+                              {hasMedium && <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium border border-amber-500/20">M</span>}
+                              {hasHard && <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-400 font-medium border border-rose-500/20">H</span>}
+                            </div>
+                            <ArrowRight className="w-3.5 h-3.5 text-white/20 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
                           </div>
                         </Link>
                       </motion.div>
                     );
                   })}
                 </div>
-              </div>
+              </motion.div>
             );
           })
         )}
