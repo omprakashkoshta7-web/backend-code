@@ -6,7 +6,7 @@ import {
   ChevronRight, Crown, Rocket, Award, RotateCcw,
 } from 'lucide-react';
 import { useGameProgress } from '../hooks/useGameProgress';
-import { BADGE_LIBRARY, STICKER_LIBRARY, buildGenericLevels } from '../data/gamesData';
+import { BADGE_LIBRARY, STICKER_LIBRARY } from '../data/gamesData';
 
 interface Topic { id: string; name: string; }
 
@@ -38,9 +38,9 @@ function TopicCard({ topic, index, completed, totalLevels, onClick }: {
         <div className="flex-1 min-w-0">
           <h3 className="text-sm sm:text-base font-semibold text-white truncate group-hover:text-purple-300 transition">{topic.name}</h3>
           <div className="flex items-center gap-2 mt-1">
-            <div className="flex gap-0.5">
-              {[0, 1, 2].map((i) => (
-                <div key={i} className={`w-2 h-2 rounded-full ${i < completed ? `bg-gradient-to-br ${color}` : 'bg-white/10'}`} />
+            <div className="flex gap-0.5 flex-wrap">
+              {Array.from({ length: totalLevels }).map((_, i) => (
+                <div key={i} className={`w-1.5 h-1.5 rounded-full ${i < completed ? `bg-gradient-to-br ${color}` : 'bg-white/10'}`} />
               ))}
             </div>
             <span className="text-[10px] sm:text-xs text-white/40">{completed}/{totalLevels}</span>
@@ -117,10 +117,10 @@ export default function GamesLandingPage() {
     let completedLevels = 0;
     for (const t of topics) {
       const p = progress.topics[t.name];
-      if (!p) continue;
-      const done = [p.easy, p.medium, p.hard].filter(Boolean).length;
-      if (done === 3) completedTopics++;
-      totalLevels += 3;
+      if (!p?.levels) continue;
+      const done = Object.values(p.levels).filter((r) => r.stars >= 1).length;
+      if (done === 7) completedTopics++;
+      totalLevels += 7;
       completedLevels += done;
     }
     return { completedTopics, totalLevels, completedLevels };
@@ -146,7 +146,7 @@ export default function GamesLandingPage() {
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">Test</span>
           </h1>
           <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/50 max-w-2xl mx-auto">
-            Pick a topic, clear 3 levels, earn stickers & badges. Each level mixes quick quizzes with bite-sized coding challenges.
+            Pick a topic, clear 7 levels, earn stickers & badges. Each level mixes quick quizzes with bite-sized coding challenges.
           </p>
         </motion.div>
 
@@ -222,14 +222,14 @@ export default function GamesLandingPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {filtered.map((t, i) => {
                   const p = progress.topics[t.name];
-                  const done = [p?.easy, p?.medium, p?.hard].filter(Boolean).length;
+                  const done = p?.levels ? Object.values(p.levels).filter((r) => r.stars >= 1).length : 0;
                   return (
                     <TopicCard
                       key={t.id}
                       topic={t}
                       index={i}
                       completed={done}
-                      totalLevels={3}
+                      totalLevels={7}
                       onClick={() => { window.location.href = `/games/${encodeURIComponent(t.name)}`; }}
                     />
                   );

@@ -1,39 +1,126 @@
-import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  ArrowLeft, Gamepad2, Lock, CheckCircle2, Crown, Star, Zap, Brain,
-  Trophy, Sparkles, ChevronRight,
+  ArrowLeft, Gamepad2, Lock, Crown, Zap, Brain, Star, ChevronRight,
+  Sparkles, Trophy, Code2, Rocket,
 } from 'lucide-react';
 import { useGameProgress } from '../hooks/useGameProgress';
-import { GAMES_BY_TOPIC, buildGenericLevels, type Difficulty } from '../data/gamesData';
+import { LEVEL_TEMPLATES, getPool, type Difficulty } from '../data/gamesData';
 
-const difficultyMeta: Record<Difficulty, {
-  label: string; color: string; gradient: string; icon: any; questions: number; xp: number;
-  desc: string;
-}> = {
-  easy: { label: 'Easy', color: 'text-emerald-400', gradient: 'from-emerald-500 to-teal-500', icon: Brain, questions: 2, xp: 50, desc: 'Warm-up with quick MCQs + a starter coding problem.' },
-  medium: { label: 'Medium', color: 'text-amber-400', gradient: 'from-amber-500 to-orange-500', icon: Zap, questions: 2, xp: 80, desc: 'Mixed bag of tricky MCQs and a tighter coding task.' },
-  hard: { label: 'Hard', color: 'text-rose-400', gradient: 'from-rose-500 to-pink-500', icon: Crown, questions: 1, xp: 120, desc: 'Boss-level: one shot at the toughest challenge.' },
+const difficultyMeta: Record<Difficulty, { color: string; ring: string; gradient: string; icon: any; label: string; }> = {
+  easy:   { color: 'text-emerald-300', ring: 'ring-emerald-400/50',   gradient: 'from-emerald-400 to-teal-500',    icon: Brain, label: 'Easy'   },
+  medium: { color: 'text-amber-300',   ring: 'ring-amber-400/50',     gradient: 'from-amber-400 to-orange-500',   icon: Zap,   label: 'Medium' },
+  hard:   { color: 'text-rose-300',    ring: 'ring-rose-400/50',      gradient: 'from-rose-400 to-pink-500',      icon: Crown, label: 'Hard'   },
 };
 
-const order: Difficulty[] = ['easy', 'medium', 'hard'];
+function Stars({ count, size = 'sm' }: { count: number; size?: 'sm' | 'md' }) {
+  const dim = size === 'md' ? 'w-4 h-4 sm:w-5 sm:h-5' : 'w-3 h-3 sm:w-3.5 sm:h-3.5';
+  return (
+    <div className="flex items-center gap-0.5">
+      {[0, 1, 2].map((i) => (
+        <Star
+          key={i}
+          className={`${dim} ${i < count ? 'text-amber-400 fill-amber-400' : 'text-white/15'}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+// SVG candy-cane path: stripes between level nodes
+function CandyPath({ segments, completed }: { segments: { idx: number; fromY: number; toY: number; dx: number }[]; completed: boolean[] }) {
+  return (
+    <svg
+      viewBox="0 0 600 360"
+      preserveAspectRatio="none"
+      className="absolute inset-0 w-full h-full pointer-events-none"
+    >
+      <defs>
+        <linearGradient id="candy" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#ec4899" />
+          <stop offset="50%" stopColor="#a855f7" />
+          <stop offset="100%" stopColor="#ec4899" />
+        </linearGradient>
+        <linearGradient id="candyDim" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#475569" stopOpacity="0.4" />
+          <stop offset="50%" stopColor="#64748b" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#475569" stopOpacity="0.4" />
+        </linearGradient>
+      </defs>
+      {segments.map((seg, i) => {
+        const x1 = (seg.idx) * 100 + 30;
+        const x2 = (seg.idx + 1) * 100 + 30;
+        const dy = seg.toY - seg.fromY;
+        const midX = (x1 + x2) / 2;
+        const cp1Y = seg.fromY + dy * 0.3;
+        const cp2Y = seg.toY - dy * 0.3;
+        const path = `M ${x1} ${seg.fromY} C ${midX} ${cp1Y}, ${midX} ${cp2Y}, ${x2} ${seg.toY}`;
+        const isActive = completed[i] && completed[i + 1];
+        return (
+          <g key={i}>
+            <path d={path} stroke="url(#candyDim)" strokeWidth="6" fill="none" strokeLinecap="round" />
+            {isActive && (
+              <>
+                <path d={path} stroke="url(#candy)" strokeWidth="6" fill="none" strokeLinecap="round" />
+                {/* candy-cane stripes */}
+                <path
+                  d={path}
+                  stroke="white"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeDasharray="6 8"
+                  opacity="0.6"
+                />
+              </>
+            )}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function LollipopDecor({ emoji, style, size = 64 }: { emoji: string; style: React.CSSProperties; size?: number }) {
+  return (
+    <div className="absolute pointer-events-none select-none opacity-60" style={style}>
+      <div
+        className="rounded-full bg-gradient-to-br from-pink-300/30 to-rose-400/30 flex items-center justify-center border-2 border-pink-300/20 shadow-lg backdrop-blur-sm"
+        style={{ width: size, height: size, fontSize: size * 0.5 }}
+      >
+        {emoji}
+      </div>
+    </div>
+  );
+}
 
 export default function GameTopicPage() {
   const { topic: topicParam } = useParams<{ topic: string }>();
   const topic = topicParam ? decodeURIComponent(topicParam) : '';
   const navigate = useNavigate();
   const { getLevel, isLevelUnlocked, progress } = useGameProgress();
-  const [stats, setStats] = useState<{ questions: number; patterns: number; topics: number } | null>(null);
 
-  useEffect(() => {
-    fetch('/api/stats').then((r) => r.json()).then(setStats).catch(() => {});
-  }, []);
+  // Wave-style Y positions for 7 nodes (zig-zag)
+  const yPositions = [50, 130, 70, 150, 60, 140, 80];
+  const nodeY = yPositions.map((y) => (y / 200) * 100); // percent
 
-  const levels = GAMES_BY_TOPIC[topic] || buildGenericLevels(topic);
-  const totalQuestions = order.reduce((s, l) => s + levels[l].length, 0);
-  const topicCompleted = order.filter((l) => getLevel(topic, l)).length;
-  const allDone = topicCompleted === 3;
+  const pool = getPool(topic);
+  const levelResults = LEVEL_TEMPLATES.map((l) => getLevel(topic, l.id));
+  const completedCount = levelResults.filter((r) => r && r.stars >= 1).length;
+  const allDone = completedCount === 7;
+  const totalStars = levelResults.reduce((s, r) => s + (r?.stars || 0), 0);
+  const maxStars = 21;
+  const progressPct = (totalStars / maxStars) * 100;
+
+  // Build segments for candy path
+  const segments = LEVEL_TEMPLATES.slice(0, -1).map((_, i) => ({
+    idx: i,
+    fromY: nodeY[i],
+    toY: nodeY[i + 1],
+    dx: 100,
+  }));
+
+  const completed = levelResults.map((r) => !!(r && r.stars >= 1));
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -43,116 +130,194 @@ export default function GameTopicPage() {
       </div>
       <div className="fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
+      {/* Candy decorations */}
+      <LollipopDecor emoji="🍭" style={{ top: '12%', left: '4%' }} size={72} />
+      <LollipopDecor emoji="🍬" style={{ top: '35%', right: '5%' }} size={64} />
+      <LollipopDecor emoji="🍫" style={{ bottom: '15%', left: '6%' }} size={56} />
+      <LollipopDecor emoji="🍩" style={{ bottom: '30%', right: '3%' }} size={68} />
+      <LollipopDecor emoji="🍭" style={{ top: '60%', left: '3%' }} size={48} />
+
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16">
-        <Link to="/games" className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white transition mb-5">
-          <ArrowLeft className="w-4 h-4" /> All Topics
-        </Link>
+        {/* Top bar: back link + stats */}
+        <div className="flex items-center justify-between gap-2 mb-5">
+          <Link to="/games" className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white transition">
+            <ArrowLeft className="w-4 h-4" /> All Topics
+          </Link>
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-300 text-xs font-semibold">
+              <Zap className="w-3 h-3" /> {progress.streak.count}d
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold">
+              <Trophy className="w-3 h-3" /> {progress.totalXp}
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+              <CheckIcon /> {completedCount}/7
+            </span>
+          </div>
+        </div>
 
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-          <div className="flex items-start sm:items-center gap-4">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center shadow-lg shrink-0">
-              <Gamepad2 className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center shadow-lg shrink-0">
+              <Gamepad2 className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
             </div>
             <div className="min-w-0 flex-1">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">{topic}</h1>
-              <p className="text-white/50 text-sm mt-1">
-                {totalQuestions} questions • 3 levels • Earn up to 250 XP
-              </p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight truncate">{topic}</h1>
+              <p className="text-white/50 text-xs sm:text-sm mt-0.5">Clear levels, earn XP & badges</p>
             </div>
             {allDone && (
               <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold">
-                <Crown className="w-3.5 h-3.5" /> Complete
+                <Crown className="w-3.5 h-3.5" /> Mastered
               </div>
             )}
           </div>
-
-          <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
-            {order.map((lvl) => {
-              const r = getLevel(topic, lvl);
-              return (
-                <div key={lvl} className="bg-white/[0.02] border border-white/10 rounded-xl p-3 text-center">
-                  <div className="text-[10px] sm:text-xs text-white/40 uppercase tracking-wider">{lvl}</div>
-                  <div className="text-sm sm:text-base font-bold text-white">
-                    {r ? `${Math.round((r.score / r.total) * 100)}%` : '—'}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </motion.div>
 
-        {/* Levels */}
-        <div className="space-y-3 sm:space-y-4">
-          {order.map((lvl, i) => {
-            const meta = difficultyMeta[lvl];
-            const result = getLevel(topic, lvl);
-            const unlocked = isLevelUnlocked(topic, lvl);
-            const Icon = meta.icon;
-            return (
-              <motion.div
-                key={lvl}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
-              >
-                {unlocked ? (
-                  <Link
-                    to={`/games/${encodeURIComponent(topic)}/${lvl}`}
-                    className="group block bg-[#0d0f1f] border border-white/10 rounded-2xl p-4 sm:p-5 hover:border-white/20 hover:shadow-lg transition-all relative overflow-hidden"
-                  >
-                    <div className={`absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br ${meta.gradient} opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition`} />
-                    <div className="relative flex items-center gap-4">
-                      <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br ${meta.gradient} flex items-center justify-center shadow-lg shrink-0`}>
-                        <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className={`text-base sm:text-lg font-bold ${meta.color}`}>{meta.label}</h3>
-                          {result && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
-                          {result?.perfect && <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold">PERFECT</span>}
+        {/* Levels candy path */}
+        <div className="bg-[#0d0f1f] border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-5 mb-5 relative">
+          <div className="flex items-center justify-between mb-3 sm:mb-4 px-1">
+            <h2 className="text-sm sm:text-base font-semibold text-white">Levels</h2>
+            <div className="flex items-center gap-1.5 text-xs text-white/50">
+              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+              <span className="text-amber-300 font-semibold">{totalStars}</span>
+              <span>/ {maxStars}</span>
+            </div>
+          </div>
+
+          <div className="relative" style={{ height: '380px' }}>
+            <CandyPath segments={segments} completed={completed} />
+            {LEVEL_TEMPLATES.map((lvl, i) => {
+              const meta = difficultyMeta[lvl.difficulty];
+              const result = levelResults[i];
+              const unlocked = isLevelUnlocked(topic, lvl.id);
+              const Icon = meta.icon;
+              const isCompleted = result && result.stars >= 1;
+              const leftPct = (i / 6) * 100;
+              const topPx = (nodeY[i] / 100) * 380;
+              return (
+                <motion.div
+                  key={lvl.id}
+                  initial={{ opacity: 0, scale: 0.6 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.05, type: 'spring', stiffness: 200 }}
+                  className="absolute"
+                  style={{ left: `calc(${leftPct}% - 32px)`, top: topPx - 32, width: 64 }}
+                >
+                  {unlocked ? (
+                    <Link to={`/games/${encodeURIComponent(topic)}/${lvl.id}`} className="block group">
+                      <div className="flex flex-col items-center">
+                        <div className="h-4 mb-0.5">
+                          <Stars count={result?.stars || 0} />
                         </div>
-                        <p className="text-xs sm:text-sm text-white/50 mt-0.5 line-clamp-2">{meta.desc}</p>
-                        <div className="flex items-center gap-3 mt-1.5 text-[10px] sm:text-xs text-white/40">
-                          <span className="flex items-center gap-1"><Star className="w-3 h-3" /> {meta.xp} XP</span>
-                          <span>•</span>
-                          <span>{levels[lvl].length} Qs</span>
-                          {result && (
-                            <>
-                              <span>•</span>
-                              <span>Best: {result.best}/{result.total}</span>
-                            </>
+                        <div className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white text-base sm:text-lg font-bold shadow-xl transition-all ${
+                          isCompleted
+                            ? `bg-gradient-to-br ${meta.gradient} ring-2 ${meta.ring} group-hover:scale-110 group-hover:shadow-2xl`
+                            : `bg-gradient-to-br ${meta.gradient} opacity-80 ring-2 ${meta.ring} group-hover:scale-110 group-hover:opacity-100`
+                        }`}>
+                          <span className="drop-shadow-md">{lvl.id}</span>
+                          {isCompleted && (
+                            <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-[#0d0f1f] flex items-center justify-center">
+                              <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+                              </svg>
+                            </div>
                           )}
                         </div>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-white/20 group-hover:text-white/60 group-hover:translate-x-1 transition-all shrink-0" />
-                    </div>
-                  </Link>
-                ) : (
-                  <div className="block bg-[#0d0f1f] border border-white/5 rounded-2xl p-4 sm:p-5 opacity-50">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
-                        <Lock className="w-6 h-6 text-white/30" />
+                      <div className="text-center mt-1.5 px-1">
+                        <div className={`text-[9px] sm:text-[10px] font-semibold ${meta.color}`}>{meta.label}</div>
+                        <div className="text-[10px] sm:text-xs font-bold text-white leading-tight">{lvl.name}</div>
+                        <div className="text-[8px] sm:text-[9px] text-white/40 leading-tight">{lvl.desc}</div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-base sm:text-lg font-bold text-white/40">{meta.label}</h3>
-                        <p className="text-xs sm:text-sm text-white/30 mt-0.5">Score 60% on the previous level to unlock</p>
+                    </Link>
+                  ) : (
+                    <div className="block cursor-not-allowed">
+                      <div className="flex flex-col items-center">
+                        <div className="h-4 mb-0.5">
+                          <Stars count={0} />
+                        </div>
+                        <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/[0.04] border-2 border-white/10 flex items-center justify-center text-white/30 text-base sm:text-lg font-bold">
+                          {lvl.id}
+                          <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black/40">
+                            <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-white/40" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-center mt-1.5 px-1">
+                        <div className="text-[9px] sm:text-[10px] font-semibold text-white/30">{meta.label}</div>
+                        <div className="text-[10px] sm:text-xs font-bold text-white/30 leading-tight">{lvl.name}</div>
+                        <div className="text-[8px] sm:text-[9px] text-white/20 leading-tight">{lvl.desc}</div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </motion.div>
-            );
-          })}
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="mt-6 p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-          <Sparkles className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
-          <div className="text-xs sm:text-sm text-white/50 leading-relaxed">
-            <span className="text-white font-semibold">Tip:</span> Each coding challenge has hidden tests. Match the reference solution to earn full points. Wrong answers cost no points, but you can retry the level any time.
+        {/* Progress + Next Reward */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+          <div className="sm:col-span-2 bg-[#0d0f1f] border border-white/10 rounded-2xl p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <div className="text-xs sm:text-sm font-semibold text-white">Your Progress</div>
+                <div className="text-[10px] sm:text-xs text-white/40 mt-0.5">{completedCount} of 7 levels completed</div>
+              </div>
+              <div className="text-sm sm:text-base font-bold text-emerald-400">{Math.round(progressPct)}%</div>
+            </div>
+            <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPct}%` }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className="h-full bg-gradient-to-r from-emerald-400 to-cyan-400"
+              />
+            </div>
+          </div>
+          <div className="bg-[#0d0f1f] border border-white/10 rounded-2xl p-4 flex items-center gap-3">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shrink-0">
+              <Rocket className="w-5 h-5 text-white" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[10px] text-white/40">Next Reward</div>
+              <div className="text-xs sm:text-sm font-bold text-white truncate">
+                +{LEVEL_TEMPLATES[completedCount]?.id ? 30 + LEVEL_TEMPLATES[completedCount].id * 10 : 0} XP
+              </div>
+              <div className="text-[10px] sm:text-xs text-white/40 truncate">Complete Level {Math.min(completedCount + 1, 7)}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* How it works */}
+        <div className="bg-[#0d0f1f] border border-white/10 rounded-2xl p-4 sm:p-5">
+          <h2 className="text-sm sm:text-base font-semibold text-white mb-3">How it works</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              { icon: Gamepad2, color: 'from-violet-500 to-purple-500', title: 'Pick a Level', desc: 'Choose a level to start your coding adventure' },
+              { icon: Code2, color: 'from-cyan-500 to-blue-500', title: 'Solve Challenges', desc: 'Solve bite-sized coding problems' },
+              { icon: Trophy, color: 'from-amber-500 to-orange-500', title: 'Earn Rewards', desc: 'Earn XP, stickers and unlock new levels' },
+            ].map((s) => (
+              <div key={s.title} className="bg-white/[0.02] border border-white/5 rounded-xl p-3">
+                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br ${s.color} flex items-center justify-center mb-2`}>
+                  <s.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                </div>
+                <div className="text-xs sm:text-sm font-semibold text-white">{s.title}</div>
+                <div className="text-[10px] sm:text-xs text-white/40 leading-relaxed mt-0.5">{s.desc}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+    </svg>
   );
 }
