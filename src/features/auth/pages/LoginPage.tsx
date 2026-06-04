@@ -23,7 +23,7 @@ export default function LoginPage() {
   // Show success toast if redirected from signup
   useEffect(() => {
     if (prefilled?.fromSignup) {
-      toast.success('Account created! Please sign in to continue.');
+      toast.success('Account created! Please login to continue.');
     }
   }, []);
 
