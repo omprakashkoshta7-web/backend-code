@@ -35,7 +35,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen py-20">
+    <div className="min-h-screen pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">

@@ -171,7 +171,7 @@ export default function InterviewPrepPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center pt-20">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-8 h-8 text-primary-500 animate-spin" />
           <p className="text-sm text-slate-400">Loading your interview dashboard...</p>
@@ -181,19 +181,18 @@ export default function InterviewPrepPage() {
   }
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative overflow-hidden">
       {/* Full page background */}
-      <div className="absolute inset-0 bg-[#0B1020]" />
-      <div className="absolute inset-0">
+      <div className="fixed inset-0" style={{ backgroundColor: '#0B1020' }}>
         <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-amber-500/8 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-orange-500/8 rounded-full blur-3xl" />
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-yellow-500/5 rounded-full blur-3xl" />
       </div>
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+      <div className="fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
       {/* Hero */}
       <section className="relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
             {/* Left side - Content */}
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>

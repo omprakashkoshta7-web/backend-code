@@ -67,16 +67,15 @@ export default function LeaderboardPage() {
   const rest = entries.slice(3);
 
   return (
-    <div className="min-h-screen relative">
-      <div className="absolute inset-0 bg-[#0B1020]" />
-      <div className="absolute inset-0">
+    <div className="min-h-screen relative overflow-hidden">
+      <div className="fixed inset-0" style={{ backgroundColor: '#0B1020' }}>
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/8 rounded-full blur-3xl" />
         <div className="absolute top-40 right-1/4 w-[400px] h-[400px] bg-yellow-500/6 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-1/2 w-[500px] h-[500px] bg-orange-500/6 rounded-full blur-3xl" />
       </div>
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+      <div className="fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8 sm:mb-10 lg:mb-12">
           <motion.span

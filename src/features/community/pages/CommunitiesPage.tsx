@@ -134,8 +134,8 @@ export default function CommunitiesPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0B1020' }}>
-      <div className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
+    <div className="min-h-screen pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 overflow-hidden" style={{ backgroundColor: '#0B1020' }}>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* Header */}
         <div className="relative mb-8 sm:mb-10">
           <div className="absolute -top-6 -left-6 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />

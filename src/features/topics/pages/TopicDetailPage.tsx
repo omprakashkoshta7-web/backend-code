@@ -66,7 +66,7 @@ export default function TopicDetailPage() {
   );
 
   return (
-    <div className="min-h-screen py-20">
+    <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <Link to="/topics" className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-primary-400 mb-6 transition-colors">

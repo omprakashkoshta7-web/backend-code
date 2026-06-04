@@ -141,15 +141,14 @@ export default function PatternDetailPage() {
   const isGeneric = !apiPattern && !hardcoded;
 
   return (
-    <div className="min-h-screen relative">
-      <div className="absolute inset-0 bg-[#0B1020]" />
-      <div className="absolute inset-0">
+    <div className="min-h-screen relative overflow-hidden">
+      <div className="fixed inset-0" style={{ backgroundColor: '#0B1020' }}>
         <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-emerald-500/8 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/3 w-[400px] h-[400px] bg-teal-500/8 rounded-full blur-3xl" />
       </div>
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+      <div className="fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16">
         <Link to="/patterns" className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-white/40 hover:text-white transition-colors mb-6 sm:mb-8">
           <ArrowLeft className="w-4 h-4" /> Back to Patterns
         </Link>
