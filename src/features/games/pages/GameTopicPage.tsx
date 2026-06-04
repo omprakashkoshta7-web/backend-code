@@ -13,9 +13,9 @@ const difficultyMeta: Record<Difficulty, { color: string; ring: string; gradient
   hard:   { color: 'text-rose-300',    ring: 'ring-rose-400/50',      gradient: 'from-rose-400 to-pink-500',      icon: Crown, label: 'Hard'   },
 };
 function Stars({ count, size = 'sm' }: { count: number; size?: 'sm' | 'md' }) {
-  const dim = size === 'md' ? 'w-4 h-4 sm:w-5 sm:h-5' : 'w-3 h-3 sm:w-3.5 sm:h-3.5';
+  const dim = size === 'md' ? 'w-4 h-4 sm:w-5 sm:h-5' : 'w-3 h-3 sm:w-4 sm:h-4';
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="flex items-center justify-center gap-0.5">
       {[0, 1, 2].map((i) => (
         <Star
           key={i}
@@ -49,7 +49,7 @@ export default function GameTopicPage() {
       </div>
       <div className="fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
-      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16">
         {/* Top bar: back link + stats */}
         <div className="flex items-center justify-between gap-2 mb-5">
           <Link to="/games" className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white transition">
@@ -98,13 +98,13 @@ export default function GameTopicPage() {
           </div>
 
           {(() => {
-            // Container height in px — single source of truth for path AND circles
+            // Use a wider viewBox so circles spread out across the full container
             const H = 340;
-            // Circle vertical centers (px from top of container)
+            // Wave centers (top to bottom of container)
             const centers = [70, 200, 110, 230, 80, 210, 130];
-            const nodeSize = 64; // w-16
-            const innerW = 600; // SVG viewBox width
-            const innerH = 340; // SVG viewBox height (matches H)
+            const nodeSize = 72; // bigger circles so they look proper, not cramped
+            const innerW = 900;  // wider viewBox so path spreads horizontally
+            const innerH = H;
             const xPositions = LEVEL_TEMPLATES.map((_, i) => (i + 0.5) * (innerW / LEVEL_TEMPLATES.length));
 
             const segs = LEVEL_TEMPLATES.slice(0, -1).map((_, i) => ({
@@ -180,24 +180,24 @@ export default function GameTopicPage() {
                       {unlocked ? (
                         <Link to={`/games/${encodeURIComponent(topic)}/${lvl.id}`} className="block group">
                           <Stars count={result?.stars || 0} />
-                          <div className={`relative w-16 h-16 rounded-full flex items-center justify-center text-white text-lg font-bold shadow-xl transition-all ${
+                          <div className={`relative w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full flex items-center justify-center text-white text-lg sm:text-xl font-bold shadow-xl transition-all ${
                             isCompleted
                               ? `bg-gradient-to-br ${meta.gradient} ring-2 ${meta.ring} group-hover:scale-110 group-hover:shadow-2xl`
                               : `bg-gradient-to-br ${meta.gradient} ring-2 ${meta.ring} group-hover:scale-110 group-hover:brightness-110`
                           }`}>
                             <span className="drop-shadow-md">{lvl.id}</span>
                             {isCompleted && (
-                              <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-[#0d0f1f] flex items-center justify-center">
-                                <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <div className="absolute -top-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-500 border-2 border-[#0d0f1f] flex items-center justify-center">
+                                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                   <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
                                 </svg>
                               </div>
                             )}
                           </div>
-                          <div className="text-center mt-1.5 px-1">
-                            <div className={`text-[9px] sm:text-[10px] font-semibold ${meta.color}`}>{meta.label}</div>
-                            <div className="text-[10px] sm:text-xs font-bold text-white leading-tight whitespace-nowrap">{lvl.name}</div>
-                            <div className="text-[8px] sm:text-[9px] text-white/40 leading-tight whitespace-nowrap">{lvl.desc}</div>
+                          <div className="text-center mt-1.5 px-0.5">
+                            <div className={`text-[9px] sm:text-[11px] font-semibold ${meta.color}`}>{meta.label}</div>
+                            <div className="text-[10px] sm:text-sm font-bold text-white leading-tight whitespace-nowrap">{lvl.name}</div>
+                            <div className="hidden sm:block text-[10px] text-white/40 leading-tight whitespace-nowrap">{lvl.desc}</div>
                           </div>
                         </Link>
                       ) : (
@@ -205,16 +205,16 @@ export default function GameTopicPage() {
                           <div className="flex justify-center h-3.5 mb-0.5">
                             <Stars count={0} />
                           </div>
-                          <div className="relative w-16 h-16 rounded-full bg-white/[0.04] border-2 border-white/10 flex items-center justify-center text-white/30 text-lg font-bold">
+                          <div className="relative w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full bg-white/[0.04] border-2 border-white/10 flex items-center justify-center text-white/30 text-lg sm:text-xl font-bold">
                             {lvl.id}
                             <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black/40">
-                              <Lock className="w-5 h-5 text-white/40" />
+                              <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-white/40" />
                             </div>
                           </div>
-                          <div className="text-center mt-1.5 px-1">
-                            <div className="text-[9px] sm:text-[10px] font-semibold text-white/30">{meta.label}</div>
-                            <div className="text-[10px] sm:text-xs font-bold text-white/30 leading-tight whitespace-nowrap">{lvl.name}</div>
-                            <div className="text-[8px] sm:text-[9px] text-white/20 leading-tight whitespace-nowrap">{lvl.desc}</div>
+                          <div className="text-center mt-1.5 px-0.5">
+                            <div className="text-[9px] sm:text-[11px] font-semibold text-white/30">{meta.label}</div>
+                            <div className="text-[10px] sm:text-sm font-bold text-white/30 leading-tight whitespace-nowrap">{lvl.name}</div>
+                            <div className="hidden sm:block text-[10px] text-white/20 leading-tight whitespace-nowrap">{lvl.desc}</div>
                           </div>
                         </div>
                       )}
