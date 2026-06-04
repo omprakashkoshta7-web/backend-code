@@ -79,8 +79,8 @@ export default function Navbar() {
         <div className="px-4 md:px-6">
           <div className="flex items-center justify-between h-14">
             <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
-              <img src="/logo.png" alt="CodeSprout" className="w-12 h-12 rounded-xl object-cover shadow-sm shadow-purple-500/20 group-hover:shadow-purple-500/40 transition-shadow" />
-              <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-orange-400 hidden sm:block">CodeSprout</span>
+              <img src="/logo.png" alt="CodeSprout" className="w-10 h-10 rounded-xl object-cover shadow-sm shadow-purple-500/20 group-hover:shadow-purple-500/40 transition-shadow" />
+              <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-orange-400">CodeSprout</span>
             </Link>
 
             <div className="hidden md:flex items-center gap-0.5 bg-white/[0.03] rounded-xl p-1 border border-white/[0.04]">

@@ -166,7 +166,7 @@ export default function CodeEditor({ slug, template }: CodeEditorProps) {
         body: JSON.stringify({ code, language, input: customInput }),
       });
       const data = await res.json();
-      setCustomResult(data);
+      setCustomResult({ output: data.output || '', error: typeof data.error === 'string' ? data.error : data.error?.message || '', runtime: data.runtime || 0 });
     } catch (e: any) {
       setCustomResult({ output: '', error: e.message || 'Failed', runtime: 0 });
     } finally {
@@ -208,7 +208,7 @@ export default function CodeEditor({ slug, template }: CodeEditorProps) {
       });
       const data = await res.json();
       if (data.steps) setVisualizeSteps(data.steps);
-      if (data.error) setError(data.error);
+      if (data.error) setError(typeof data.error === 'string' ? data.error : data.error.message || 'Unknown error');
     } catch {
       // ignore
     } finally {
