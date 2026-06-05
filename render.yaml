@@ -1,0 +1,165 @@
+services:
+  # ========== BACKEND MICROSERVICES ==========
+  - type: web
+    name: codesprout-gateway
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:gateway
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+      - key: AUTH_SERVICE_URL
+        value: http://codesprout-auth:10001
+      - key: CONTENT_SERVICE_URL
+        value: http://codesprout-content:10002
+      - key: SOCIAL_SERVICE_URL
+        value: http://codesprout-social:10003
+      - key: EXECUTION_SERVICE_URL
+        value: http://codesprout-execution:10004
+      - key: PAYMENT_SERVICE_URL
+        value: http://codesprout-payment:10005
+      - key: MONGODB_URL
+        sync: false
+      - key: UPI_ID
+        sync: false
+      - key: UPI_PAYEE_NAME
+        value: CodeSprout
+      - key: UPI_CURRENCY
+        value: INR
+      - key: PREMIUM_AMOUNT
+        value: "1"
+      - key: SUBSCRIPTION_DAYS
+        value: "30"
+      - key: OPENROUTER_API_KEY
+        sync: false
+    healthCheckPath: /health
+
+  - type: web
+    name: codesprout-auth
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: PORT=10001 npm run start:auth
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        fromService: { type: web, name: codesprout-gateway, property: JWT_SECRET }
+      - key: CORS_ORIGINS
+        sync: false
+      - key: MONGODB_URL
+        sync: false
+      - key: UPI_ID
+        sync: false
+    port: 10001
+
+  - type: web
+    name: codesprout-content
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: PORT=10002 npm run start:content
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        fromService: { type: web, name: codesprout-gateway, property: JWT_SECRET }
+      - key: CORS_ORIGINS
+        sync: false
+      - key: MONGODB_URL
+        sync: false
+    port: 10002
+
+  - type: web
+    name: codesprout-social
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: PORT=10003 npm run start:social
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        fromService: { type: web, name: codesprout-gateway, property: JWT_SECRET }
+      - key: CORS_ORIGINS
+        sync: false
+      - key: MONGODB_URL
+        sync: false
+    port: 10003
+
+  - type: web
+    name: codesprout-execution
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: PORT=10004 npm run start:execution
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        fromService: { type: web, name: codesprout-gateway, property: JWT_SECRET }
+      - key: CORS_ORIGINS
+        sync: false
+      - key: MONGODB_URL
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: JUDGE0_URL
+        value: https://ce.judge0.com
+    port: 10004
+
+  - type: web
+    name: codesprout-payment
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: PORT=10005 npm run start:payment
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        fromService: { type: web, name: codesprout-gateway, property: JWT_SECRET }
+      - key: CORS_ORIGINS
+        sync: false
+      - key: MONGODB_URL
+        sync: false
+      - key: UPI_ID
+        sync: false
+      - key: UPI_PAYEE_NAME
+        value: CodeSprout
+      - key: UPI_CURRENCY
+        value: INR
+      - key: PREMIUM_AMOUNT
+        value: "1"
+      - key: SUBSCRIPTION_DAYS
+        value: "30"
+    port: 10005
+
+  # ========== FRONTEND ==========
+  - type: web
+    name: codesprout-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService: { type: web, name: codesprout-gateway, property: RENDER_EXTERNAL_URL }
+
+  # ========== ADMIN ==========
+  - type: web
+    name: codesprout-admin
+    runtime: static
+    rootDir: admin
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService: { type: web, name: codesprout-gateway, property: RENDER_EXTERNAL_URL }
+
+databases: []

@@ -1,0 +1,464 @@
+[
+  {
+    "question_id": "happy-number",
+    "pattern": "Hash Set Cycle Detection",
+    "recognition": ["digit manipulation", "cycle detection in sequence", "sum of squares"],
+    "approach": "Use a hash set to track seen numbers. If a number repeats, there is a cycle and it is not happy. If we reach 1, it is happy.",
+    "approach_steps": ["Compute sum of squares of digits of current number", "If result is 1, return true", "If result is already in set, return false (cycle)", "Add result to set and repeat"],
+    "approach_diagram": "n → sumSquares(n) → check set → add to set → repeat",
+    "complexity": { "time": "O(log n)", "space": "O(log n)" },
+    "template": {
+      "javascript": "/**\n * @param {number} n\n * @return {boolean}\n */\nvar isHappy = function(n) {\n    \n};",
+      "python": "class Solution:\n    def isHappy(self, n: int) -> bool:\n        ",
+      "java": "class Solution {\n    public boolean isHappy(int n) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    bool isHappy(int n) {\n        \n    }\n};"
+    },
+    "mistakes": ["Forgetting that happy numbers converge to 1, not loop forever", "Using Floyd's cycle detection without handling the case where the cycle doesn't include 1"],
+    "premium_content": {
+      "interview_notes": "Hash set approach is simpler. Floyd's cycle detection uses O(1) space but harder to implement. Both are acceptable.",
+      "edge_cases": ["n = 1 (already happy)", "n = 2 (enters cycle)", "Large n causing overflow in digit sum"],
+      "company_frequency": { "Google": "Low", "Amazon": "Low" },
+      "related_chains": ["linked-list-cycle", "happy-number-ii"]
+    }
+  },
+  {
+    "question_id": "isomorphic-strings",
+    "pattern": "Dual HashMap",
+    "recognition": ["character mapping", "bijection check", "two strings same length"],
+    "approach": "Use two maps to ensure bijection: s→t and t→s. Every character in s maps to exactly one in t and vice versa.",
+    "approach_steps": ["If lengths differ, return false", "Iterate through both strings simultaneously", "Check s→t mapping: if exists, must match; else add", "Check t→s mapping: if exists, must match; else add"],
+    "approach_diagram": "s[i] ↔ t[i]: mapS2T[s[i]]=t[i] && mapT2S[t[i]]=s[i]",
+    "complexity": { "time": "O(n)", "space": "O(1)" },
+    "template": {
+      "javascript": "/**\n * @param {string} s\n * @param {string} t\n * @return {boolean}\n */\nvar isIsomorphic = function(s, t) {\n    \n};",
+      "python": "class Solution:\n    def isIsomorphic(self, s: str, t: str) -> bool:\n        ",
+      "java": "class Solution {\n    public boolean isIsomorphic(String s, String t) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    bool isIsomorphic(string s, string t) {\n        \n    }\n};"
+    },
+    "mistakes": ["Only checking one direction of mapping (s→t) without checking t→s", "Forgetting to handle different length strings"],
+    "premium_content": {
+      "interview_notes": "Must check both directions. Example: 'ab' and 'aa' fails because 'a' maps to both 'a' and 'b' in t→s direction.",
+      "edge_cases": ["Empty strings", "Same characters in both strings", "All unique characters", "Different length inputs"],
+      "company_frequency": { "Google": "Medium", "Amazon": "Medium", "Microsoft": "Medium" },
+      "related_chains": ["isomorphic-strings-ii", "word-pattern"]
+    }
+  },
+  {
+    "question_id": "intersection-of-two-arrays",
+    "pattern": "Hash Set",
+    "recognition": ["unique elements", "intersection", "two arrays"],
+    "approach": "Use a hash set to store elements of one array, then iterate through the other checking for membership. Collect unique results.",
+    "approach_steps": ["Add all elements of nums1 to a set", "Iterate through nums2, if element exists in set, add to result set", "Convert result set to array"],
+    "approach_diagram": "set1 = set(nums1) → for x in nums2: if x in set1 → add to result",
+    "complexity": { "time": "O(m + n)", "space": "O(min(m, n))" },
+    "template": {
+      "javascript": "/**\n * @param {number[]} nums1\n * @param {number[]} nums2\n * @return {number[]}\n */\nvar intersection = function(nums1, nums2) {\n    \n};",
+      "python": "class Solution:\n    def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:\n        ",
+      "java": "class Solution {\n    public int[] intersection(int[] nums1, int[] nums2) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {\n        \n    }\n};"
+    },
+    "mistakes": ["Not handling duplicates in result (result must be unique)", "Confusing intersection with intersection-ii which allows duplicates"],
+    "premium_content": {
+      "interview_notes": "Two versions exist: one with unique results (this) and one with duplicates. Clarify with interviewer which one.",
+      "edge_cases": ["One or both arrays empty", "No intersection", "All elements are the same", "Different ranges of numbers"],
+      "company_frequency": { "Google": "Low", "Amazon": "Low" },
+      "related_chains": ["intersection-of-two-arrays-ii", "two-sum"]
+    }
+  },
+  {
+    "question_id": "top-k-frequent-elements",
+    "pattern": "Bucket Sort",
+    "recognition": ["most frequent", "top k elements", "frequency counting"],
+    "approach": "Count frequencies, then use bucket sort where index represents frequency. Collect from highest frequency bucket down.",
+    "approach_steps": ["Count frequency of each element using a HashMap", "Create buckets where index = frequency, value = list of elements", "Traverse buckets from highest to lowest frequency, collect k elements"],
+    "approach_diagram": "count → buckets[freq] = [elements] → collect from end → result",
+    "complexity": { "time": "O(n)", "space": "O(n)" },
+    "template": {
+      "javascript": "/**\n * @param {number[]} nums\n * @param {number} k\n * @return {number[]}\n */\nvar topKFrequent = function(nums, k) {\n    \n};",
+      "python": "class Solution:\n    def topKFrequent(self, nums: List[int], k: int) -> List[int]:\n        ",
+      "java": "class Solution {\n    public int[] topKFrequent(int[] nums, int k) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    vector<int> topKFrequent(vector<int>& nums, int k) {\n        \n    }\n};"
+    },
+    "mistakes": ["Using a max-heap which gives O(n log n) instead of O(n) bucket sort", "Forgetting that bucket sort works because frequency range is bounded by n"],
+    "premium_content": {
+      "interview_notes": "Bucket sort achieves O(n). Heap approach is O(n log k). Quickselect is O(n) average but O(n²) worst. Mention all three.",
+      "edge_cases": ["k equals number of unique elements", "All elements are the same", "k = 1", "Empty array"],
+      "company_frequency": { "Google": "High", "Amazon": "High", "Meta": "High" },
+      "related_chains": ["top-k-frequent-words", "sort-characters-by-frequency", "kth-largest-element"]
+    }
+  },
+  {
+    "question_id": "subarray-sum-equals-k",
+    "pattern": "Prefix Sum + HashMap",
+    "recognition": ["count subarrays", "sum equals target", "contiguous subarray"],
+    "approach": "Use prefix sum with a hashmap. For each position, check if (current_sum - k) exists in the map. If yes, those are valid subarrays.",
+    "approach_steps": ["Initialize map with {0: 1} (empty prefix)", "Compute running prefix sum", "Check if (sum - k) exists in map, add count to result", "Increment count of current sum in map"],
+    "approach_diagram": "prefixSum → check map[prefixSum - k] → add count → map[prefixSum]++",
+    "complexity": { "time": "O(n)", "space": "O(n)" },
+    "template": {
+      "javascript": "/**\n * @param {number[]} nums\n * @param {number} k\n * @return {number}\n */\nvar subarraySum = function(nums, k) {\n    \n};",
+      "python": "class Solution:\n    def subarraySum(self, nums: List[int], k: int) -> int:\n        ",
+      "java": "class Solution {\n    public int subarraySum(int[] nums, int k) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        \n    }\n};"
+    },
+    "mistakes": ["Forgetting to initialize map with {0: 1} for subarrays starting at index 0", "Using the wrong order (checking map before updating it vs after)"],
+    "premium_content": {
+      "interview_notes": "The {0:1} initialization is critical. Without it, subarrays starting from index 0 are missed. This pattern is used in many prefix sum problems.",
+      "edge_cases": ["All negative numbers", "k = 0", "Single element array", "No valid subarray exists"],
+      "company_frequency": { "Google": "High", "Amazon": "High", "Meta": "High", "Microsoft": "Medium" },
+      "related_chains": ["subarray-sum-divisible-by-k", "contiguous-array", "binary-subarrays-with-sum"]
+    }
+  },
+  {
+    "question_id": "longest-consecutive-sequence",
+    "pattern": "Hash Set",
+    "recognition": ["consecutive elements", "longest sequence", "O(n) required"],
+    "approach": "Add all numbers to a set. Only start counting from a number that is the start of a sequence (num-1 not in set). Count consecutive from there.",
+    "approach_steps": ["Add all numbers to a set", "For each num, if num-1 is NOT in set, it is a sequence start", "Count consecutive elements from num upward", "Track maximum length"],
+    "approach_diagram": "set → for num: if num-1 not in set → count up from num → maxLen",
+    "complexity": { "time": "O(n)", "space": "O(n)" },
+    "template": {
+      "javascript": "/**\n * @param {number[]} nums\n * @return {number}\n */\nvar longestConsecutive = function(nums) {\n    \n};",
+      "python": "class Solution:\n    def longestConsecutive(self, nums: List[int]) -> int:\n        ",
+      "java": "class Solution {\n    public int longestConsecutive(int[] nums) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    int longestConsecutive(vector<int>& nums) {\n        \n    }\n};"
+    },
+    "mistakes": ["Sorting the array first which makes it O(n log n) instead of O(n)", "Not checking if num-1 exists, causing redundant work on non-start elements"],
+    "premium_content": {
+      "interview_notes": "The key insight is only starting from sequence beginnings. This avoids O(n²) nested loops. Sorting approach is acceptable but not optimal.",
+      "edge_cases": ["Empty array", "All duplicates", "Single element", "No consecutive elements", "Negative numbers"],
+      "company_frequency": { "Google": "High", "Amazon": "High", "Meta": "Medium" },
+      "related_chains": ["longest-consecutive-sequence-ii", "max-consecutive-ones"]
+    }
+  },
+  {
+    "question_id": "find-all-anagrams-in-a-string",
+    "pattern": "Sliding Window + Frequency",
+    "recognition": ["anagram search", "permutation of pattern", "sliding window fixed size"],
+    "approach": "Use a sliding window of size p.length with frequency maps. Compare frequencies of window and pattern. Slide window by removing leftmost and adding rightmost.",
+    "approach_steps": ["Build frequency map for pattern p", "Initialize window frequency map for first |p| characters", "Slide window: remove leftmost char, add rightmost char", "Compare maps at each step; if equal, add left index to result"],
+    "approach_diagram": "fmap_p → window of |p| → slide: remove s[i], add s[i+|p|] → compare → result",
+    "complexity": { "time": "O(n)", "space": "O(1)" },
+    "template": {
+      "javascript": "/**\n * @param {string} s\n * @param {string} p\n * @return {number[]}\n */\nvar findAnagrams = function(s, p) {\n    \n};",
+      "python": "class Solution:\n    def findAnagrams(self, s: str, p: str) -> List[int]:\n        ",
+      "java": "class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    vector<int> findAnagrams(string s, string p) {\n        \n    }\n};"
+    },
+    "mistakes": ["Using sorting to compare anagrams which is O(k log k) per window", "Forgetting to handle the case where s is shorter than p"],
+    "premium_content": {
+      "interview_notes": "Optimization: use a single counter with matches count instead of comparing entire maps. Decrement when char goes out of range, increment when in range.",
+      "edge_cases": ["s shorter than p", "p has all same characters", "No anagrams exist", "Entire s is an anagram"],
+      "company_frequency": { "Google": "Medium", "Amazon": "Medium" },
+      "related_chains": ["anagram-substring-search", "valid-anagram", "permutation-in-string"]
+    }
+  },
+  {
+    "question_id": "alien-dictionary",
+    "pattern": "Topological Sort",
+    "recognition": ["character ordering", "alien language", "dictionary order", "dependency resolution"],
+    "approach": "Build a graph of character dependencies by comparing adjacent words. First differing character gives an edge (before→after). Then perform topological sort (BFS/Kahn's).",
+    "approach_steps": ["Compare each pair of adjacent words to find first differing character", "Build adjacency list and in-degree map", "Start BFS with characters having 0 in-degree", "Process queue: reduce in-degree of neighbors, add to queue if 0", "If result length != unique chars count, cycle exists"],
+    "approach_diagram": "words → build graph (first diff char) → Kahn's BFS → topological order",
+    "complexity": { "time": "O(C)", "space": "O(1)", "_note": "C = total characters across all words" },
+    "template": {
+      "javascript": "/**\n * @param {string[]} words\n * @return {string}\n */\nvar alienOrder = function(words) {\n    \n};",
+      "python": "class Solution:\n    def alienOrder(self, words: List[str]) -> str:\n        ",
+      "java": "class Solution {\n    public String alienOrder(String[] words) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    string alienOrder(vector<string>& words) {\n        \n    }\n};"
+    },
+    "mistakes": ["Not handling the case where a longer word comes before a shorter prefix word (invalid)", "Forgetting to initialize all characters in the graph even if they have no edges"],
+    "premium_content": {
+      "interview_notes": "This is a classic topological sort application. Edge case: if word[i] is a prefix of word[i+1], it's invalid (shorter word must come first).",
+      "edge_cases": ["Single word", "Two words with no common prefix", "Invalid ordering (cycle)", "All words are the same", "Words share no characters"],
+      "company_frequency": { "Google": "High", "Amazon": "High", "Meta": "Medium" },
+      "related_chains": ["course-schedule", "course-schedule-ii", "word-search-ii"]
+    }
+  },
+  {
+    "question_id": "word-pattern-ii",
+    "pattern": "Backtracking",
+    "recognition": ["pattern matching", "string decomposition", "bijection mapping"],
+    "approach": "Use backtracking to try all possible mappings from pattern characters to substrings. Maintain bidirectional mapping to ensure bijection.",
+    "approach_steps": ["Use two maps: pattern→word and word→pattern", "Recurse on pattern index and string position", "Try all possible substring lengths for current pattern char", "If mapping exists, verify match; if not, try new mapping", "Backtrack by removing mappings when recursion fails"],
+    "approach_diagram": "backtrack(pi, si) → try substr[si:si+len] → map or verify → recurse → undo",
+    "complexity": { "time": "O(2^n)", "space": "O(n)", "_note": "n = length of pattern" },
+    "template": {
+      "javascript": "/**\n * @param {string} pattern\n * @param {string} s\n * @return {boolean}\n */\nvar wordPatternMatch = function(pattern, s) {\n    \n};",
+      "python": "class Solution:\n    def wordPatternMatch(self, pattern: str, s: str) -> bool:\n        ",
+      "java": "class Solution {\n    public boolean wordPatternMatch(String pattern, String s) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    bool wordPatternMatch(string pattern, string s) {\n        \n    }\n};"
+    },
+    "mistakes": ["Not maintaining bidirectional mapping (allows non-bijection)", "Forgetting to try different substring lengths (only trying one length)"],
+    "premium_content": {
+      "interview_notes": "This is the backtracking version of word-pattern (which is the easy version with words already split). The bidirectional mapping is key.",
+      "edge_cases": ["Empty pattern or string", "Pattern longer than possible substrings", "No valid mapping exists", "All same characters in pattern"],
+      "company_frequency": { "Google": "Medium", "Amazon": "Medium" },
+      "related_chains": ["word-pattern", "verbal-arithmetic-puzzle"]
+    }
+  },
+  {
+    "question_id": "lfu-cache",
+    "pattern": "Design + HashMap",
+    "recognition": ["cache design", "least frequently used", "O(1) operations", "eviction policy"],
+    "approach": "Use two maps: key→node and freq→doubly linked list of nodes. Track min frequency. On access, move node to next freq list. On eviction, remove from min freq list.",
+    "approach_steps": ["Maintain keyMap: key → {value, freq, nodeRef}", "Maintain freqMap: freq → doubly linked list of nodes", "On get: update freq (move node to freq+1 list), return value", "On put: if at capacity, remove LFU node; add new node to freq=1 list", "Update minFreq as needed"],
+    "approach_diagram": "keyMap + freqMap → get/update freq → put/evict LFU → O(1) all ops",
+    "complexity": { "time": "O(1)", "space": "O(capacity)" },
+    "template": {
+      "javascript": "/**\n * @param {number} capacity\n */\nvar LFUCache = function(capacity) {\n    \n};\n\n/** \n * @param {number} key\n * @return {number}\n */\nLFUCache.prototype.get = function(key) {\n    \n};\n\n/** \n * @param {number} key\n * @param {number} value\n * @return {void}\n */\nLFUCache.prototype.put = function(key, value) {\n    \n};",
+      "python": "class LFUCache:\n\n    def __init__(self, capacity: int):\n        \n\n    def get(self, key: int) -> int:\n        \n\n    def put(self, key: int, value: int) -> None:\n        ",
+      "java": "class LFUCache {\n\n    public LFUCache(int capacity) {\n        \n    }\n\n    public int get(int key) {\n        \n    }\n\n    public void put(int key, int value) {\n        \n    }\n}",
+      "cpp": "class LFUCache {\npublic:\n    LFUCache(int capacity) {\n        \n    }\n\n    int get(int key) {\n        \n    }\n\n    void put(int key, int value) {\n        \n    }\n};"
+    },
+    "mistakes": ["Using a simple counter instead of maintaining per-frequency linked lists", "Not updating min frequency correctly when all nodes at min freq are evicted", "Forgetting to remove empty frequency lists"],
+    "premium_content": {
+      "interview_notes": "This is one of the hardest design problems. Use OrderedDict in Python or LinkedHashMap in Java for O(1) operations. Key insight: freqMap allows O(1) LFU eviction.",
+      "edge_cases": ["Capacity = 0", "Get on empty cache", "Put with capacity = 1", "Accessing same key repeatedly"],
+      "company_frequency": { "Google": "High", "Amazon": "High", "Meta": "High", "Apple": "High" },
+      "related_chains": ["lru-cache", "random-pick-index", "insert-delete-getrandom-o1"]
+    }
+  },
+  {
+    "question_id": "all-o1-data-structure",
+    "pattern": "Design + HashMap",
+    "recognition": ["design data structure", "O(1) all operations", "getMin/getMax", "insert/delete"],
+    "approach": "Use a sorted structure (like TreeMap or balanced BST) combined with a hashmap. Alternatively, use bucket-based approach with min/max tracking.",
+    "approach_steps": ["Maintain a TreeMap/SortedMap from value → count", "Maintain a HashMap from key → value", "insert: add to map, update sorted structure", "remove: remove from map, update sorted structure", "getMin/getMax: return first/last key from sorted structure"],
+    "approach_diagram": "HashMap<key,val> + TreeMap<val, count> → O(log n) ops → optimize to O(1)",
+    "complexity": { "time": "O(log n)", "space": "O(n)", "_note": "O(1) amortized with bucket approach" },
+    "template": {
+      "javascript": "var AllOne = function() {\n    \n};\n\n/** \n * @param {string} key\n * @return {void}\n */\nAllOne.prototype.inc = function(key) {\n    \n};\n\n/** \n * @param {string} key\n * @return {void}\n */\nAllOne.prototype.dec = function(key) {\n    \n};\n\n/** \n * @return {string}\n */\nAllOne.prototype.getMaxKey = function() {\n    \n};\n\n/** \n * @return {string}\n */\nAllOne.prototype.getMinKey = function() {\n    \n};",
+      "python": "class AllOne:\n\n    def __init__(self):\n        \n\n    def inc(self, key: str) -> None:\n        \n\n    def dec(self, key: str) -> None:\n        \n\n    def getMaxKey(self) -> str:\n        \n\n    def getMinKey(self) -> str:\n        ",
+      "java": "class AllOne {\n\n    public AllOne() {\n        \n    }\n\n    public void inc(String key) {\n        \n    }\n\n    public void dec(String key) {\n        \n    }\n\n    public String getMaxKey() {\n        \n    }\n\n    public String getMinKey() {\n        \n    }\n}",
+      "cpp": "class AllOne {\npublic:\n    AllOne() {\n        \n    }\n\n    void inc(string key) {\n        \n    }\n\n    void dec(string key) {\n        \n    }\n\n    string getMaxKey() {\n        \n    }\n\n    string getMinKey() {\n        \n    }\n};"
+    },
+    "mistakes": ["Trying to maintain sorted order with arrays which gives O(n) operations", "Not handling the case where a key's count reaches 0 (must remove from structure)"],
+    "premium_content": {
+      "interview_notes": "Similar to LFU cache design. Use TreeMap in Java (O(log n)) or OrderedDict in Python. True O(1) requires bucket-based approach.",
+      "edge_cases": ["inc on non-existent key", "dec to zero (key removal)", "getMax/getMin on empty structure", "All keys have same count"],
+      "company_frequency": { "Google": "Medium", "Amazon": "Medium" },
+      "related_chains": ["lfu-cache", "lru-cache"]
+    }
+  },
+  {
+    "question_id": "middle-of-linked-list",
+    "pattern": "Fast & Slow Pointer",
+    "recognition": ["find middle node", "linked list", "single pass"],
+    "approach": "Use slow and fast pointers. Slow moves 1 step, fast moves 2 steps. When fast reaches end, slow is at middle.",
+    "approach_steps": ["Initialize slow and fast at head", "Move slow one step, fast two steps", "When fast is null or fast.next is null, slow is middle", "Return slow"],
+    "approach_diagram": "slow += 1, fast += 2 → fast.end → slow = middle",
+    "complexity": { "time": "O(n)", "space": "O(1)" },
+    "template": {
+      "javascript": "/**\n * @param {ListNode} head\n * @return {ListNode}\n */\nvar middleNode = function(head) {\n    \n};",
+      "python": "# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution:\n    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:\n        ",
+      "java": "class Solution {\n    public ListNode middleNode(ListNode head) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    ListNode* middleNode(ListNode* head) {\n        \n    }\n};"
+    },
+    "mistakes": ["Off-by-one error when list has even length (two middles, return second)", "Forgetting to handle empty list or single node"],
+    "premium_content": {
+      "interview_notes": "For even length, this returns the second middle node. If first middle is needed, stop when fast.next.next is null.",
+      "edge_cases": ["Empty list", "Single node", "Two nodes", "Even length list"],
+      "company_frequency": { "Google": "Low", "Amazon": "Low" },
+      "related_chains": ["linked-list-cycle", "reorder-list", "sort-list"]
+    }
+  },
+  {
+    "question_id": "remove-duplicates",
+    "pattern": "Two Pointers",
+    "recognition": ["sorted linked list", "remove duplicates", "in-place"],
+    "approach": "Use a slow pointer to track the last unique node. Fast pointer scans ahead. When values differ, link slow to fast's next.",
+    "approach_steps": ["Initialize slow at head", "For each fast pointer position, compare values", "If different, link slow.next = fast, advance slow", "If same, advance fast only", "Return head"],
+    "approach_diagram": "slow.unique → fast scans → diff found → slow.next = fast → slow++",
+    "complexity": { "time": "O(n)", "space": "O(1)" },
+    "template": {
+      "javascript": "/**\n * @param {ListNode} head\n * @return {ListNode}\n */\nvar deleteDuplicates = function(head) {\n    \n};",
+      "python": "# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution:\n    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:\n        ",
+      "java": "class Solution {\n    public ListNode deleteDuplicates(ListNode head) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    ListNode* deleteDuplicates(ListNode* head) {\n        \n    }\n};"
+    },
+    "mistakes": ["Not handling empty list", "Losing reference to head when skipping duplicates at the start"],
+    "premium_content": {
+      "interview_notes": "This is for remove-duplicates (keep one copy). For remove-duplicates-ii (remove all duplicates), use a dummy node and skip entire groups.",
+      "edge_cases": ["Empty list", "All duplicates", "No duplicates", "Duplicates at head"],
+      "company_frequency": { "Google": "Low", "Amazon": "Low" },
+      "related_chains": ["remove-duplicates-ii", "remove-linked-list-elements"]
+    }
+  },
+  {
+    "question_id": "add-two-numbers",
+    "pattern": "Two Pointers + Carry",
+    "recognition": ["add numbers as linked lists", "reverse order", "carry propagation"],
+    "approach": "Traverse both lists simultaneously, adding corresponding digits plus carry. Create result list node by node. Handle remaining carry at the end.",
+    "approach_steps": ["Initialize dummy node and carry = 0", "While l1 or l2 or carry > 0: sum = val1 + val2 + carry", "Create new node with sum % 10", "Update carry = sum / 10", "Advance pointers and repeat"],
+    "approach_diagram": "l1 + l2 → sum = l1.val + l2.val + carry → node(sum%10) → carry = sum/10",
+    "complexity": { "time": "O(max(m, n))", "space": "O(max(m, n))" },
+    "template": {
+      "javascript": "/**\n * @param {ListNode} l1\n * @param {ListNode} l2\n * @return {ListNode}\n */\nvar addTwoNumbers = function(l1, l2) {\n    \n};",
+      "python": "# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution:\n    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:\n        ",
+      "java": "class Solution {\n    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {\n        \n    }\n};"
+    },
+    "mistakes": ["Forgetting to handle carry after both lists are exhausted", "Not handling lists of different lengths (one may be null)"],
+    "premium_content": {
+      "interview_notes": "Numbers are stored in reverse order (least significant digit first). If forward order, reverse first or use recursion/stack.",
+      "edge_cases": ["One list is empty", "Different length lists", "Final carry needs extra node", "All 9s causing chain carry"],
+      "company_frequency": { "Google": "High", "Amazon": "High", "Meta": "High" },
+      "related_chains": ["add-two-numbers-ii", "multiply-strings", "plus-one"]
+    }
+  },
+  {
+    "question_id": "reorder-list",
+    "pattern": "Fast/Slow + Reverse + Merge",
+    "recognition": ["reorder L0→Ln→L1→Ln-1", "linked list manipulation", "multiple steps"],
+    "approach": "Split list in half using fast/slow pointers. Reverse second half. Merge two halves alternately.",
+    "approach_steps": ["Find middle using fast/slow pointers", "Split into two halves (cut after slow)", "Reverse the second half", "Merge two halves: take one node from each alternately"],
+    "approach_diagram": "list → split → reverse second half → merge(head, reversed)",
+    "complexity": { "time": "O(n)", "space": "O(1)" },
+    "template": {
+      "javascript": "/**\n * @param {ListNode} head\n * @return {void} Do not return anything, modify head in-place instead.\n */\nvar reorderList = function(head) {\n    \n};",
+      "python": "# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution:\n    def reorderList(self, head: Optional[ListNode]) -> None:\n        \"\"\"\n        Do not return anything, modify head in-place instead.\n        \"\"\"\n        ",
+      "java": "class Solution {\n    public void reorderList(ListNode head) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    void reorderList(ListNode* head) {\n        \n    }\n};"
+    },
+    "mistakes": ["Forgetting to cut the list after middle (causes infinite loop)", "Not handling odd-length list correctly during merge"],
+    "premium_content": {
+      "interview_notes": "Three distinct steps: find middle, reverse second half, merge. Each step is a standard linked list operation. Modify in-place.",
+      "edge_cases": ["Two nodes", "Three nodes", "Single node", "Empty list"],
+      "company_frequency": { "Google": "Medium", "Amazon": "Medium", "Meta": "Medium" },
+      "related_chains": ["reverse-linked-list", "middle-of-linked-list", "merge-two-sorted-lists"]
+    }
+  },
+  {
+    "question_id": "remove-nth-node-from-end",
+    "pattern": "Two Pointer Gap",
+    "recognition": ["nth from end", "single pass", "two pointer gap"],
+    "approach": "Use two pointers with n gap. Advance first pointer n steps, then move both together. When first reaches end, second is just before the node to remove.",
+    "approach_steps": ["Create dummy node before head", "Advance first pointer n+1 steps", "Move both pointers until first is null", "Second pointer is now at node before target", "Remove target: second.next = second.next.next"],
+    "approach_diagram": "dummy → fast += n → slow and fast together → fast=null → remove slow.next",
+    "complexity": { "time": "O(L)", "space": "O(1)" },
+    "template": {
+      "javascript": "/**\n * @param {ListNode} head\n * @param {number} n\n * @return {ListNode}\n */\nvar removeNthFromEnd = function(head, n) {\n    \n};",
+      "python": "# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution:\n    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:\n        ",
+      "java": "class Solution {\n    public ListNode removeNthFromEnd(ListNode head, int n) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    ListNode* removeNthFromEnd(ListNode* head, int n) {\n        \n    }\n};"
+    },
+    "mistakes": ["Not using dummy node (removing head requires special handling)", "Off-by-one in gap calculation (should be n+1 steps for first)"],
+    "premium_content": {
+      "interview_notes": "Dummy node simplifies edge case of removing head. First pointer advances n+1 steps so second lands on node BEFORE target.",
+      "edge_cases": ["Remove head (n = list length)", "Remove tail (n = 1)", "Single node list", "List with two nodes, remove second"],
+      "company_frequency": { "Google": "Medium", "Amazon": "High" },
+      "related_chains": ["swap-nodes-in-pairs", "rotate-list", "reverse-nodes-in-k-group"]
+    }
+  },
+  {
+    "question_id": "copy-list-with-random-pointer",
+    "pattern": "HashMap + Interweave",
+    "recognition": ["deep copy", "random pointer", "linked list copy"],
+    "approach": "First pass: create all new nodes and map original→copy. Second pass: set next and random pointers using the map.",
+    "approach_steps": ["First pass: for each node, create copy, store in map[original]=copy", "Second pass: for each node, set copy.next = map[original.next], copy.random = map[original.random]", "Return map[head]"],
+    "approach_diagram": "pass1: create nodes, map[orig]=copy → pass2: set next/random from map",
+    "complexity": { "time": "O(n)", "space": "O(n)" },
+    "template": {
+      "javascript": "/**\n * @param {Node} head\n * @return {Node}\n */\nvar copyRandomList = function(head) {\n    \n};",
+      "python": "# class Node:\n#     def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):\n#         self.val = int(x)\n#         self.next = next\n#         self.random = random\nclass Solution:\n    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':\n        ",
+      "java": "class Solution {\n    public Node copyRandomList(Node head) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    Node* copyRandomList(Node* head) {\n        \n    }\n};"
+    },
+    "mistakes": ["Creating copies in the wrong order (random pointers may reference not-yet-created nodes)", "Forgetting that random can be null"],
+    "premium_content": {
+      "interview_notes": "Alternative O(1) space approach: interweave copies (A→A'→B→B'...), set random pointers, then split lists. But HashMap approach is cleaner for interviews.",
+      "edge_cases": ["Empty list", "Random pointer points to self", "Random pointer points to earlier node", "All randoms are null"],
+      "company_frequency": { "Google": "High", "Amazon": "High", "Meta": "High" },
+      "related_chains": ["clone-graph", "copy-list-with-random-pointer-ii"]
+    }
+  },
+  {
+    "question_id": "reverse-nodes-in-k-group",
+    "pattern": "Iterative Reversal",
+    "recognition": ["reverse k nodes", "group reversal", "linked list manipulation"],
+    "approach": "Check if k nodes exist. If yes, reverse them. Connect reversed group to previous group. Repeat until fewer than k nodes remain.",
+    "approach_steps": ["Count nodes from current position", "If fewer than k nodes remain, stop", "Reverse k nodes (standard reverse)", "Connect: prev.next = newHead of reversed group", "Update prev to tail of reversed group"],
+    "approach_diagram": "check k nodes → reverse k → connect to prev group → move prev → repeat",
+    "complexity": { "time": "O(n)", "space": "O(1)" },
+    "template": {
+      "javascript": "/**\n * @param {ListNode} head\n * @param {number} k\n * @return {ListNode}\n */\nvar reverseKGroup = function(head, k) {\n    \n};",
+      "python": "# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution:\n    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:\n        ",
+      "java": "class Solution {\n    public ListNode reverseKGroup(ListNode head, int k) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    ListNode* reverseKGroup(ListNode* head, int k) {\n        \n    }\n};"
+    },
+    "mistakes": ["Not checking if k nodes exist before reversing", "Breaking links during reversal losing reference to next group"],
+    "premium_content": {
+      "interview_notes": "This is iterative reversal in groups. First count k nodes, then reverse them as a unit. Use dummy node to simplify head handling.",
+      "edge_cases": ["k = 1 (no reversal)", "k equals list length", "k > list length (no reversal)", "Multiple complete groups"],
+      "company_frequency": { "Google": "High", "Amazon": "High", "Meta": "Medium" },
+      "related_chains": ["reverse-linked-list", "swap-nodes-in-pairs", "reverse-linked-list-ii"]
+    }
+  },
+  {
+    "question_id": "sort-list",
+    "pattern": "Merge Sort",
+    "recognition": ["sort linked list", "O(n log n)", "merge sort preferred"],
+    "approach": "Use merge sort: split list in half recursively, sort each half, merge sorted halves. Use fast/slow pointers to find middle.",
+    "approach_steps": ["Base case: if head is null or single node, return head", "Find middle using fast/slow pointers", "Recursively sort left and right halves", "Merge two sorted halves (standard merge)"],
+    "approach_diagram": "split → sort(left) + sort(right) → merge(left, right) → return",
+    "complexity": { "time": "O(n log n)", "space": "O(log n)" },
+    "template": {
+      "javascript": "/**\n * @param {ListNode} head\n * @return {ListNode}\n */\nvar sortList = function(head) {\n    \n};",
+      "python": "# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\nclass Solution:\n    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:\n        ",
+      "java": "class Solution {\n    public ListNode sortList(ListNode head) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    ListNode* sortList(ListNode* head) {\n        \n    }\n};"
+    },
+    "mistakes": ["Using quicksort (poor performance on linked lists, no random access)", "Forgetting to cut the list after finding middle"],
+    "premium_content": {
+      "interview_notes": "Merge sort is ideal for linked lists: O(n log n) time, O(1) space with careful implementation. Quicksort is poor because of no random access.",
+      "edge_cases": ["Empty list", "Single node", "Already sorted", "Reverse sorted", "All same values"],
+      "company_frequency": { "Google": "High", "Amazon": "Medium" },
+      "related_chains": ["merge-two-sorted-lists", "merge-k-sorted-lists", "insertion-sort-list"]
+    }
+  },
+  {
+    "question_id": "flatten-multilevel-dll",
+    "pattern": "DFS + Recursion",
+    "recognition": ["multilevel linked list", "flatten", "doubly linked list", "child pointers"],
+    "approach": "Use DFS/recursion. When encountering a child, recursively flatten the child list, then splice it between current node and next node.",
+    "approach_steps": ["Traverse the list using current pointer", "If current has a child, save current.next", "Recursively flatten child list", "Connect: current.next = childHead, childHead.prev = current", "Connect: childTail.next = saved next", "Continue traversal"],
+    "approach_diagram": "traverse → child? → flatten(child) → splice between current and next",
+    "complexity": { "time": "O(n)", "space": "O(d)", "_note": "d = max depth" },
+    "template": {
+      "javascript": "/**\n * @param {Node} head\n * @return {Node}\n */\nvar flatten = function(head) {\n    \n};",
+      "python": "# class Node:\n#     def __init__(self, val, prev, next, child):\n#         self.val = val\n#         self.prev = prev\n#         self.next = next\n#         self.child = child\nclass Solution:\n    def flatten(self, head: 'Optional[Node]') -> 'Optional[Node]':\n        ",
+      "java": "class Solution {\n    public Node flatten(Node head) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    Node* flatten(Node* head) {\n        \n    }\n};"
+    },
+    "mistakes": ["Losing reference to next node before flattening child", "Not setting prev pointers correctly in doubly linked list"],
+    "premium_content": {
+      "interview_notes": "This is DFS on a linked list with child pointers. Iterative approach uses a stack. Both recursive and iterative are acceptable.",
+      "edge_cases": ["Empty list", "No child nodes", "Multiple levels deep", "Child at the end", "Multiple children in sequence"],
+      "company_frequency": { "Google": "Medium", "Amazon": "Medium" },
+      "related_chains": ["flatten-binary-tree-to-linked-list", "linked-list-random-node"]
+    }
+  },
+  {
+    "question_id": "linked-list-cycle-ii",
+    "pattern": "Floyd's Algorithm",
+    "recognition": ["cycle detection", "find cycle start", "linked list"],
+    "approach": "Use Floyd's tortoise and hare. Find meeting point inside cycle. Reset one pointer to head, move both at same speed. They meet at cycle start.",
+    "approach_steps": ["Initialize slow and fast at head", "Move slow 1 step, fast 2 steps until they meet or fast is null", "If no cycle, return null", "Reset slow to head, keep fast at meeting point", "Move both 1 step at a time; meeting point is cycle start"],
+    "approach_diagram": "slow/fast meet in cycle → reset slow=head → both += 1 → meet at start",
+    "complexity": { "time": "O(n)", "space": "O(1)" },
+    "template": {
+      "javascript": "/**\n * @param {ListNode} head\n * @return {ListNode}\n */\nvar detectCycle = function(head) {\n    \n};",
+      "python": "# class ListNode:\n#     def __init__(self, x):\n#         self.val = x\n#         self.next = None\nclass Solution:\n    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:\n        ",
+      "java": "class Solution {\n    public ListNode detectCycle(ListNode head) {\n        \n    }\n}",
+      "cpp": "class Solution {\npublic:\n    ListNode *detectCycle(ListNode *head) {\n        \n    }\n};"
+    },
+    "mistakes": ["Forgetting the second phase (resetting to head and moving 1 step)", "Not checking if fast or fast.next is null before advancing"],
+    "premium_content": {
+      "interview_notes": "Mathematical proof: if cycle starts at position a, and meeting point is m steps from start of cycle, then head to cycle start = meeting point to cycle start.",
+      "edge_cases": ["No cycle", "Cycle at head", "Single node with cycle", "Cycle does not include head"],
+      "company_frequency": { "Google": "High", "Amazon": "High", "Meta": "High" },
+      "related_chains": ["linked-list-cycle", "happy-number", "intersection-of-two-linked-lists"]
+    }
+  }
+]

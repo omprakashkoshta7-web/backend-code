@@ -1,0 +1,11 @@
+{
+  "name": "dsa-cheatsheets",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "dependencies": {
+    "react-resizable-panels": "^4.11.2"
+  }
+}
