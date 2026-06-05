@@ -17,7 +17,10 @@ app.use(cors({
   origin: (_origin, callback) => callback(null, _origin || true),
   credentials: true,
 }));
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({
+  limit: '50mb',
+  verify: (req: any, _res, buf) => { req.rawBody = buf.toString('utf8'); },
+}));
 
 app.get('/health', (_req, res) => res.json({ service: 'payment', status: 'ok', timestamp: new Date().toISOString() }));
 app.use('/api/payments', paymentsRouter);

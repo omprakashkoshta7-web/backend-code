@@ -11,6 +11,39 @@ export interface PaymentInit {
   expires_in?: string;
 }
 
+export interface RazorpayOrder {
+  order_id: string;
+  amount: number;
+  currency: string;
+  receipt: string;
+  key_id: string;
+  payment_id: string;
+  prefill: {
+    name?: string;
+    email?: string;
+  };
+  notes: Record<string, string>;
+}
+
+export interface RazorpayVerifyResponse {
+  success: boolean;
+  message: string;
+  payment: {
+    id: string;
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    amount: number;
+    verified_at: string;
+  };
+  subscription: {
+    id: string;
+    plan: string;
+    status: string;
+    start_date: string;
+    end_date: string;
+  };
+}
+
 export interface PaymentVerify {
   success: boolean;
   message: string;
@@ -37,4 +70,43 @@ export interface PaymentStatus {
   utr: string | null;
   created_at: string;
   verified_at: string | null;
+}
+
+export interface RazorpayWindow extends Window {
+  Razorpay?: new (options: RazorpayCheckoutOptions) => RazorpayInstance;
+}
+
+export interface RazorpayCheckoutOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description?: string;
+  image?: string;
+  order_id: string;
+  prefill?: {
+    name?: string;
+    email?: string;
+    contact?: string;
+  };
+  notes?: Record<string, string>;
+  theme?: {
+    color?: string;
+    backdrop_color?: string;
+  };
+  handler: (response: RazorpaySuccessResponse) => void;
+  modal?: {
+    ondismiss?: () => void;
+  };
+}
+
+export interface RazorpayInstance {
+  open: () => void;
+  close: () => void;
+}
+
+export interface RazorpaySuccessResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
 }
