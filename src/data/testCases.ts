@@ -8718,4 +8718,735 @@ export const TEST_CASES: Record<string, Omit<TestCaseData, 'slug'>[]> = {
     { id: '2840_3', input: `offline`, expected_output: `result`, is_hidden: true }
   ],
 
+
+
+  'first-missing-positive': [
+    { id: '1', input: `nums = [1,2,0]`, expected_output: `3`, is_hidden: false },
+    { id: '2', input: `nums = [3,4,-1,1]`, expected_output: `2`, is_hidden: true },
+    { id: '3', input: `nums = [7,8,9,11,12]`, expected_output: `1`, is_hidden: true }
+  ],
+  'trapping-rain-water': [
+    { id: '1', input: `height = [0,1,0,2,1,0,1,3,2,1,2,1]`, expected_output: `6`, is_hidden: false },
+    { id: '2', input: `height = [4,2,0,3,2,5]`, expected_output: `9`, is_hidden: true }
+  ],
+  'candy': [
+    { id: '1', input: `ratings = [1,0,2]`, expected_output: `5`, is_hidden: false },
+    { id: '2', input: `ratings = [1,2,2]`, expected_output: `4`, is_hidden: true }
+  ],
+  'maximum-rectangle': [
+    { id: '1', input: `arr = [1,3,5,7,9]`, expected_output: `9`, is_hidden: false }
+  ],
+  'string-compression': [
+    { id: '1', input: `chars = ["a","a","b","b","c","c","c"]`, expected_output: `["a","2","b","2","c","3"]`, is_hidden: false },
+    { id: '2', input: `chars = ["a"]`, expected_output: `["a"]`, is_hidden: true }
+  ],
+  'regular-expression-matching': [
+    { id: '1', input: `s = "aa", p = "a"`, expected_output: `false`, is_hidden: false },
+    { id: '2', input: `s = "aa", p = "a*"`, expected_output: `true`, is_hidden: true }
+  ],
+  'edit-distance': [
+    { id: '1', input: `word1 = "horse", word2 = "ros"`, expected_output: `3`, is_hidden: false },
+    { id: '2', input: `word1 = "intention", word2 = "execution"`, expected_output: `5`, is_hidden: true }
+  ],
+  'two-sum-hashing': [
+    { id: '1', input: `nums = [2,7,11,15], target = 9`, expected_output: `[0,1]`, is_hidden: false },
+    { id: '2', input: `nums = [3,2,4], target = 6`, expected_output: `[1,2]`, is_hidden: true }
+  ],
+  'contains-duplicate-hashing': [
+    { id: '1', input: `n = 10`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 11`, expected_output: `2`, is_hidden: true }
+  ],
+  'subarray-sum-equals-k': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'group-anagrams-hashing': [
+    { id: '1', input: `s = "anagram", t = "nagaram"`, expected_output: `true`, is_hidden: false },
+    { id: '2', input: `s = "rat", t = "car"`, expected_output: `false`, is_hidden: true }
+  ],
+  'minimum-window-substring-hashing': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'word-pattern-ii': [
+    { id: '1', input: `s = "leetcode", wordDict = ["leet","code"]`, expected_output: `true`, is_hidden: false }
+  ],
+  'lfu-cache': [
+    { id: '1', input: `ops = ["LFUCache","put","get"], args = [[2],[1,1],[1]]`, expected_output: `[null,null,1]`, is_hidden: false }
+  ],
+  'all-o1-data-structure': [
+    { id: '1', input: `n = 9`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 23`, expected_output: `2`, is_hidden: true }
+  ],
+  'remove-duplicates': [
+    { id: '1', input: `nums = [1,1,2]`, expected_output: `2`, is_hidden: false },
+    { id: '2', input: `nums = [0,0,1,1,1,2,2,3,3,4]`, expected_output: `5`, is_hidden: true }
+  ],
+  'reorder-list': [
+    { id: '1', input: `head = [1,2,3,4]`, expected_output: `[1,4,2,3]`, is_hidden: false },
+    { id: '2', input: `head = [1,2,3,4,5]`, expected_output: `[1,5,2,4,3]`, is_hidden: true }
+  ],
+  'remove-nth-node-from-end': [
+    { id: '1', input: `head = [1,2,3,4,5], n = 2`, expected_output: `[1,2,3,5]`, is_hidden: false },
+    { id: '2', input: `head = [1], n = 1`, expected_output: `[]`, is_hidden: true }
+  ],
+  'flatten-multilevel-dll': [
+    { id: '1', input: `n = 8`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 12`, expected_output: `2`, is_hidden: true }
+  ],
+  'linked-list-cycle-ii': [
+    { id: '1', input: `head = [3,2,0,-4], pos = 1`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `head = [1,2], pos = -1`, expected_output: `-1`, is_hidden: true }
+  ],
+  'remove-outermost-parentheses': [
+    { id: '1', input: `s = "()[]{}"`, expected_output: `true`, is_hidden: false },
+    { id: '2', input: `s = "(]"`, expected_output: `false`, is_hidden: true }
+  ],
+  'evaluate-reverse-polish-notation': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `[5,4,3,2,1]`, is_hidden: false }
+  ],
+  'decode-string-stack': [
+    { id: '1', input: `s = "3+2*2"`, expected_output: `7`, is_hidden: false }
+  ],
+  'parse-lisp-expression': [
+    { id: '1', input: `n = 3`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 25`, expected_output: `2`, is_hidden: true }
+  ],
+  'moving-average-from-data-stream': [
+    { id: '1', input: `n = 8`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 16`, expected_output: `2`, is_hidden: true }
+  ],
+  'circular-queue': [
+    { id: '1', input: `operations = ["push","push","pop","peek"]`, expected_output: `[null,null,null,1]`, is_hidden: false }
+  ],
+  'dota2-senate': [
+    { id: '1', input: `n = 5`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 14`, expected_output: `2`, is_hidden: true }
+  ],
+  'design-hit-counter': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
+  ],
+  'sliding-window-maximum-queue': [
+    { id: '1', input: `operations = ["push","push","pop","peek"]`, expected_output: `[null,null,null,1]`, is_hidden: false }
+  ],
+  'shortest-distance-from-all-buildings': [
+    { id: '1', input: `n = 7`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 29`, expected_output: `2`, is_hidden: true }
+  ],
+  'bus-routes': [
+    { id: '1', input: `n = 10`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 20`, expected_output: `2`, is_hidden: true }
+  ],
+  'race-car': [
+    { id: '1', input: `n = 10`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 29`, expected_output: `2`, is_hidden: true }
+  ],
+  'minimum-cost-to-reach-destination': [
+    { id: '1', input: `arr = [1,3,5,7,9]`, expected_output: `1`, is_hidden: false }
+  ],
+  'kth-largest-element-in-stream': [
+    { id: '1', input: `arr = [3,1,4,1,5,9,2,6]`, expected_output: `9`, is_hidden: false },
+    { id: '2', input: `arr = [10]`, expected_output: `10`, is_hidden: true }
+  ],
+  'sort-characters-by-frequency': [
+    { id: '1', input: `nums = [5,2,3,1]`, expected_output: `[1,2,3,5]`, is_hidden: false },
+    { id: '2', input: `nums = [5,1,1,2,0,0]`, expected_output: `[0,0,1,1,2,5]`, is_hidden: true }
+  ],
+  'k-closest-points-to-origin': [
+    { id: '1', input: `points = [[1,3],[-2,2]], k = 1`, expected_output: `[[-2,2]]`, is_hidden: false }
+  ],
+  'top-k-frequent-elements-heap': [
+    { id: '1', input: `nums = [3,2,1,5,6,4], k = 2`, expected_output: `5`, is_hidden: false }
+  ],
+  'find-median-from-data-stream': [
+    { id: '1', input: `n = 9`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 11`, expected_output: `2`, is_hidden: true }
+  ],
+  'task-scheduler-heap': [
+    { id: '1', input: `nums = [3,2,1,5,6,4], k = 2`, expected_output: `5`, is_hidden: false }
+  ],
+  'merge-k-sorted-lists-heap': [
+    { id: '1', input: `nums = [5,2,3,1]`, expected_output: `[1,2,3,5]`, is_hidden: false },
+    { id: '2', input: `nums = [5,1,1,2,0,0]`, expected_output: `[0,0,1,1,2,5]`, is_hidden: true }
+  ],
+  'minimum-refueling-stops': [
+    { id: '1', input: `arr = [1,3,5,7,9]`, expected_output: `1`, is_hidden: false }
+  ],
+  'smallest-range-covering-elements': [
+    { id: '1', input: `arr = [3,1,4,1,5,9,2,6]`, expected_output: `1`, is_hidden: false }
+  ],
+  'path-sum': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'balanced-binary-tree': [
+    { id: '1', input: `root = [3,9,20,null,null,15,7]`, expected_output: `true`, is_hidden: false }
+  ],
+  'binary-tree-level-order-traversal': [
+    { id: '1', input: `root = [1,2,3,null,4,null,5]`, expected_output: `true`, is_hidden: false }
+  ],
+  'construct-binary-tree': [
+    { id: '1', input: `root = [1,2,3,null,4,null,5]`, expected_output: `true`, is_hidden: false }
+  ],
+  'lowest-common-ancestor': [
+    { id: '1', input: `n = 3`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 26`, expected_output: `2`, is_hidden: true }
+  ],
+  'right-side-view': [
+    { id: '1', input: `n = 1`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 11`, expected_output: `2`, is_hidden: true }
+  ],
+  'validate-binary-tree': [
+    { id: '1', input: `root = [1,2,3,null,4,null,5]`, expected_output: `true`, is_hidden: false }
+  ],
+  'serialize-and-deserialize-binary-tree': [
+    { id: '1', input: `root = [1,2,3,null,4,null,5]`, expected_output: `true`, is_hidden: false }
+  ],
+  'binary-tree-maximum-path-sum': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'recover-binary-search-tree': [
+    { id: '1', input: `nums = [1,3,5,7,9,11,13], target = 7`, expected_output: `3`, is_hidden: false },
+    { id: '2', input: `nums = [1,3,5,7,9,11,13], target = 8`, expected_output: `-1`, is_hidden: true }
+  ],
+  'house-robber-iii': [
+    { id: '1', input: `n = 6`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 22`, expected_output: `2`, is_hidden: true }
+  ],
+  'minimum-distance-between-bst-nodes': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'range-sum-of-bst': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'increasing-order-search-tree': [
+    { id: '1', input: `nums = [1,3,5,7,9,11,13], target = 7`, expected_output: `3`, is_hidden: false },
+    { id: '2', input: `nums = [1,3,5,7,9,11,13], target = 8`, expected_output: `-1`, is_hidden: true }
+  ],
+  'kth-smallest-element-in-bst': [
+    { id: '1', input: `arr = [3,1,4,1,5,9,2,6]`, expected_output: `1`, is_hidden: false }
+  ],
+  'convert-bst-to-greater-tree': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'delete-node-in-bst': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'unique-binary-search-trees-ii': [
+    { id: '1', input: `nums = [1,3,5,7,9,11,13], target = 7`, expected_output: `3`, is_hidden: false },
+    { id: '2', input: `nums = [1,3,5,7,9,11,13], target = 8`, expected_output: `-1`, is_hidden: true }
+  ],
+  'split-bst': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'balance-bst': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'number-of-connected-components': [
+    { id: '1', input: `n = 3`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 25`, expected_output: `2`, is_hidden: true }
+  ],
+  'alien-dictionary-graph': [
+    { id: '1', input: `n = 4, edges = [[0,1],[1,2],[2,3]]`, expected_output: `true`, is_hidden: false }
+  ],
+  'critical-connections-in-network': [
+    { id: '1', input: `n = 2`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 10`, expected_output: `2`, is_hidden: true }
+  ],
+  'minimum-cost-to-connect-points': [
+    { id: '1', input: `arr = [1,3,5,7,9]`, expected_output: `1`, is_hidden: false }
+  ],
+  'range-sum-query-immutable': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'max-size-subarray-sum-k': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'continuous-subarray-sum': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'range-sum-query-2d-immutable': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'minimum-size-subarray-sum': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'subarray-sum-k-ii': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'count-of-range-sum': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
+  ],
+  'range-sum-query-mutable': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'max-sum-3-non-overlapping': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'num-subarrays-bounded-max': [
+    { id: '1', input: `nums = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'longest-well-performing': [
+    { id: '1', input: `intervals = [[1,3],[2,6],[8,10],[15,18]]`, expected_output: `[[1,6],[8,10],[15,18]]`, is_hidden: false }
+  ],
+  'max-sum-subarray-at-most-k': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'single-number': [
+    { id: '1', input: `n = 8`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 12`, expected_output: `2`, is_hidden: true }
+  ],
+  'number-of-1-bits': [
+    { id: '1', input: `n = 8`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 24`, expected_output: `2`, is_hidden: true }
+  ],
+  'reverse-bits': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `[5,4,3,2,1]`, is_hidden: false }
+  ],
+  'missing-number-xor': [
+    { id: '1', input: `n = 8`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 17`, expected_output: `2`, is_hidden: true }
+  ],
+  'counting-bits': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
+  ],
+  'bitwise-and-numbers-range': [
+    { id: '1', input: `nums = [1,3,5], low = 1, high = 5`, expected_output: `9`, is_hidden: false }
+  ],
+  'xor-queries-subarray': [
+    { id: '1', input: `nums = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'utf-8-validation': [
+    { id: '1', input: `n = 8`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 22`, expected_output: `2`, is_hidden: true }
+  ],
+  'binary-substrings-1-to-n': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'max-xor-two-numbers': [
+    { id: '1', input: `arr = [1,3,5,7,9]`, expected_output: `9`, is_hidden: false }
+  ],
+  'sort-integers-by-1-bits': [
+    { id: '1', input: `nums = [5,2,3,1]`, expected_output: `[1,2,3,5]`, is_hidden: false },
+    { id: '2', input: `nums = [5,1,1,2,0,0]`, expected_output: `[0,0,1,1,2,5]`, is_hidden: true }
+  ],
+  'closest-divisors': [
+    { id: '1', input: `points = [[1,3],[-2,2]], k = 1`, expected_output: `[[-2,2]]`, is_hidden: false }
+  ],
+  'bitwise-or-subsequence-sums': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'find-the-difference': [
+    { id: '1', input: `arr = [1,5,3,9,2]`, expected_output: `8`, is_hidden: false }
+  ],
+  'fizz-buzz': [
+    { id: '1', input: `n = 5`, expected_output: `["1","2","Fizz","4","Buzz"]`, is_hidden: false }
+  ],
+  'add-digits': [
+    { id: '1', input: `num = 38`, expected_output: `2`, is_hidden: false },
+    { id: '2', input: `num = 0`, expected_output: `0`, is_hidden: true }
+  ],
+  'powx-n': [
+    { id: '1', input: `x = 2.00000, n = 10`, expected_output: `1024.00000`, is_hidden: false },
+    { id: '2', input: `x = 2.10000, n = 3`, expected_output: `9.26100`, is_hidden: true }
+  ],
+  'super-pow': [
+    { id: '1', input: `a = 2, b = [3]`, expected_output: `8`, is_hidden: false }
+  ],
+  'ugly-number-ii': [
+    { id: '1', input: `n = 10`, expected_output: `12`, is_hidden: false },
+    { id: '2', input: `n = 1`, expected_output: `1`, is_hidden: true }
+  ],
+  'count-primes': [
+    { id: '1', input: `n = 10`, expected_output: `4`, is_hidden: false },
+    { id: '2', input: `n = 0`, expected_output: `0`, is_hidden: true }
+  ],
+  'integer-to-english-words': [
+    { id: '1', input: `num = 123`, expected_output: `"One Hundred Twenty Three"`, is_hidden: false }
+  ],
+  'permutation-sequence': [
+    { id: '1', input: `n = 3, k = 3`, expected_output: `"213"`, is_hidden: false }
+  ],
+  'largest-number': [
+    { id: '1', input: `nums = [10,2]`, expected_output: `"210"`, is_hidden: false },
+    { id: '2', input: `nums = [3,30,34,5,9]`, expected_output: `"9534330"`, is_hidden: true }
+  ],
+  'basic-calculator-ii': [
+    { id: '1', input: `n = 5`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 17`, expected_output: `2`, is_hidden: true }
+  ],
+  'best-time-buy-sell-stock': [
+    { id: '1', input: `n = 4`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 26`, expected_output: `2`, is_hidden: true }
+  ],
+  'max-units-truck': [
+    { id: '1', input: `arr = [1,3,5,7,9]`, expected_output: `9`, is_hidden: false }
+  ],
+  'can-place-flowers': [
+    { id: '1', input: `flowerbed = [1,0,0,0,1], n = 1`, expected_output: `true`, is_hidden: false },
+    { id: '2', input: `flowerbed = [1,0,0,0,1], n = 2`, expected_output: `false`, is_hidden: true }
+  ],
+  'lemonade-change': [
+    { id: '1', input: `bills = [5,5,5,10,20]`, expected_output: `true`, is_hidden: false },
+    { id: '2', input: `bills = [5,5,10,10,20]`, expected_output: `false`, is_hidden: true }
+  ],
+  'min-arrows-burst-balloons': [
+    { id: '1', input: `points = [[10,16],[2,8],[1,6],[7,12]]`, expected_output: `2`, is_hidden: false }
+  ],
+  'min-cost-hire-k-workers': [
+    { id: '1', input: `arr = [1,3,5,7,9]`, expected_output: `1`, is_hidden: false }
+  ],
+  'combination-sum-ii': [
+    { id: '1', input: `candidates = [10,1,2,7,6,1,5], target = 8`, expected_output: `[[1,1,6],[1,2,5],[1,7],[2,6]]`, is_hidden: false }
+  ],
+  'n-queens-count': [
+    { id: '1', input: `n = 4`, expected_output: `2`, is_hidden: false },
+    { id: '2', input: `n = 1`, expected_output: `1`, is_hidden: true }
+  ],
+  'restore-ip-addresses': [
+    { id: '1', input: `s = "25525511135"`, expected_output: `["255.255.11.135","255.255.111.35"]`, is_hidden: false }
+  ],
+  'palindrome-permutation-ii': [
+    { id: '1', input: `s = "aabb"`, expected_output: `["abba","baab"]`, is_hidden: false }
+  ],
+  'max-subarray-dc': [
+    { id: '1', input: `nums = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'majority-element-dc': [
+    { id: '1', input: `n = 6`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 17`, expected_output: `2`, is_hidden: true }
+  ],
+  'max-product-three': [
+    { id: '1', input: `nums = [1,2,3]`, expected_output: `6`, is_hidden: false },
+    { id: '2', input: `nums = [1,2,3,4]`, expected_output: `24`, is_hidden: true }
+  ],
+  'merge-sorted-arrays-dc': [
+    { id: '1', input: `nums = [5,2,3,1]`, expected_output: `[1,2,3,5]`, is_hidden: false },
+    { id: '2', input: `nums = [5,1,1,2,0,0]`, expected_output: `[0,0,1,1,2,5]`, is_hidden: true }
+  ],
+  'good-nodes-dc': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
+  ],
+  'sort-array-merge-sort': [
+    { id: '1', input: `nums = [5,2,3,1]`, expected_output: `[1,2,3,5]`, is_hidden: false },
+    { id: '2', input: `nums = [5,1,1,2,0,0]`, expected_output: `[0,0,1,1,2,5]`, is_hidden: true }
+  ],
+  'search-2d-matrix-ii': [
+    { id: '1', input: `nums = [1,3,5,7,9,11,13], target = 7`, expected_output: `3`, is_hidden: false },
+    { id: '2', input: `nums = [1,3,5,7,9,11,13], target = 8`, expected_output: `-1`, is_hidden: true }
+  ],
+  'diff-ways-add-parentheses': [
+    { id: '1', input: `s = "()[]{}"`, expected_output: `true`, is_hidden: false },
+    { id: '2', input: `s = "(]"`, expected_output: `false`, is_hidden: true }
+  ],
+  'closest-bst-value': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'kth-largest-quickselect': [
+    { id: '1', input: `arr = [3,1,4,1,5,9,2,6]`, expected_output: `9`, is_hidden: false },
+    { id: '2', input: `arr = [10]`, expected_output: `10`, is_hidden: true }
+  ],
+  'lis-divide-conquer': [
+    { id: '1', input: `n = 7`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 23`, expected_output: `2`, is_hidden: true }
+  ],
+  'max-sum-rectangle-k': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'stickers-spell-word': [
+    { id: '1', input: `s = "leetcode", wordDict = ["leet","code"]`, expected_output: `true`, is_hidden: false }
+  ],
+  'skyline-problem': [
+    { id: '1', input: `n = 5`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 14`, expected_output: `2`, is_hidden: true }
+  ],
+  'max-depth-binary-tree': [
+    { id: '1', input: `root = [3,9,20,null,null,15,7]`, expected_output: `3`, is_hidden: false },
+    { id: '2', input: `root = [1,null,2]`, expected_output: `2`, is_hidden: true }
+  ],
+  'symmetric-tree': [
+    { id: '1', input: `root = [1,2,2,3,4,4,3]`, expected_output: `true`, is_hidden: false },
+    { id: '2', input: `root = [1,2,2,null,3,null,3]`, expected_output: `false`, is_hidden: true }
+  ],
+  'level-order-traversal': [
+    { id: '1', input: `root = [3,9,20,null,null,15,7]`, expected_output: `[[3],[9,20],[15,7]]`, is_hidden: false }
+  ],
+  'validate-bst-medium': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'lca-binary-tree': [
+    { id: '1', input: `root = [1,2,3,null,4,null,5]`, expected_output: `true`, is_hidden: false }
+  ],
+  'zigzag-level-order': [
+    { id: '1', input: `root = [3,9,20,null,null,15,7]`, expected_output: `[[3],[20,9],[15,7]]`, is_hidden: false }
+  ],
+  'flatten-binary-tree': [
+    { id: '1', input: `root = [1,2,5,3,4,null,6]`, expected_output: `[1,null,2,null,3,null,4,null,5,null,6]`, is_hidden: false }
+  ],
+  'bt-max-path-sum': [
+    { id: '1', input: `root = [1,2,3]`, expected_output: `6`, is_hidden: false },
+    { id: '2', input: `root = [-10,9,20,null,null,15,7]`, expected_output: `42`, is_hidden: true }
+  ],
+  'serialize-deserialize-bt': [
+    { id: '1', input: `root = [1,2,3,null,4,null,5]`, expected_output: `true`, is_hidden: false }
+  ],
+  'binary-tree-cameras': [
+    { id: '1', input: `root = [0,0,null,0,0]`, expected_output: `1`, is_hidden: false }
+  ],
+  'delete-node-bst': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'range-sum-bst': [
+    { id: '1', input: `root = [10,5,15,3,7,null,18], low = 7, high = 15`, expected_output: `32`, is_hidden: false }
+  ],
+  'convert-bst-greater': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'inorder-successor-bst-ii': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'recover-bst-hard': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'kth-smallest-matrix-bst': [
+    { id: '1', input: `nums = [5,2,3,1]`, expected_output: `[1,2,3,5]`, is_hidden: false },
+    { id: '2', input: `nums = [5,1,1,2,0,0]`, expected_output: `[0,0,1,1,2,5]`, is_hidden: true }
+  ],
+  'closest-bst-value-ii': [
+    { id: '1', input: `root = [2,1,3]`, expected_output: `true`, is_hidden: false }
+  ],
+  'kth-largest-stream': [
+    { id: '1', input: `arr = [3,1,4,1,5,9,2,6]`, expected_output: `9`, is_hidden: false },
+    { id: '2', input: `arr = [10]`, expected_output: `10`, is_hidden: true }
+  ],
+  'k-closest-points': [
+    { id: '1', input: `points = [[1,3],[-2,2]], k = 1`, expected_output: `[[-2,2]]`, is_hidden: false }
+  ],
+  'min-absolute-diff': [
+    { id: '1', input: `nums = [4,2,1,3]`, expected_output: `[[1,2],[2,3],[3,4]]`, is_hidden: false }
+  ],
+  'smallest-infinite-set': [
+    { id: '1', input: `arr = [3,1,4,1,5,9,2,6]`, expected_output: `1`, is_hidden: false }
+  ],
+  'kth-largest-array': [
+    { id: '1', input: `nums = [3,2,1,5,6,4], k = 2`, expected_output: `5`, is_hidden: false }
+  ],
+  'top-k-frequent': [
+    { id: '1', input: `nums = [1,1,1,2,2,3], k = 2`, expected_output: `[1,2]`, is_hidden: false }
+  ],
+  'reorganize-string-heap': [
+    { id: '1', input: `s = "aab"`, expected_output: `"aba"`, is_hidden: false }
+  ],
+  'sliding-window-median-heap': [
+    { id: '1', input: `nums = [3,2,1,5,6,4], k = 2`, expected_output: `5`, is_hidden: false }
+  ],
+  'k-pairs-smallest-sums': [
+    { id: '1', input: `arr = [3,1,4,1,5,9,2,6]`, expected_output: `1`, is_hidden: false }
+  ],
+  'implement-trie': [
+    { id: '1', input: `ops = ["Trie","insert","search"], args = [[],["apple"],["apple"]]`, expected_output: `[null,null,true]`, is_hidden: false }
+  ],
+  'add-search-words': [
+    { id: '1', input: `nums = [1,3,5,7,9,11,13], target = 7`, expected_output: `3`, is_hidden: false },
+    { id: '2', input: `nums = [1,3,5,7,9,11,13], target = 8`, expected_output: `-1`, is_hidden: true }
+  ],
+  'replace-words': [
+    { id: '1', input: `s = "leetcode", wordDict = ["leet","code"]`, expected_output: `true`, is_hidden: false }
+  ],
+  'map-sum-pairs': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'longest-word-dictionary': [
+    { id: '1', input: `s = "leetcode", wordDict = ["leet","code"]`, expected_output: `true`, is_hidden: false }
+  ],
+  'magic-dictionary': [
+    { id: '1', input: `n = 5`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 26`, expected_output: `2`, is_hidden: true }
+  ],
+  'search-suggestions': [
+    { id: '1', input: `nums = [1,3,5,7,9,11,13], target = 7`, expected_output: `3`, is_hidden: false },
+    { id: '2', input: `nums = [1,3,5,7,9,11,13], target = 8`, expected_output: `-1`, is_hidden: true }
+  ],
+  'longest-word-delete': [
+    { id: '1', input: `s = "leetcode", wordDict = ["leet","code"]`, expected_output: `true`, is_hidden: false }
+  ],
+  'max-xor-with-element': [
+    { id: '1', input: `arr = [1,3,5,7,9]`, expected_output: `9`, is_hidden: false }
+  ],
+  'word-search-ii': [
+    { id: '1', input: `nums = [1,3,5,7,9,11,13], target = 7`, expected_output: `3`, is_hidden: false },
+    { id: '2', input: `nums = [1,3,5,7,9,11,13], target = 8`, expected_output: `-1`, is_hidden: true }
+  ],
+  'palindrome-pairs-ii': [
+    { id: '1', input: `s = "racecar"`, expected_output: `true`, is_hidden: false },
+    { id: '2', input: `s = "hello"`, expected_output: `false`, is_hidden: true }
+  ],
+  'shortest-unique-prefix': [
+    { id: '1', input: `s = "leetcode", wordDict = ["leet","code"]`, expected_output: `true`, is_hidden: false }
+  ],
+  'word-break-trie': [
+    { id: '1', input: `ops = ["Trie","insert","search"], args = [[],["apple"],["apple"]]`, expected_output: `[null,null,true]`, is_hidden: false }
+  ],
+  'number-of-islands-dsu': [
+    { id: '1', input: `n = 4`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 20`, expected_output: `2`, is_hidden: true }
+  ],
+  'friend-circles': [
+    { id: '1', input: `n = 8`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 10`, expected_output: `2`, is_hidden: true }
+  ],
+  'smallest-string-swaps': [
+    { id: '1', input: `arr = [3,1,4,1,5,9,2,6]`, expected_output: `1`, is_hidden: false }
+  ],
+  'number-of-good-paths': [
+    { id: '1', input: `m = 3, n = 3`, expected_output: `6`, is_hidden: false }
+  ],
+  'connected-components': [
+    { id: '1', input: `n = 4, edges = [[0,1],[1,2],[2,3]]`, expected_output: `true`, is_hidden: false }
+  ],
+  'longest-consecutive-dsu': [
+    { id: '1', input: `n = 10`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 28`, expected_output: `2`, is_hidden: true }
+  ],
+  'redundant-connection-ii': [
+    { id: '1', input: `n = 4`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 19`, expected_output: `2`, is_hidden: true }
+  ],
+  'largest-component-common-factor': [
+    { id: '1', input: `arr = [3,1,4,1,5,9,2,6]`, expected_output: `9`, is_hidden: false },
+    { id: '2', input: `arr = [10]`, expected_output: `10`, is_hidden: true }
+  ],
+  'similar-string-groups': [
+    { id: '1', input: `n = 8`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 11`, expected_output: `2`, is_hidden: true }
+  ],
+  'minimize-malware-spread-ii': [
+    { id: '1', input: `n = 9`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 12`, expected_output: `2`, is_hidden: true }
+  ],
+  'climbing-stairs': [
+    { id: '1', input: `n = 2`, expected_output: `2`, is_hidden: false },
+    { id: '2', input: `n = 3`, expected_output: `3`, is_hidden: true }
+  ],
+  'min-cost-climbing-stairs': [
+    { id: '1', input: `n = 1`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 11`, expected_output: `2`, is_hidden: true }
+  ],
+  'house-robber': [
+    { id: '1', input: `nums = [1,2,3,1]`, expected_output: `4`, is_hidden: false },
+    { id: '2', input: `nums = [2,7,9,3,1]`, expected_output: `12`, is_hidden: true }
+  ],
+  'max-subarray-dp': [
+    { id: '1', input: `nums = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'is-subsequence': [
+    { id: '1', input: `s = "abc", t = "ahbgdc"`, expected_output: `true`, is_hidden: false },
+    { id: '2', input: `s = "axc", t = "ahbgdc"`, expected_output: `false`, is_hidden: true }
+  ],
+  'longest-increasing-subsequence': [
+    { id: '1', input: `nums = [10,9,2,5,3,7,101,18]`, expected_output: `4`, is_hidden: false }
+  ],
+  'coin-change': [
+    { id: '1', input: `coins = [1,5,10,25], amount = 30`, expected_output: `2`, is_hidden: false },
+    { id: '2', input: `coins = [2], amount = 3`, expected_output: `-1`, is_hidden: true }
+  ],
+  'unique-paths': [
+    { id: '1', input: `m = 3, n = 7`, expected_output: `28`, is_hidden: false },
+    { id: '2', input: `m = 3, n = 2`, expected_output: `3`, is_hidden: true }
+  ],
+  'minimum-path-sum': [
+    { id: '1', input: `grid = [[1,3,1],[1,5,1],[4,2,1]]`, expected_output: `7`, is_hidden: false },
+    { id: '2', input: `grid = [[1,2,3],[4,5,6]]`, expected_output: `12`, is_hidden: true }
+  ],
+  'longest-valid-parentheses': [
+    { id: '1', input: `s = "(()"`, expected_output: `2`, is_hidden: false },
+    { id: '2', input: `s = ")()())"`, expected_output: `4`, is_hidden: true }
+  ],
+  'regex-matching': [
+    { id: '1', input: `n = 9`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 18`, expected_output: `2`, is_hidden: true }
+  ],
+  'range-sum-immutable-st': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'range-sum-2d-st': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'subarray-sum-k-st': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'range-update-range-query': [
+    { id: '1', input: `nums = [1,3,5], low = 1, high = 5`, expected_output: `9`, is_hidden: false }
+  ],
+  'count-range-sum-st': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
+  ],
+  'maximum-sum-query': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'my-calendar-i': [
+    { id: '1', input: `n = 10`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 17`, expected_output: `2`, is_hidden: true }
+  ],
+  'my-calendar-ii': [
+    { id: '1', input: `n = 4`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 21`, expected_output: `2`, is_hidden: true }
+  ],
+  'count-integers-intervals': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
+  ],
+  'count-smaller-hard': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
+  ],
+  'rectangle-area-ii': [
+    { id: '1', input: `n = 3`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 18`, expected_output: `2`, is_hidden: true }
+  ],
+  'bit-basics': [
+    { id: '1', input: `n = 2`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 22`, expected_output: `2`, is_hidden: true }
+  ],
+  'range-sum-query-bit': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'point-update-range-sum': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'count-inversions-bit': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
+  ],
+  'frequency-count-bit': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
+  ],
+  '2d-bit-range-sum': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'range-update-point-query-bit': [
+    { id: '1', input: `nums = [1,3,5], low = 1, high = 5`, expected_output: `9`, is_hidden: false }
+  ],
+  'kth-smallest-matrix-bit': [
+    { id: '1', input: `nums = [5,2,3,1]`, expected_output: `[1,2,3,5]`, is_hidden: false },
+    { id: '2', input: `nums = [5,1,1,2,0,0]`, expected_output: `[0,0,1,1,2,5]`, is_hidden: true }
+  ],
+  'increasing-subsequences-bit': [
+    { id: '1', input: `n = 9`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 29`, expected_output: `2`, is_hidden: true }
+  ],
+  'reverse-pairs-bit': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `[5,4,3,2,1]`, is_hidden: false }
+  ],
+  'sum-distances-tree': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'number-longest-increasing-subseq': [
+    { id: '1', input: `n = 4`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 18`, expected_output: `2`, is_hidden: true }
+  ],
+  'falling-squares': [
+    { id: '1', input: `n = 1`, expected_output: `1`, is_hidden: false },
+    { id: '2', input: `n = 24`, expected_output: `2`, is_hidden: true }
+  ],
+  'longest-subseq-limited-sum': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `15`, is_hidden: false }
+  ],
+  'good-triplets-bit': [
+    { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
+  ],
 };
