@@ -16,7 +16,7 @@ export function useLogin() {
       localStorage.setItem('token', res.data.token);
       await userStorage.set(res.data.user);
       toast.success('Welcome back!');
-      navigate('/dashboard');
+      navigate('/');
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Login failed');
     } finally {

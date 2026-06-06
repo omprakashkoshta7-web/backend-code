@@ -24,7 +24,7 @@ export function useGoogleAuth() {
       } else {
         toast.success('Signed in with Google!');
       }
-      navigate('/dashboard');
+      navigate('/');
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Google sign-in failed');
     } finally {
