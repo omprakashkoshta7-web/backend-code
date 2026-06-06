@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import { authApi } from '../api/authApi';
 import { userStorage } from '@/shared/utils/userStorage';
+import { subscriptionStorage } from '@/shared/utils/subscriptionStorage';
 import toast from 'react-hot-toast';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
@@ -17,6 +18,7 @@ export function useGoogleAuth() {
     try {
       const res = await authApi.google(credential);
       localStorage.setItem('token', res.data.token);
+      subscriptionStorage.clearAll();
       await userStorage.set(res.data.user);
       window.dispatchEvent(new Event('codesprout_user_change'));
       if (res.data.isNew) {

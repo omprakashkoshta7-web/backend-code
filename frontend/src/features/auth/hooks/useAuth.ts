@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authApi } from '../api/authApi';
 import { userStorage } from '@/shared/utils/userStorage';
+import { subscriptionStorage } from '@/shared/utils/subscriptionStorage';
 import toast from 'react-hot-toast';
 import type { LoginPayload, RegisterPayload } from '../types/auth';
 
@@ -14,6 +15,7 @@ export function useLogin() {
     try {
       const res = await authApi.login(payload);
       localStorage.setItem('token', res.data.token);
+      subscriptionStorage.clearAll();
       await userStorage.set(res.data.user);
       window.dispatchEvent(new Event('codesprout_user_change'));
       toast.success('Welcome back!');

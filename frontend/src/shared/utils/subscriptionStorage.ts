@@ -65,9 +65,7 @@ export const subscriptionStorage = {
   isPremiumSync(userId?: string | null): boolean {
     const id = userId ?? getUserId();
     if (!id) return false;
-    const raw = localStorage.getItem(keysFor(id).plan);
-    if (!raw) return false;
-    return raw === 'premium' || raw.includes('"premium"');
+    return localStorage.getItem(keysFor(id).plan) === 'premium';
   },
 
   async get(userId?: string | null): Promise<SubscriptionData | null> {
@@ -88,7 +86,7 @@ export const subscriptionStorage = {
     const id = userId ?? getUserId() ?? await refreshUserId();
     if (!id) return;
     const k = keysFor(id);
-    await secureStorage.setItem(k.plan, plan);
+    localStorage.setItem(k.plan, plan);
     await secureStorage.setItem(k.data, data);
     if (typeof window !== 'undefined') window.dispatchEvent(new Event('codesprout_user_change'));
   },
