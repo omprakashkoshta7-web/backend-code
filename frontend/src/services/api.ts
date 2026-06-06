@@ -22,7 +22,6 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
       userStorage.clear();
       subscriptionStorage.clear();
-      window.dispatchEvent(new Event('codesprout_user_change'));
       window.location.href = '/login';
     }
     return Promise.reject(err);

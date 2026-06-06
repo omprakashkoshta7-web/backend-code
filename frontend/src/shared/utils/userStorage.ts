@@ -19,11 +19,17 @@ const getUser = async <T = any>(): Promise<T | null> => {
 const setUser = async (user: any): Promise<void> => {
   cached = user;
   await secureStorage.setItem(KEY, user);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('codesprout_user_change'));
+  }
 };
 
 const clearUser = (): void => {
   cached = null;
   secureStorage.removeItem(KEY);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('codesprout_user_change'));
+  }
 };
 
 export const userStorage = {
