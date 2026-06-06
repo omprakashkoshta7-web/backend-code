@@ -1,5 +1,5 @@
-import type { Subscription } from '../types';
-import { getSubscriptions as dbGetSubscriptions, getSubscriptionsFresh, addSubscription as dbAddSubscription } from './db';
+import type { Subscription, Bookmark } from '../types';
+import { getSubscriptions as dbGetSubscriptions, getSubscriptionsFresh, addSubscription as dbAddSubscription, getDb } from './db';
 
 export { dbGetSubscriptions as getSubscriptions };
 
@@ -21,6 +21,124 @@ export function getSubscription(userId: string): Subscription | undefined {
 }
 
 export { dbAddSubscription as addSubscription };
+
+const getDbSafe = () => getDb() as any;
+
+export const getBookmarksStore = (): Bookmark[] => {
+  const db = getDbSafe();
+  if (!db.bookmarks) db.bookmarks = [];
+  return db.bookmarks;
+};
+
+export function getUserBookmarks(userId: string): Bookmark[] {
+  return getBookmarksStore().filter((b) => b.user_id === userId);
+}
+
+export function addBookmark(userId: string, questionId: string): Bookmark {
+  const store = getBookmarksStore();
+  const existing = store.find((b) => b.user_id === userId && b.question_id === questionId);
+  if (existing) return existing;
+  const created: Bookmark = {
+    id: String(store.length + 1),
+    user_id: userId,
+    question_id: questionId,
+    created_at: new Date().toISOString(),
+  };
+  store.push(created);
+  return created;
+}
+
+export function removeBookmark(userId: string, questionId: string): boolean {
+  const store = getBookmarksStore();
+  const idx = store.findIndex((b) => b.user_id === userId && b.question_id === questionId);
+  if (idx === -1) return false;
+  store.splice(idx, 1);
+  return true;
+}
+
+export interface RecentView {
+  id: string;
+  user_id: string;
+  question_id: string;
+  viewed_at: string;
+}
+
+export const getRecentViewsStore = (): RecentView[] => {
+  const db = getDbSafe();
+  if (!db.recent_views) db.recent_views = [];
+  return db.recent_views;
+};
+
+const MAX_RECENT_PER_USER = 20;
+
+export function recordRecentView(userId: string, questionId: string): void {
+  if (!userId || !questionId) return;
+  const store = getRecentViewsStore();
+  store.push({
+    id: String(store.length + 1),
+    user_id: userId,
+    question_id: questionId,
+    viewed_at: new Date().toISOString(),
+  });
+  const userStore = store.filter((v) => v.user_id === userId);
+  if (userStore.length > MAX_RECENT_PER_USER) {
+    const toRemove = userStore.length - MAX_RECENT_PER_USER;
+    for (let i = 0; i < toRemove; i++) {
+      const oldestIdx = store.findIndex((v) => v.user_id === userId);
+      if (oldestIdx !== -1) store.splice(oldestIdx, 1);
+    }
+  }
+}
+
+export function getUserRecentViews(userId: string, limit = 10): RecentView[] {
+  return getRecentViewsStore()
+    .filter((v) => v.user_id === userId)
+    .slice(-limit)
+    .reverse();
+}
+
+export interface TopicProgress {
+  topic_id: string;
+  topic_name: string;
+  total: number;
+  solved: number;
+  pct: number;
+}
+
+export function getUserTopicProgress(userId: string): TopicProgress[] {
+  const db = getDbSafe();
+  const questions: any[] = db.questions || [];
+  const solvedSlugs = getUserSolvedSlugs(userId);
+  const solvedIds = new Set<string>();
+  const solvedSlugsResolved = new Set<string>();
+  solvedSlugs.forEach((slug) => {
+    solvedSlugsResolved.add(slug);
+    const q = questions.find((x: any) => x.slug === slug);
+    if (q?.id) solvedIds.add(q.id);
+  });
+
+  const byTopic = new Map<string, { id: string; name: string; total: number; solved: number }>();
+  questions.forEach((q: any) => {
+    const key = q.topic_id || q.topic_name;
+    if (!key) return;
+    const entry = byTopic.get(key) || { id: q.topic_id || key, name: q.topic_name || key, total: 0, solved: 0 };
+    entry.total += 1;
+    if (solvedSlugsResolved.has(q.slug) || solvedIds.has(q.id)) entry.solved += 1;
+    byTopic.set(key, entry);
+  });
+
+  return Array.from(byTopic.values())
+    .map((t) => ({
+      topic_id: t.id,
+      topic_name: t.name,
+      total: t.total,
+      solved: t.solved,
+      pct: t.total > 0 ? Math.round((t.solved / t.total) * 100) : 0,
+    }))
+    .filter((t) => t.solved > 0 || t.total > 0)
+    .sort((a, b) => b.solved - a.solved || b.total - a.total);
+}
+
 
 export interface SubmissionRecord {
   id: string;

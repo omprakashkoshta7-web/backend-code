@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { cheatSheets } from '../data/seed';
 import { authenticate, AuthRequest, isPremium } from '../middleware/auth';
-import { isPremiumFresh } from '../data/store';
+import { isPremiumFresh, recordRecentView } from '../data/store';
 import { getFunctionSignature } from '../data/functionSignatures';
 import { generateStarterCode } from '../data/templateGenerator';
 import { getQuestions, getQuestion } from '../data/db';
@@ -62,6 +62,10 @@ router.get('/search', (req: AuthRequest, res: Response) => {
 router.get('/:slug', async (req: AuthRequest, res: Response) => {
   const question = getQuestion(req.params.slug);
   if (!question) return res.status(404).json({ error: 'Question not found' });
+
+  if (req.user?.id) {
+    recordRecentView(req.user.id, question.id);
+  }
 
   const premium = await checkPremium(req);
 
