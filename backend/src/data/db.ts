@@ -98,7 +98,7 @@ async function persistToMongo() {
   }
 }
 
-function saveDb() {
+export function saveDb() {
   if (useMongo) {
     if (savePending) return;
     savePending = true;
@@ -181,6 +181,20 @@ export async function initDb(questions: Question[], topics: Topic[], cheatSheets
 
   const dir = join(__dirname, '..', '..', 'data');
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+
+  // Preserve existing db.json if it already has data (admin-added content)
+  if (existsSync(DB_PATH)) {
+    try {
+      const existing = JSON.parse(readFileSync(DB_PATH, 'utf-8'));
+      if (existing.questions && existing.questions.length > 0) {
+        db = existing;
+        migrateCodeToDb(questions, testCases);
+        console.log(`[DB] Loaded existing data: ${db.questions.length} questions, ${db.topics.length} topics`);
+        return;
+      }
+    } catch { /* fall through to fresh seed */ }
+  }
+
   const fresh: DbData = {
     questions, topics, cheatSheets, users, testCases, patternDetails,
     subscriptions: [],
@@ -291,6 +305,17 @@ export function deleteTestCase(id: string): boolean {
 
 // ====== TOPICS / CHEATSHEETS / PATTERNS ======
 export function getTopics(): Topic[] { return getDb().topics; }
+export function getTopic(slug: string): Topic | undefined { return getDb().topics.find(t => t.slug === slug); }
+export function addTopic(t: Topic): void { getDb().topics.push(t); saveDb(); }
+export function updateTopic(slug: string, updates: Partial<Topic>): Topic | null {
+  const db = getDb(); const idx = db.topics.findIndex(t => t.slug === slug);
+  if (idx === -1) return null; db.topics[idx] = { ...db.topics[idx], ...updates }; saveDb(); return db.topics[idx];
+}
+export function deleteTopic(slug: string): boolean {
+  const db = getDb(); const len = db.topics.length;
+  db.topics = db.topics.filter(t => t.slug !== slug);
+  if (db.topics.length === len) return false; saveDb(); return true;
+}
 export function getCheatSheets(): CheatSheet[] { return getDb().cheatSheets; }
 export function getCheatSheet(questionId: string): CheatSheet | undefined { return getDb().cheatSheets.find(cs => cs.question_id === questionId); }
 export function getPatternDetails(): PatternDetail[] { return getDb().patternDetails; }
