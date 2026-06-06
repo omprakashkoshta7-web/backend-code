@@ -225,7 +225,296 @@ const signatures: Record<string, FunctionSignature> = {
   'minimum-cost-to-connect-points': { fnName: 'minCostConnectPoints', params: [{ name: 'points', type: 'int[][]' }], returnType: 'int' },
   'move-zeroes': { fnName: 'moveZeroes', params: [{ name: 'nums', type: 'int[]' }], returnType: 'void' },
   'sort-colors': { fnName: 'sortColors', params: [{ name: 'nums', type: 'int[]' }], returnType: 'void' },
+
+  // ARRAYS (missing)
+  '3sum-closest': { fnName: 'threeSumClosest', params: [{ name: 'nums', type: 'int[]' }, { name: 'target', type: 'int' }], returnType: 'int' },
+  '4sum': { fnName: 'fourSum', params: [{ name: 'nums', type: 'int[]' }, { name: 'target', type: 'int' }], returnType: 'int[][]' },
+  'insert-interval': { fnName: 'insert', params: [{ name: 'intervals', type: 'int[][]' }, { name: 'newInterval', type: 'int[]' }], returnType: 'int[][]' },
+  'non-overlapping-intervals': { fnName: 'eraseOverlapIntervals', params: [{ name: 'intervals', type: 'int[][]' }], returnType: 'int' },
+  'meeting-rooms': { fnName: 'canAttendMeetings', params: [{ name: 'intervals', type: 'int[][]' }], returnType: 'boolean' },
+  'merge-sorted-array': { fnName: 'merge', params: [{ name: 'nums1', type: 'int[]' }, { name: 'm', type: 'int' }, { name: 'nums2', type: 'int[]' }, { name: 'n', type: 'int' }], returnType: 'void' },
+  'remove-element': { fnName: 'removeElement', params: [{ name: 'nums', type: 'int[]' }, { name: 'val', type: 'int' }], returnType: 'int' },
+  'remove-duplicates-from-sorted-array': { fnName: 'removeDuplicates', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'majority-element': { fnName: 'majorityElement', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'majority-element-ii': { fnName: 'majorityElement', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int[]' },
+  'spiral-matrix': { fnName: 'spiralOrder', params: [{ name: 'matrix', type: 'int[][]' }], returnType: 'int[]' },
+  'rotate-image': { fnName: 'rotate', params: [{ name: 'matrix', type: 'int[][]' }], returnType: 'void' },
+  'set-matrix-zeroes': { fnName: 'setZeroes', params: [{ name: 'matrix', type: 'int[][]' }], returnType: 'void' },
+  'maximum-product-subarray': { fnName: 'maxProduct', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'max-consecutive-ones': { fnName: 'findMaxConsecutiveOnes', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'max-consecutive-ones-iii': { fnName: 'longestOnes', params: [{ name: 'nums', type: 'int[]' }, { name: 'k', type: 'int' }], returnType: 'int' },
+  'find-all-numbers-disappeared': { fnName: 'findDisappearedNumbers', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int[]' },
+  'find-duplicate-number': { fnName: 'findDuplicate', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+
+  // BINARY SEARCH
+  'binary-search': { fnName: 'search', params: [{ name: 'nums', type: 'int[]' }, { name: 'target', type: 'int' }], returnType: 'int' },
+  'search-in-rotated-sorted-array': { fnName: 'search', params: [{ name: 'nums', type: 'int[]' }, { name: 'target', type: 'int' }], returnType: 'int' },
+  'search-insert-position': { fnName: 'searchInsert', params: [{ name: 'nums', type: 'int[]' }, { name: 'target', type: 'int' }], returnType: 'int' },
+  'find-peak-element': { fnName: 'findPeakElement', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'find-minimum-in-rotated-sorted-array': { fnName: 'findMin', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'koko-eating-bananas': { fnName: 'minEatingSpeed', params: [{ name: 'piles', type: 'int[]' }, { name: 'h', type: 'int' }], returnType: 'int' },
+  'first-bad-version': { fnName: 'firstBadVersion', params: [{ name: 'n', type: 'int' }], returnType: 'int' },
+  'search-a-2d-matrix': { fnName: 'searchMatrix', params: [{ name: 'matrix', type: 'int[][]' }, { name: 'target', type: 'int' }], returnType: 'boolean' },
+  'search-a-2d-matrix-ii': { fnName: 'searchMatrix', params: [{ name: 'matrix', type: 'int[][]' }, { name: 'target', type: 'int' }], returnType: 'boolean' },
+  'time-based-key-value-store': { fnName: 'TimeMap', params: [], returnType: 'TimeMap' },
+  'median-of-two-sorted-arrays': { fnName: 'findMedianSortedArrays', params: [{ name: 'nums1', type: 'int[]' }, { name: 'nums2', type: 'int[]' }], returnType: 'double' },
+
+  // DP
+  'climbing-stairs': { fnName: 'climbStairs', params: [{ name: 'n', type: 'int' }], returnType: 'int' },
+  'coin-change': { fnName: 'coinChange', params: [{ name: 'coins', type: 'int[]' }, { name: 'amount', type: 'int' }], returnType: 'int' },
+  'house-robber': { fnName: 'rob', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'house-robber-ii': { fnName: 'rob', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'word-break': { fnName: 'wordBreak', params: [{ name: 's', type: 'string' }, { name: 'wordDict', type: 'string[]' }], returnType: 'boolean' },
+  'word-break-ii': { fnName: 'wordBreak', params: [{ name: 's', type: 'string' }, { name: 'wordDict', type: 'string[]' }], returnType: 'string[]' },
+  'longest-increasing-subsequence': { fnName: 'lengthOfLIS', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'longest-common-subsequence': { fnName: 'longestCommonSubsequence', params: [{ name: 'text1', type: 'string' }, { name: 'text2', type: 'string' }], returnType: 'int' },
+  'unique-paths': { fnName: 'uniquePaths', params: [{ name: 'm', type: 'int' }, { name: 'n', type: 'int' }], returnType: 'int' },
+  'unique-paths-ii': { fnName: 'uniquePathsWithObstacles', params: [{ name: 'obstacleGrid', type: 'int[][]' }], returnType: 'int' },
+  'minimum-path-sum': { fnName: 'minPathSum', params: [{ name: 'grid', type: 'int[][]' }], returnType: 'int' },
+  'partition-equal-subset-sum': { fnName: 'canPartition', params: [{ name: 'nums', type: 'int[]' }], returnType: 'boolean' },
+  'decode-ways': { fnName: 'numDecodings', params: [{ name: 's', type: 'string' }], returnType: 'int' },
+  'longest-palindromic-substring': { fnName: 'longestPalindrome', params: [{ name: 's', type: 'string' }], returnType: 'string' },
+  'burst-balloons': { fnName: 'maxCoins', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'maximal-square': { fnName: 'maximalSquare', params: [{ name: 'matrix', type: 'char[][]' }], returnType: 'int' },
+  'coin-change-ii': { fnName: 'change', params: [{ name: 'amount', type: 'int' }, { name: 'coins', type: 'int[]' }], returnType: 'int' },
+  'target-sum': { fnName: 'findTargetSumWays', params: [{ name: 'nums', type: 'int[]' }, { name: 'target', type: 'int' }], returnType: 'int' },
+  'min-cost-climbing-stairs': { fnName: 'minCostClimbingStairs', params: [{ name: 'cost', type: 'int[]' }], returnType: 'int' },
+  'longest-valid-parentheses': { fnName: 'longestValidParentheses', params: [{ name: 's', type: 'string' }], returnType: 'int' },
+  'interleaving-string': { fnName: 'isInterleave', params: [{ name: 's1', type: 'string' }, { name: 's2', type: 'string' }, { name: 's3', type: 'string' }], returnType: 'boolean' },
+  'best-time-to-buy-sell-stock-ii': { fnName: 'maxProfit', params: [{ name: 'prices', type: 'int[]' }], returnType: 'int' },
+  'best-time-to-buy-sell-stock-iii': { fnName: 'maxProfit', params: [{ name: 'prices', type: 'int[]' }], returnType: 'int' },
+  'best-time-to-buy-and-sell-stock-iv': { fnName: 'maxProfit', params: [{ name: 'k', type: 'int' }, { name: 'prices', type: 'int[]' }], returnType: 'int' },
+  'best-time-to-buy-and-sell-stock-with-cooldown': { fnName: 'maxProfit', params: [{ name: 'prices', type: 'int[]' }], returnType: 'int' },
+  'best-time-to-buy-and-sell-stock-with-transaction-fee': { fnName: 'maxProfit', params: [{ name: 'prices', type: 'int[]' }, { name: 'fee', type: 'int' }], returnType: 'int' },
+
+  // BACKTRACKING
+  'permutations': { fnName: 'permute', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int[][]' },
+  'subsets': { fnName: 'subsets', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int[][]' },
+  'subsets-ii': { fnName: 'subsetsWithDup', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int[][]' },
+  'combination-sum': { fnName: 'combinationSum', params: [{ name: 'candidates', type: 'int[]' }, { name: 'target', type: 'int' }], returnType: 'int[][]' },
+  'combination-sum-ii': { fnName: 'combinationSum2', params: [{ name: 'candidates', type: 'int[]' }, { name: 'target', type: 'int' }], returnType: 'int[][]' },
+  'generate-parentheses': { fnName: 'generateParenthesis', params: [{ name: 'n', type: 'int' }], returnType: 'string[]' },
+  'letter-combinations-of-a-phone-number': { fnName: 'letterCombinations', params: [{ name: 'digits', type: 'string' }], returnType: 'string[]' },
+  'permutation-in-string': { fnName: 'checkInclusion', params: [{ name: 's1', type: 'string' }, { name: 's2', type: 'string' }], returnType: 'boolean' },
+  'n-queens': { fnName: 'solveNQueens', params: [{ name: 'n', type: 'int' }], returnType: 'string[][]' },
+  'restore-ip-addresses': { fnName: 'restoreIpAddresses', params: [{ name: 's', type: 'string' }], returnType: 'string[]' },
+  'palindrome-partitioning': { fnName: 'partition', params: [{ name: 's', type: 'string' }], returnType: 'string[][]' },
+
+  // LINKED LIST
+  'palindrome-linked-list': { fnName: 'isPalindrome', params: [{ name: 'head', type: 'ListNode' }], returnType: 'boolean' },
+  'reverse-linked-list-ii': { fnName: 'reverseBetween', params: [{ name: 'head', type: 'ListNode' }, { name: 'left', type: 'int' }, { name: 'right', type: 'int' }], returnType: 'ListNode' },
+  'remove-duplicates-from-sorted-list': { fnName: 'deleteDuplicates', params: [{ name: 'head', type: 'ListNode' }], returnType: 'ListNode' },
+  'rotate-list': { fnName: 'rotateRight', params: [{ name: 'head', type: 'ListNode' }, { name: 'k', type: 'int' }], returnType: 'ListNode' },
+  'add-two-numbers-ii': { fnName: 'addTwoNumbers', params: [{ name: 'l1', type: 'ListNode' }, { name: 'l2', type: 'ListNode' }], returnType: 'ListNode' },
+  'remove-linked-list-elements': { fnName: 'removeElements', params: [{ name: 'head', type: 'ListNode' }, { name: 'val', type: 'int' }], returnType: 'ListNode' },
+  'intersection-of-two-linked-lists': { fnName: 'getIntersectionNode', params: [{ name: 'headA', type: 'ListNode' }, { name: 'headB', type: 'ListNode' }], returnType: 'ListNode' },
+  'odd-even-linked-list': { fnName: 'oddEvenList', params: [{ name: 'head', type: 'ListNode' }], returnType: 'ListNode' },
+  'swap-nodes-in-pairs': { fnName: 'swapPairs', params: [{ name: 'head', type: 'ListNode' }], returnType: 'ListNode' },
+
+  // TREES
+  'path-sum-ii': { fnName: 'pathSum', params: [{ name: 'root', type: 'TreeNode' }, { name: 'targetSum', type: 'int' }], returnType: 'int[][]' },
+  'path-sum-iii': { fnName: 'pathSum', params: [{ name: 'root', type: 'TreeNode' }, { name: 'targetSum', type: 'int' }], returnType: 'int' },
+  'symmetric-tree': { fnName: 'isSymmetric', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'boolean' },
+  'binary-tree-inorder-traversal': { fnName: 'inorderTraversal', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'int[]' },
+  'binary-tree-preorder-traversal': { fnName: 'preorderTraversal', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'int[]' },
+  'binary-tree-postorder-traversal': { fnName: 'postorderTraversal', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'int[]' },
+  'sum-root-to-leaf-numbers': { fnName: 'sumNumbers', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'int' },
+  'count-good-nodes-in-binary-tree': { fnName: 'goodNodes', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'int' },
+  'average-of-levels-in-binary-tree': { fnName: 'averageOfLevels', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'double[]' },
+  'binary-tree-right-side-view': { fnName: 'rightSideView', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'int[]' },
+  'merge-two-binary-trees': { fnName: 'mergeTrees', params: [{ name: 'root1', type: 'TreeNode' }, { name: 'root2', type: 'TreeNode' }], returnType: 'TreeNode' },
+  'maximum-width-of-binary-tree': { fnName: 'widthOfBinaryTree', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'int' },
+  'minimum-depth-of-binary-tree': { fnName: 'minDepth', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'int' },
+  'leaf-similar-trees': { fnName: 'leafSimilar', params: [{ name: 'root1', type: 'TreeNode' }, { name: 'root2', type: 'TreeNode' }], returnType: 'boolean' },
+  'sum-of-left-leaves': { fnName: 'sumOfLeftLeaves', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'int' },
+  'find-bottom-left-tree-value': { fnName: 'findBottomLeftValue', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'int' },
+  'binary-tree-pruning': { fnName: 'pruneTree', params: [{ name: 'root', type: 'TreeNode' }], returnType: 'TreeNode' },
+  'all-possible-full-binary-trees': { fnName: 'allPossibleFBT', params: [{ name: 'n', type: 'int' }], returnType: 'TreeNode[]' },
+  'add-one-row-to-tree': { fnName: 'addOneRow', params: [{ name: 'root', type: 'TreeNode' }, { name: 'val', type: 'int' }, { name: 'depth', type: 'int' }], returnType: 'TreeNode' },
+
+  // GRAPHS
+  '01-matrix': { fnName: 'updateMatrix', params: [{ name: 'mat', type: 'int[][]' }], returnType: 'int[][]' },
+  'number-of-provinces': { fnName: 'findCircleNum', params: [{ name: 'isConnected', type: 'int[][]' }], returnType: 'int' },
+  'accounts-merge': { fnName: 'accountsMerge', params: [{ name: 'accounts', type: 'string[][]' }], returnType: 'string[][]' },
+  'evaluate-division': { fnName: 'calcEquation', params: [{ name: 'equations', type: 'string[][]' }, { name: 'values', type: 'double[]' }, { name: 'queries', type: 'string[][]' }], returnType: 'double[]' },
+  'possible-bipartition': { fnName: 'possibleBipartition', params: [{ name: 'n', type: 'int' }, { name: 'dislikes', type: 'int[][]' }], returnType: 'boolean' },
+  'redundant-connection-ii': { fnName: 'findRedundantDirectedConnection', params: [{ name: 'edges', type: 'int[][]' }], returnType: 'int[]' },
+  'word-search-ii': { fnName: 'findWords', params: [{ name: 'board', type: 'char[][]' }, { name: 'words', type: 'string[]' }], returnType: 'string[]' },
+  'nearest-exit-from-entrance-in-maze': { fnName: 'nearestExit', params: [{ name: 'maze', type: 'char[][]' }, { name: 'entrance', type: 'int[]' }], returnType: 'int' },
+  'as-far-from-land-as-possible': { fnName: 'maxDistance', params: [{ name: 'grid', type: 'int[][]' }], returnType: 'int' },
+  'minimum-number-of-vertices-to-reach-all-nodes': { fnName: 'findSmallestSetOfVertices', params: [{ name: 'n', type: 'int' }, { name: 'edges', type: 'int[][]' }], returnType: 'int[]' },
+  'keys-and-rooms': { fnName: 'canVisitAllRooms', params: [{ name: 'rooms', type: 'int[][]' }], returnType: 'boolean' },
+  'reorder-routes-to-make-all-paths-lead-to-the-city-zero': { fnName: 'minReorder', params: [{ name: 'n', type: 'int' }, { name: 'connections', type: 'int[][]' }], returnType: 'int' },
+  'number-of-enclaves': { fnName: 'numEnclaves', params: [{ name: 'grid', type: 'int[][]' }], returnType: 'int' },
+  'detonate-maximum-bombs': { fnName: 'maximumDetonation', params: [{ name: 'bombs', type: 'int[][]' }], returnType: 'int' },
+  'minimum-jumps-to-reach-home': { fnName: 'minimumJumps', params: [{ name: 'forbidden', type: 'int[]' }, { name: 'a', type: 'int' }, { name: 'b', type: 'int' }, { name: 'x', type: 'int' }], returnType: 'int' },
+
+  // STACK
+  'next-greater-element-i': { fnName: 'nextGreaterElement', params: [{ name: 'nums1', type: 'int[]' }, { name: 'nums2', type: 'int[]' }], returnType: 'int[]' },
+  'next-greater-element-ii': { fnName: 'nextGreaterElements', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int[]' },
+  'remove-k-digits': { fnName: 'removeKdigits', params: [{ name: 'num', type: 'string' }, { name: 'k', type: 'int' }], returnType: 'string' },
+  'exclusive-time-of-functions': { fnName: 'exclusiveTime', params: [{ name: 'n', type: 'int' }, { name: 'logs', type: 'string[]' }], returnType: 'int[]' },
+  'score-of-parentheses': { fnName: 'scoreOfParentheses', params: [{ name: 's', type: 'string' }], returnType: 'int' },
+  'minimum-remove-to-make-valid-parentheses': { fnName: 'minRemoveToMakeValid', params: [{ name: 's', type: 'string' }], returnType: 'string' },
+  'validate-stack-sequences': { fnName: 'validateStackSequences', params: [{ name: 'pushed', type: 'int[]' }, { name: 'popped', type: 'int[]' }], returnType: 'boolean' },
+
+  // GREEDY
+  'jump-game': { fnName: 'canJump', params: [{ name: 'nums', type: 'int[]' }], returnType: 'boolean' },
+  'jump-game-ii': { fnName: 'jump', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'can-place-flowers': { fnName: 'canPlaceFlowers', params: [{ name: 'flowerbed', type: 'int[]' }, { name: 'n', type: 'int' }], returnType: 'boolean' },
+  'is-subsequence': { fnName: 'isSubsequence', params: [{ name: 's', type: 'string' }, { name: 't', type: 'string' }], returnType: 'boolean' },
+  'assign-cookies': { fnName: 'findContentChildren', params: [{ name: 'g', type: 'int[]' }, { name: 's', type: 'int[]' }], returnType: 'int' },
+  'minimum-number-of-arrows-to-burst-balloons': { fnName: 'findMinArrowShots', params: [{ name: 'points', type: 'int[][]' }], returnType: 'int' },
+  'hand-of-straights': { fnName: 'isNStraightHand', params: [{ name: 'hand', type: 'int[]' }, { name: 'groupSize', type: 'int' }], returnType: 'boolean' },
+  'partition-labels': { fnName: 'partitionLabels', params: [{ name: 's', type: 'string' }], returnType: 'int[]' },
+
+  // STRINGS
+  'multiply-strings': { fnName: 'multiply', params: [{ name: 'num1', type: 'string' }, { name: 'num2', type: 'string' }], returnType: 'string' },
+  'reverse-words-in-a-string': { fnName: 'reverseWords', params: [{ name: 's', type: 'string' }], returnType: 'string' },
+  'reverse-words-in-a-string-iii': { fnName: 'reverseWords', params: [{ name: 's', type: 'string' }], returnType: 'string' },
+  'count-and-say': { fnName: 'countAndSay', params: [{ name: 'n', type: 'int' }], returnType: 'string' },
+  'compare-version-numbers': { fnName: 'compareVersion', params: [{ name: 'version1', type: 'string' }, { name: 'version2', type: 'string' }], returnType: 'int' },
+  'add-strings': { fnName: 'addStrings', params: [{ name: 'num1', type: 'string' }, { name: 'num2', type: 'string' }], returnType: 'string' },
+  'valid-palindrome-ii': { fnName: 'validPalindrome', params: [{ name: 's', type: 'string' }], returnType: 'boolean' },
+  'first-unique-character-in-a-string': { fnName: 'firstUniqChar', params: [{ name: 's', type: 'string' }], returnType: 'int' },
+  'roman-to-integer': { fnName: 'romanToInt', params: [{ name: 's', type: 'string' }], returnType: 'int' },
+  'integer-to-roman': { fnName: 'intToRoman', params: [{ name: 'num', type: 'int' }], returnType: 'string' },
+  'length-of-last-word': { fnName: 'lengthOfLastWord', params: [{ name: 's', type: 'string' }], returnType: 'int' },
+  'zigzag-conversion': { fnName: 'convert', params: [{ name: 's', type: 'string' }, { name: 'numRows', type: 'int' }], returnType: 'string' },
+
+  // MATH & BIT MANIPULATION
+  'missing-number': { fnName: 'missingNumber', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'single-number': { fnName: 'singleNumber', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'single-number-ii': { fnName: 'singleNumber', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'single-number-iii': { fnName: 'singleNumber', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int[]' },
+  'reverse-bits': { fnName: 'reverseBits', params: [{ name: 'n', type: 'int' }], returnType: 'int' },
+  'number-of-1-bits': { fnName: 'hammingWeight', params: [{ name: 'n', type: 'int' }], returnType: 'int' },
+  'counting-bits': { fnName: 'countBits', params: [{ name: 'n', type: 'int' }], returnType: 'int[]' },
+  'sum-of-two-integers': { fnName: 'getSum', params: [{ name: 'a', type: 'int' }, { name: 'b', type: 'int' }], returnType: 'int' },
+  'power-of-two': { fnName: 'isPowerOfTwo', params: [{ name: 'n', type: 'int' }], returnType: 'boolean' },
+  'plus-one': { fnName: 'plusOne', params: [{ name: 'digits', type: 'int[]' }], returnType: 'int[]' },
+  'add-binary': { fnName: 'addBinary', params: [{ name: 'a', type: 'string' }, { name: 'b', type: 'string' }], returnType: 'string' },
+  'reverse-integer': { fnName: 'reverse', params: [{ name: 'x', type: 'int' }], returnType: 'int' },
+  'palindrome-number': { fnName: 'isPalindrome', params: [{ name: 'x', type: 'int' }], returnType: 'boolean' },
+  'my-pow': { fnName: 'myPow', params: [{ name: 'x', type: 'double' }, { name: 'n', type: 'int' }], returnType: 'double' },
+  'sqrtx': { fnName: 'mySqrt', params: [{ name: 'x', type: 'int' }], returnType: 'int' },
+  'count-primes': { fnName: 'countPrimes', params: [{ name: 'n', type: 'int' }], returnType: 'int' },
+  'powx-n': { fnName: 'myPow', params: [{ name: 'x', type: 'double' }, { name: 'n', type: 'int' }], returnType: 'double' },
+
+  // DESIGN / DATA STRUCTURES
+  'implement-trie-prefix-tree': { fnName: 'Trie', params: [], returnType: 'Trie' },
+  'design-hashmap': { fnName: 'MyHashMap', params: [], returnType: 'MyHashMap' },
+  'design-hashset': { fnName: 'MyHashSet', params: [], returnType: 'MyHashSet' },
+  'design-twitter': { fnName: 'Twitter', params: [], returnType: 'Twitter' },
+  'design-circular-deque': { fnName: 'MyCircularDeque', params: [{ name: 'k', type: 'int' }], returnType: 'MyCircularDeque' },
+  'range-sum-query-immutable': { fnName: 'NumArray', params: [{ name: 'nums', type: 'int[]' }], returnType: 'NumArray' },
+  'range-sum-query-2d-immutable': { fnName: 'NumMatrix', params: [{ name: 'matrix', type: 'int[][]' }], returnType: 'NumMatrix' },
+  'range-sum-query-mutable': { fnName: 'NumArray', params: [{ name: 'nums', type: 'int[]' }], returnType: 'NumArray' },
+  'peeking-iterator': { fnName: 'PeekingIterator', params: [{ name: 'iterator', type: 'Iterator' }], returnType: 'PeekingIterator' },
+  'flatten-nested-list-iterator': { fnName: 'NestedIterator', params: [{ name: 'nestedList', type: 'NestedInteger[]' }], returnType: 'NestedIterator' },
+
+  // SLIDING WINDOW
+  'minimum-size-subarray-sum': { fnName: 'minSubArrayLen', params: [{ name: 'target', type: 'int' }, { name: 'nums', type: 'int[]' }], returnType: 'int' },
+  'longest-repeating-character-replacement': { fnName: 'characterReplacement', params: [{ name: 's', type: 'string' }, { name: 'k', type: 'int' }], returnType: 'int' },
+  'longest-substring-with-at-most-two-distinct-characters': { fnName: 'lengthOfLongestSubstringTwoDistinct', params: [{ name: 's', type: 'string' }], returnType: 'int' },
+  'longest-substring-with-at-most-k-distinct-characters': { fnName: 'lengthOfLongestSubstringKDistinct', params: [{ name: 's', type: 'string' }, { name: 'k', type: 'int' }], returnType: 'int' },
+  'fruit-into-baskets': { fnName: 'totalFruit', params: [{ name: 'fruits', type: 'int[]' }], returnType: 'int' },
+  'number-of-substrings-containing-all-three-characters': { fnName: 'numberOfSubstrings', params: [{ name: 's', type: 'string' }], returnType: 'int' },
+  'maximum-points-you-can-obtain-from-cards': { fnName: 'maxScore', params: [{ name: 'cardPoints', type: 'int[]' }, { name: 'k', type: 'int' }], returnType: 'int' },
+
+  // HASHING
+  'contains-duplicate-ii': { fnName: 'containsNearbyDuplicate', params: [{ name: 'nums', type: 'int[]' }, { name: 'k', type: 'int' }], returnType: 'boolean' },
+  'contains-duplicate-iii': { fnName: 'containsNearbyAlmostDuplicate', params: [{ name: 'nums', type: 'int[]' }, { name: 'indexDiff', type: 'int' }, { name: 'valueDiff', type: 'int' }], returnType: 'boolean' },
+  'jewels-and-stones': { fnName: 'numJewelsInStones', params: [{ name: 'jewels', type: 'string' }, { name: 'stones', type: 'string' }], returnType: 'int' },
+  'ransom-note': { fnName: 'canConstruct', params: [{ name: 'ransomNote', type: 'string' }, { name: 'magazine', type: 'string' }], returnType: 'boolean' },
+  'word-pattern': { fnName: 'wordPattern', params: [{ name: 'pattern', type: 'string' }, { name: 's', type: 'string' }], returnType: 'boolean' },
+
+  // HEAP
+  'find-k-pairs-with-smallest-sums': { fnName: 'kSmallestPairs', params: [{ name: 'nums1', type: 'int[]' }, { name: 'nums2', type: 'int[]' }, { name: 'k', type: 'int' }], returnType: 'int[][]' },
+  'kth-smallest-element-in-a-sorted-matrix': { fnName: 'kthSmallest', params: [{ name: 'matrix', type: 'int[][]' }, { name: 'k', type: 'int' }], returnType: 'int' },
+
+  // TRIE
+  'replace-words': { fnName: 'replaceWords', params: [{ name: 'dictionary', type: 'string[]' }, { name: 'sentence', type: 'string' }], returnType: 'string' },
+  'design-add-and-search-words-data-structure': { fnName: 'WordDictionary', params: [], returnType: 'WordDictionary' },
+  'word-search-ii-trie': { fnName: 'findWords', params: [{ name: 'board', type: 'char[][]' }, { name: 'words', type: 'string[]' }], returnType: 'string[]' },
+  'longest-word-in-dictionary': { fnName: 'longestWord', params: [{ name: 'words', type: 'string[]' }], returnType: 'string' },
+  'prefix-and-suffix-search': { fnName: 'WordFilter', params: [{ name: 'words', type: 'string[]' }], returnType: 'WordFilter' },
+
+  // TWO POINTERS
+  'two-sum-ii-input-array-is-sorted': { fnName: 'twoSum', params: [{ name: 'numbers', type: 'int[]' }, { name: 'target', type: 'int' }], returnType: 'int[]' },
+  'sort-array-by-parity': { fnName: 'sortArrayByParity', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int[]' },
+  'squares-of-a-sorted-array': { fnName: 'sortedSquares', params: [{ name: 'nums', type: 'int[]' }], returnType: 'int[]' },
+  'two-sum-less-than-k': { fnName: 'twoSumLessThanK', params: [{ name: 'nums', type: 'int[]' }, { name: 'k', type: 'int' }], returnType: 'int' },
+
+  // MULTISET / ORDERED SET
+  'data-stream-as-disjoint-intervals': { fnName: 'SummaryRanges', params: [], returnType: 'SummaryRanges' },
+  'contains-duplicate-iii-ordered-set': { fnName: 'containsNearbyAlmostDuplicate', params: [{ name: 'nums', type: 'int[]' }, { name: 'indexDiff', type: 'int' }, { name: 'valueDiff', type: 'int' }], returnType: 'boolean' },
 };
+
+function slugToCamel(slug: string): string {
+  return slug
+    .replace(/^\d+-/, '')
+    .replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())
+    .replace(/[^a-zA-Z0-9]/g, '');
+}
+
+export function generateFallbackSignature(slug: string): FunctionSignature {
+  const fnName = slugToCamel(slug);
+  const s = slug.toLowerCase();
+  const has2d = s.includes('matrix') || s.includes('grid') || s.includes('image') || s.includes('board');
+  const hasString = s.includes('string') || s.includes('str') || s.includes('sentence') || s.includes('word') || s.includes('pattern') || s.includes('chars');
+  const hasList = s.includes('list') || s.includes('array') || s.includes('nums') || s.includes('arr');
+  const hasTree = s.includes('tree') || s.includes('bst') || s.includes('binary');
+  const hasNode = s.includes('node') || s.includes('linked') || s.includes('listnode');
+  const hasBool = s.includes('check') || s.includes('valid') || s.includes('is-') || s.includes('can-') || s.includes('has-') || s.includes('contains') || s.includes('exist');
+  const hasVoid = s.includes('reverse') || s.includes('rotate') || s.includes('sort') || s.includes('move') || s.includes('modify') || s.includes('flatten') || s.includes('connect') || s.includes('solve');
+  const hasTwoParams = s.includes('two') || s.includes('pair') || s.includes('compare') || s.includes('merge') || (s.includes('and') && !s.includes('stand'));
+  const hasTarget = s.includes('target') || s.includes('sum') || s.includes('k-') || s.includes('-k') || s.includes('search') || s.includes('find');
+  const hasCount = s.includes('count') || s.includes('frequency') || s.includes('number-of');
+  const hasIndex = s.includes('index') || s.includes('position') || s.includes('pivot');
+  const hasStrReturn = s.includes('longest') || s.includes('reverse') || s.includes('substring') || s.includes('prefix') || s.includes('encode') || s.includes('decode') || s.includes('compress') || s.includes('convert') || s.includes('serialize');
+  const hasArrayReturn = s.includes('duplicate') || s.includes('intersection') || s.includes('interval') || s.includes('permutations') || s.includes('subsets') || s.includes('combination') || s.includes('all-') || s.includes('spiral') || s.includes('level');
+
+  let returnType = 'int';
+  if (hasBool) returnType = 'boolean';
+  else if (hasVoid) returnType = 'void';
+  else if (hasStrReturn) returnType = 'string';
+  else if (hasArrayReturn) returnType = 'int[]';
+  else if (hasString && s.includes('longest') && !s.includes('substring')) returnType = 'int';
+  else if (hasString && s.includes('count')) returnType = 'int';
+
+  if (hasTree || hasNode) {
+    const isBool = returnType === 'boolean';
+    const isVoid = returnType === 'void';
+    return {
+      fnName,
+      params: [{ name: 'root', type: hasNode ? 'ListNode' : 'TreeNode' }],
+      returnType: isBool ? 'boolean' : isVoid ? 'void' : hasNode ? 'ListNode' : 'TreeNode',
+    };
+  }
+
+  if (has2d) {
+    let params: { name: string; type: string }[] = [{ name: 'grid', type: 'int[][]' }];
+    if (hasTarget) params.push({ name: 'target', type: 'int' });
+    return { fnName, params, returnType: returnType === 'int[]' ? 'int[][]' : returnType };
+  }
+
+  let params: { name: string; type: string }[];
+  if (hasString) {
+    params = [{ name: 's', type: 'string' }];
+    if (hasTwoParams) params.push({ name: 't', type: 'string' });
+    if (hasTarget && !hasTwoParams) params.push({ name: 'k', type: 'int' });
+  } else if (hasList || hasCount || hasIndex) {
+    params = [{ name: 'nums', type: 'int[]' }];
+    if (hasTarget) params.push({ name: 'target', type: 'int' });
+    if (hasTwoParams && !hasTarget) params.push({ name: 'k', type: 'int' });
+  } else {
+    params = [{ name: 'n', type: 'int' }];
+    if (hasTarget) params.push({ name: 'target', type: 'int' });
+  }
+
+  return { fnName, params, returnType };
+}
 
 export function getFunctionSignature(slug: string): FunctionSignature | null {
   return signatures[slug] || null;

@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import { cheatSheets } from '../data/seed';
 import { authenticate, AuthRequest, isPremium } from '../middleware/auth';
 import { isPremiumFresh, recordRecentView } from '../data/store';
-import { getFunctionSignature } from '../data/functionSignatures';
+import { getFunctionSignature, generateFallbackSignature } from '../data/functionSignatures';
 import { generateStarterCode } from '../data/templateGenerator';
 import { getQuestions, getQuestion } from '../data/db';
 
@@ -90,18 +90,13 @@ router.get('/:slug', async (req: AuthRequest, res: Response) => {
   const cs = cheatSheets.find((c) => c.question_id === question.slug);
 
   const starterTemplate = (): Record<string, string> => {
-    if (question.starter_code) return question.starter_code;
     const sig = getFunctionSignature(question.slug);
     if (sig) return generateStarterCode(sig);
 
-    const fnName = question.slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-    return {
-      javascript: `function ${fnName}(/* params */) {\n  \n}`,
-      python: `def ${fnName}(/* params */):\n    pass`,
-      java: `class Solution {\n    public void ${fnName}() {\n        \n    }\n}`,
-      cpp: `class Solution {\npublic:\n    void ${fnName}() {\n        \n    }\n};`,
-      c: `int ${fnName}() {\n    \n}`,
-    };
+    if (question.starter_code) return question.starter_code;
+
+    const fallbackSig = generateFallbackSignature(question.slug);
+    return generateStarterCode(fallbackSig);
   };
 
   const similarQuestions = getQuestions()
