@@ -71,6 +71,7 @@ export const subscriptionStorage = {
     const k = keysFor(id);
     await secureStorage.setItem(k.plan, plan);
     await secureStorage.setItem(k.data, data);
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event('codesprout_user_change'));
   },
 
   async clear(userId?: string | null) {

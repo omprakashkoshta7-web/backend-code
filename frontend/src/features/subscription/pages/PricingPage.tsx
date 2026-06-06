@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SUBSCRIPTION_PLANS } from '@/shared/utils/constants';
@@ -68,25 +68,37 @@ function PricingContent() {
   const navigate = useNavigate();
   const [subData, setSubData] = useState<SubData | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const cached = await subscriptionStorage.get();
-      if (cached && subscriptionStorage.isPremiumSync()) {
-        setSubData(cached);
-        return;
-      }
+  const fetchSub = useCallback(async () => {
+    const cached = await subscriptionStorage.get();
+    if (cached && subscriptionStorage.isPremiumSync()) {
+      setSubData(cached);
+      return;
+    }
 
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      try {
-        const res = await subscriptionApi.getStatus();
-        if (res.data && res.data.plan === 'premium') {
-          setSubData(res.data);
-          await subscriptionStorage.set('premium', res.data);
-        }
-      } catch { /* ignore */ }
-    })();
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await subscriptionApi.getStatus();
+      if (res.data && res.data.plan === 'premium') {
+        setSubData(res.data);
+        await subscriptionStorage.set('premium', res.data);
+      } else {
+        setSubData(null);
+      }
+    } catch { setSubData(null); }
   }, []);
+
+  useEffect(() => { fetchSub(); }, [fetchSub]);
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => { if (e.key?.startsWith('subscription') || e.key === 'user') fetchSub(); };
+    window.addEventListener('codesprout_user_change', fetchSub);
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener('codesprout_user_change', fetchSub);
+      window.removeEventListener('storage', onStorage);
+    };
+  }, [fetchSub]);
 
   const isPremium = !!subData && subData.plan === 'premium';
 
