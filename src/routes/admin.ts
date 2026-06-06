@@ -1,8 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { authenticate, adminOnly, AuthRequest } from '../middleware/auth';
-import { topics, questions, cheatSheets, users } from '../data/seed';
 import type { Question, CheatSheet } from '../types';
-import { getDb, addQuestion, updateQuestion, deleteQuestion, getTestCases, addTestCase, updateTestCase, deleteTestCase } from '../data/db';
+import { getDb, saveDb, addQuestion, updateQuestion, deleteQuestion, getTestCases, addTestCase, updateTestCase, deleteTestCase, addTopic, updateTopic, deleteTopic } from '../data/db';
 import { getFunctionSignature } from '../data/functionSignatures';
 import { generateStarterCode } from '../data/templateGenerator';
 
@@ -50,7 +49,8 @@ router.post('/questions', (req: Request, res: Response) => {
     return res.status(400).json({ error: 'Title, difficulty, and topic required' });
   }
 
-  const topic = topics.find((t: any) => t.slug === topic_id || t.id === topic_id);
+  const db = getDb();
+  const topic = db.topics.find((t: any) => t.slug === topic_id || t.id === topic_id);
   const slug = title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
 
   // Auto-detect visualization_type from topic/pattern if not provided
@@ -136,7 +136,7 @@ router.post('/questions', (req: Request, res: Response) => {
   }
 
   const newQuestion: Question = {
-    id: String(questions.length + 1),
+    id: String(db.questions.length + 1),
     title, slug, difficulty, topic_id: topic?.id || topic_id,
     topic_name: topic?.name || topic_id, pattern: pattern || 'N/A',
     description, starter_code,
@@ -329,13 +329,15 @@ router.delete('/testcases/:id', (req: Request, res: Response) => {
 
 // ========== CHEATSHEETS ==========
 router.get('/cheatsheets', (_req: AuthRequest, res: Response) => {
-  res.json(cheatSheets.map((c) => ({
+  const db = getDb();
+  res.json(db.cheatSheets.map((c) => ({
     question_id: c.question_id, pattern: c.pattern,
   })));
 });
 
 router.get('/cheatsheets/:id', (req: Request, res: Response) => {
-  const cs = cheatSheets.find((c) => c.question_id === req.params.id);
+  const db = getDb();
+  const cs = db.cheatSheets.find((c) => c.question_id === req.params.id);
   if (!cs) return res.status(404).json({ error: 'Cheat sheet not found' });
   res.json(cs);
 });
@@ -346,6 +348,7 @@ router.post('/cheatsheets', (req: Request, res: Response) => {
     return res.status(400).json({ error: 'question_id and pattern required' });
   }
 
+  const db = getDb();
   const newCheatSheet: CheatSheet = {
     question_id, pattern,
     recognition: recognition || [],
@@ -357,15 +360,18 @@ router.post('/cheatsheets', (req: Request, res: Response) => {
     template: template || { javascript: '// Code template coming soon' },
     mistakes: mistakes || [],
   };
-  cheatSheets.push(newCheatSheet);
+  db.cheatSheets.push(newCheatSheet);
+  saveDb();
   res.status(201).json(newCheatSheet);
 });
 
 router.put('/cheatsheets/:id', (req: Request, res: Response) => {
-  const idx = cheatSheets.findIndex((c) => c.question_id === req.params.id);
+  const db = getDb();
+  const idx = db.cheatSheets.findIndex((c) => c.question_id === req.params.id);
   if (idx < 0) return res.status(404).json({ error: 'Cheat sheet not found' });
-  cheatSheets[idx] = { ...cheatSheets[idx], ...req.body };
-  res.json(cheatSheets[idx]);
+  db.cheatSheets[idx] = { ...db.cheatSheets[idx], ...req.body };
+  saveDb();
+  res.json(db.cheatSheets[idx]);
 });
 
 // ========== USERS ==========
@@ -378,10 +384,12 @@ router.get('/users', (_req: AuthRequest, res: Response) => {
 });
 
 router.put('/users/:id', (req: Request, res: Response) => {
-  const user = users.find((u) => u.id === req.params.id || u.email === req.params.id);
+  const db = getDb();
+  const user = db.users.find((u) => u.id === req.params.id || u.email === req.params.id);
   if (!user) return res.status(404).json({ error: 'User not found' });
   const { role } = req.body;
   if (role) user.role = role;
+  saveDb();
   res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
 });
 
@@ -389,26 +397,30 @@ router.put('/users/:id', (req: Request, res: Response) => {
 router.post('/topics', (req: Request, res: Response) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ error: 'Name required' });
+  const db = getDb();
   const slug = name.toLowerCase().replace(/\s+/g, '-');
-  const newTopic = { id: String(topics.length + 1), name, slug, description: '', questionCount: 0 };
-  topics.push(newTopic);
+  const newTopic = { id: String(db.topics.length + 1), name, slug, description: '', questionCount: 0 };
+  addTopic(newTopic);
   res.status(201).json(newTopic);
 });
 
 router.put('/topics/:id', (req: Request, res: Response) => {
-  const idx = topics.findIndex((t: any) => t.id === req.params.id || t.slug === req.params.id);
-  if (idx < 0) return res.status(404).json({ error: 'Topic not found' });
-  const { name, description } = req.body;
-  if (name) (topics as any)[idx].name = name;
-  if (description !== undefined) (topics as any)[idx].description = description;
-  res.json((topics as any)[idx]);
+  const db = getDb();
+  const topic = db.topics.find((t) => t.id === req.params.id || t.slug === req.params.id);
+  if (!topic) return res.status(404).json({ error: 'Topic not found' });
+  const updates: any = {};
+  if (req.body.name) updates.name = req.body.name;
+  if (req.body.description !== undefined) updates.description = req.body.description;
+  const updated = updateTopic(topic.slug, updates);
+  res.json(updated);
 });
 
 router.delete('/topics/:id', (req: Request, res: Response) => {
-  const idx = topics.findIndex((t: any) => t.id === req.params.id || t.slug === req.params.id);
-  if (idx < 0) return res.status(404).json({ error: 'Topic not found' });
-  const removed = (topics as any).splice(idx, 1)[0];
-  res.json({ success: true, topic: removed });
+  const db = getDb();
+  const topic = db.topics.find((t) => t.id === req.params.id || t.slug === req.params.id);
+  if (!topic) return res.status(404).json({ error: 'Topic not found' });
+  deleteTopic(topic.slug);
+  res.json({ success: true });
 });
 
 export default router;
