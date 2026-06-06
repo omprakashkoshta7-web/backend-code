@@ -19,19 +19,28 @@ const SERVICES = {
   payment: process.env.PAYMENT_SERVICE_URL || 'http://localhost:3005',
 };
 
-const makeProxy = (target: string) => createProxyMiddleware({
-  target,
-  changeOrigin: true,
-  proxyTimeout: 60000,
-  timeout: 60000,
-  pathRewrite: (_path: string, req: any) => req.originalUrl,
-  on: {
-    error: (err: any, _req: any, res: any) => {
-      console.error(`[gateway] proxy error to ${target}:`, err.message);
-      if (!res.headersSent) res.status(502).json({ error: 'Service unavailable', service: target });
-    },
-  },
-});
+const proxies = new Map<string, ReturnType<typeof createProxyMiddleware>>();
+
+const getProxy = (target: string) => {
+  let proxy = proxies.get(target);
+  if (!proxy) {
+    proxy = createProxyMiddleware({
+      target,
+      changeOrigin: true,
+      proxyTimeout: 60000,
+      timeout: 60000,
+      pathRewrite: (_path: string, req: any) => req.originalUrl,
+      on: {
+        error: (err: any, _req: any, res: any) => {
+          console.error(`[gateway] proxy error to ${target}:`, err.message);
+          if (!res.headersSent) res.status(502).json({ error: 'Service unavailable', service: target });
+        },
+      },
+    });
+    proxies.set(target, proxy);
+  }
+  return proxy;
+};
 
 app.get('/health', (_req, res) => res.json({
   service: 'gateway',
@@ -57,7 +66,7 @@ const handle = (req: Request, res: Response, next: NextFunction) => {
 
   if (!target) return res.status(404).json({ error: 'Route not found', path });
   console.log(`[gateway] ${req.method} ${req.originalUrl} -> ${target}`);
-  return makeProxy(target)(req, res, next);
+  return getProxy(target)(req, res, next);
 };
 
 app.use('/api', handle);
@@ -68,4 +77,4 @@ app.listen(PORT, () => {
   console.log(`[gateway] running on http://localhost:${PORT}`);
   console.log(`[gateway] routing to:`);
   Object.entries(SERVICES).forEach(([name, url]) => console.log(`  - ${name}: ${url}`));
-});
+}).setMaxListeners(50);
