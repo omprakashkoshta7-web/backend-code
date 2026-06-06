@@ -77,22 +77,24 @@ function loadDb(): DbData {
 
 async function persistToMongo() {
   if (!useMongo || !mongoDb || !db) return;
-  try {
-    const collections: (keyof DbData)[] = [
-      'questions', 'topics', 'cheatSheets', 'users', 'testCases', 'patternDetails', 'subscriptions',
-      'communities', 'answers', 'chatMessages', 'discussions', 'studyProgress', 'points',
-      'weeklyChallenges', 'challengeProgress', 'notes', 'interviews', 'resources',
-      'contests', 'contestSubmissions', 'roadmaps', 'roadmapProgress', 'notifications',
-    ];
-    for (const col of collections) {
-      const arr = db[col] as any[];
-      if (!arr) continue;
+  const collections: (keyof DbData)[] = [
+    'questions', 'topics', 'cheatSheets', 'users', 'testCases', 'patternDetails', 'subscriptions',
+    'communities', 'answers', 'chatMessages', 'discussions', 'studyProgress', 'points',
+    'weeklyChallenges', 'challengeProgress', 'notes', 'interviews', 'resources',
+    'contests', 'contestSubmissions', 'roadmaps', 'roadmapProgress', 'notifications',
+  ];
+  for (const col of collections) {
+    const arr = db[col] as any[];
+    if (!arr || arr.length === 0) continue;
+    try {
       const c = mongoDb.collection(col as string);
       await c.deleteMany({});
-      if (arr.length > 0) await c.insertMany(arr as any[]);
+      await c.insertMany(arr as any[], { ordered: false });
+    } catch (e: any) {
+      if (e?.code !== 11000) {
+        console.error(`[DB] Mongo persist error on "${col}":`, e?.message || e);
+      }
     }
-  } catch (e) {
-    console.error('[DB] Mongo persist error:', e);
   }
 }
 
@@ -101,9 +103,9 @@ function saveDb() {
     if (savePending) return;
     savePending = true;
     if (saveTimer) clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
+    saveTimer = setTimeout(async () => {
+      await persistToMongo();
       savePending = false;
-      persistToMongo();
     }, 1000);
     return;
   }
