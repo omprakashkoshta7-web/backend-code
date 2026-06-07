@@ -1,5 +1,6 @@
 import type { Topic, Question, CheatSheet, User, PatternDetail } from '../types';
 import { ALL_BULK_QUESTIONS } from './bulk';
+import { NEW_LEETCODE_QUESTIONS } from './seed-new-questions';
 export const topics: Topic[] = [
   { id: '1', name: 'Arrays', slug: 'arrays', description: 'Array manipulation and traversal problems', questionCount: 199 },
   { id: '2', name: 'Strings', slug: 'strings', description: 'String manipulation and pattern matching', questionCount: 221 },
@@ -26757,6 +26758,7 @@ export const questions: Question[] = [
       cpp: "class Solution {\npublic:\n    auto solve(auto input) {\n        return nullptr;\n    }\n};\n",
     }} as any,
   ...ALL_BULK_QUESTIONS,
+  ...NEW_LEETCODE_QUESTIONS,
 ];
 export const cheatSheets: CheatSheet[] = [
   {
