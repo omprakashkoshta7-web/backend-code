@@ -406,6 +406,46 @@ router.get('/debug/whoami', (req: AuthRequest, res: Response) => {
   });
 });
 
+router.get('/debug/users-and-subs', (req: AuthRequest, res: Response) => {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin only' });
+  }
+  const users = (require('../data/db') as any).getAllUsers();
+  const subs = (require('../data/db') as any).getSubscriptions();
+  const payments = (require('../data/db') as any).getPaymentRequests();
+  res.json({
+    users_count: users.length,
+    subs_count: subs.length,
+    payments_count: payments.length,
+    users: users.map((u: any) => ({ id: u.id, email: u.email, name: u.name, created_at: u.created_at })),
+    subs: subs,
+    payments: payments.map((p: any) => ({ id: p.id, user_id: p.user_id, status: p.status, amount: p.amount, provider: p.provider, created_at: p.created_at })),
+  });
+});
+
+router.post('/debug/clear-all-subs', async (req: AuthRequest, res: Response) => {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin only' });
+  }
+  const dbModule = require('../data/db');
+  const mongoUrl = process.env.MONGODB_URL || process.env.MONGO_URL;
+  if (!mongoUrl) {
+    return res.status(500).json({ error: 'No MONGODB_URL configured' });
+  }
+  try {
+    const { MongoClient } = require('mongodb');
+    const client = new MongoClient(mongoUrl, { serverSelectionTimeoutMS: 5000 });
+    await client.connect();
+    const result = await client.db().collection('subscriptions').deleteMany({});
+    await client.close();
+    const db = dbModule.getDb();
+    db.subscriptions = [];
+    res.json({ success: true, deleted: result.deletedCount, message: 'All subscriptions wiped from MongoDB and in-memory. Users will need to re-pay if they had premium.' });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 router.post('/admin-verify', async (req: AuthRequest, res: Response) => {
   if (req.user?.role !== 'admin') {
     return res.status(403).json({ error: 'Admin only' });
