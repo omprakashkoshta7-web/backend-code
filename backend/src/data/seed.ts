@@ -29180,7 +29180,7 @@ public:
 export const users: User[] = [
   {
     id: '1', name: 'Admin', email: 'admin@dsacheatsheets.com',
-    password: '$2a$10$dummyhashedpassword', role: 'admin', created_at: new Date().toISOString(),
+    password: '$2a$10$qJxONMWAzZbRvP0XJMWJ6OiUXpdrBAKr10aIkWPPzvVgFq8ZvymmC', role: 'admin', created_at: new Date().toISOString(),
   },
   {
     id: '2', name: 'Test User', email: 'user@test.com',
