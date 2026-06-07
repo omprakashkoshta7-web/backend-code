@@ -1,7 +1,15 @@
 import { Router, Response, Request } from 'express';
+import { randomUUID } from 'crypto';
 import { authenticate, AuthRequest } from '../middleware/auth';
-import { isPremium, addSubscription, getSubscription } from '../data/store';
-import { getUserById } from '../data/db';
+import { isPremium, getSubscription } from '../data/store';
+import {
+  getUserById,
+  getPaymentRequests,
+  getPaymentRequestsByUser,
+  addPaymentRequest,
+  updatePaymentRequest,
+  findPaymentRequest,
+} from '../data/db';
 import { sendPremiumNotification } from '../services/notifications';
 import { sendSubscriptionEmail } from '../services/email';
 import {
@@ -35,8 +43,9 @@ interface PaymentRequest {
 }
 
 const activatePremium = async (userId: string, userName: string, userEmail: string, amount: number) => {
+  const { addSubscription } = await import('../data/store');
   const newSub: Subscription = {
-    id: String(Date.now()),
+    id: randomUUID(),
     user_id: userId,
     plan: 'premium',
     status: 'active',
@@ -59,7 +68,6 @@ const UPI_PAYEE_NAME = process.env.UPI_PAYEE_NAME || 'CodeSprout';
 const UPI_CURRENCY = process.env.UPI_CURRENCY || 'INR';
 const AMOUNT = Number(process.env.PREMIUM_AMOUNT) || 49;
 const SUBSCRIPTION_DAYS = Number(process.env.SUBSCRIPTION_DAYS) || 30;
-const paymentRequests: PaymentRequest[] = [];
 
 const buildUpiLink = (txnNote: string) => {
   const params = new URLSearchParams({
@@ -90,12 +98,14 @@ router.post('/razorpay/webhook', async (req: Request, res: Response) => {
       const paymentEntity = req.body?.payload?.payment?.entity;
       if (paymentEntity) {
         const orderId = paymentEntity.order_id;
-        const payment = paymentRequests.find((p) => p.razorpay_order_id === orderId);
+        const payment = findPaymentRequest((p: any) => p.razorpay_order_id === orderId);
         if (payment && payment.status !== 'verified') {
-          payment.razorpay_payment_id = paymentEntity.id;
-          payment.utr = paymentEntity.id;
-          payment.status = 'verified';
-          payment.verified_at = new Date().toISOString();
+          updatePaymentRequest(payment.id, payment.user_id, {
+            razorpay_payment_id: paymentEntity.id,
+            utr: paymentEntity.id,
+            status: 'verified',
+            verified_at: new Date().toISOString(),
+          });
           const user = getUserById(payment.user_id);
           await activatePremium(payment.user_id, payment.user_name, user?.email || payment.user_email, payment.amount);
         }
@@ -115,6 +125,9 @@ router.use(authenticate);
 router.get('/subscription', (req: AuthRequest, res: Response) => {
   const sub = getSubscription(req.user!.id);
   if (sub) {
+    if (sub.status === 'active' && sub.end_date && new Date(sub.end_date) < new Date()) {
+      sub.status = 'inactive';
+    }
     res.json(sub);
   } else {
     res.json({ plan: 'free', status: 'active' });
@@ -132,7 +145,7 @@ router.post('/init', (req: AuthRequest, res: Response) => {
   const upiLink = buildUpiLink(`Premium ${txnId}`);
 
   const payment: PaymentRequest = {
-    id: String(paymentRequests.length + 1),
+    id: randomUUID(),
     user_id: userId,
     user_name: req.user!.name || req.user!.email,
     user_email: req.user!.email,
@@ -142,9 +155,10 @@ router.post('/init', (req: AuthRequest, res: Response) => {
     qr_data: upiLink,
     status: 'pending',
     created_at: new Date().toISOString(),
+    provider: 'upi',
   };
 
-  paymentRequests.push(payment);
+  addPaymentRequest(payment);
 
   res.json({
     payment_id: payment.id,
@@ -168,9 +182,10 @@ router.post('/verify', async (req: AuthRequest, res: Response) => {
     return res.status(400).json({ error: 'Valid UTR number required' });
   }
 
-  const payment = paymentRequests.find(
-    (p) => p.user_id === userId && p.id === (payment_id || String(paymentRequests.length))
-  );
+  const allUserPayments = getPaymentRequestsByUser(userId);
+  const payment = payment_id
+    ? allUserPayments.find((p: any) => p.id === payment_id)
+    : allUserPayments[allUserPayments.length - 1];
 
   if (!payment) {
     return res.status(404).json({ error: 'Payment request not found' });
@@ -180,10 +195,12 @@ router.post('/verify', async (req: AuthRequest, res: Response) => {
     return res.status(400).json({ error: 'Payment already verified' });
   }
 
-  payment.utr = utr;
-  payment.status = 'verified';
-  payment.verified_at = new Date().toISOString();
-  payment.provider = payment.provider || 'upi';
+  updatePaymentRequest(payment.id, userId, {
+    utr,
+    status: 'verified',
+    verified_at: new Date().toISOString(),
+    provider: 'upi',
+  });
 
   const user = getUserById(userId);
   const newSub = await activatePremium(userId, req.user!.name || req.user!.email, user?.email || payment.user_email, payment.amount);
@@ -193,9 +210,9 @@ router.post('/verify', async (req: AuthRequest, res: Response) => {
     message: 'Payment verified! Premium subscription activated.',
     payment: {
       id: payment.id,
-      utr: payment.utr,
+      utr,
       amount: payment.amount,
-      verified_at: payment.verified_at,
+      verified_at: new Date().toISOString(),
     },
     subscription: newSub,
   });
@@ -226,7 +243,7 @@ router.post('/razorpay/create-order', async (req: AuthRequest, res: Response) =>
     });
 
     const payment: PaymentRequest = {
-      id: String(paymentRequests.length + 1),
+      id: randomUUID(),
       user_id: userId,
       user_name: req.user!.name || req.user!.email,
       user_email: req.user!.email,
@@ -240,7 +257,7 @@ router.post('/razorpay/create-order', async (req: AuthRequest, res: Response) =>
       provider: 'razorpay',
     };
 
-    paymentRequests.push(payment);
+    addPaymentRequest(payment);
 
     res.json({
       order_id: order.id,
@@ -282,8 +299,8 @@ router.post('/razorpay/verify', async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'Invalid payment signature' });
     }
 
-    const payment = paymentRequests.find(
-      (p) => p.user_id === userId && (p.id === payment_id || p.razorpay_order_id === razorpay_order_id)
+    const payment = findPaymentRequest(
+      (p: any) => p.user_id === userId && (p.id === payment_id || p.razorpay_order_id === razorpay_order_id)
     );
 
     const alreadyVerified = isPremium(userId);
@@ -299,11 +316,13 @@ router.post('/razorpay/verify', async (req: AuthRequest, res: Response) => {
     const newSub = await activatePremium(userId, req.user!.name || req.user!.email, user?.email || req.user!.email, AMOUNT);
 
     if (payment) {
-      payment.razorpay_payment_id = razorpay_payment_id;
-      payment.utr = razorpay_payment_id;
-      payment.status = 'verified';
-      payment.verified_at = new Date().toISOString();
-      payment.provider = 'razorpay';
+      updatePaymentRequest(payment.id, userId, {
+        razorpay_payment_id,
+        utr: razorpay_payment_id,
+        status: 'verified',
+        verified_at: new Date().toISOString(),
+        provider: 'razorpay',
+      });
     }
 
     res.json({
@@ -314,7 +333,7 @@ router.post('/razorpay/verify', async (req: AuthRequest, res: Response) => {
         razorpay_order_id,
         razorpay_payment_id,
         amount: payment.amount,
-        verified_at: payment.verified_at,
+        verified_at: new Date().toISOString(),
       } : { razorpay_order_id, razorpay_payment_id, amount: AMOUNT },
       subscription: newSub,
     });
@@ -331,7 +350,7 @@ router.post('/razorpay/refund', async (req: AuthRequest, res: Response) => {
       return res.status(403).json({ error: 'Admin only' });
     }
     const { payment_id, amount } = req.body;
-    const payment = paymentRequests.find((p) => p.id === payment_id);
+    const payment = findPaymentRequest((p: any) => p.id === payment_id);
     if (!payment || !payment.razorpay_payment_id) {
       return res.status(404).json({ error: 'Razorpay payment not found' });
     }
@@ -344,7 +363,8 @@ router.post('/razorpay/refund', async (req: AuthRequest, res: Response) => {
 });
 
 router.get('/status', (req: AuthRequest, res: Response) => {
-  const payment = paymentRequests.find((p) => p.user_id === req.user!.id);
+  const userPayments = getPaymentRequestsByUser(req.user!.id);
+  const payment = userPayments[userPayments.length - 1];
   if (!payment) {
     return res.json({ status: 'no_payment' });
   }
@@ -363,7 +383,7 @@ router.get('/requests', (req: AuthRequest, res: Response) => {
   if (req.user?.role !== 'admin') {
     return res.status(403).json({ error: 'Admin only' });
   }
-  res.json(paymentRequests);
+  res.json(getPaymentRequests());
 });
 
 router.post('/admin-verify', async (req: AuthRequest, res: Response) => {
@@ -372,12 +392,14 @@ router.post('/admin-verify', async (req: AuthRequest, res: Response) => {
   }
 
   const { payment_id, action } = req.body;
-  const payment = paymentRequests.find((p) => p.id === payment_id);
+  const payment = findPaymentRequest((p: any) => p.id === payment_id);
   if (!payment) return res.status(404).json({ error: 'Payment not found' });
 
   if (action === 'verify') {
-    payment.status = 'verified';
-    payment.verified_at = new Date().toISOString();
+    updatePaymentRequest(payment.id, payment.user_id, {
+      status: 'verified',
+      verified_at: new Date().toISOString(),
+    });
 
     const user = getUserById(payment.user_id);
     await activatePremium(payment.user_id, payment.user_name, user?.email || payment.user_email, payment.amount);
@@ -386,7 +408,7 @@ router.post('/admin-verify', async (req: AuthRequest, res: Response) => {
   }
 
   if (action === 'reject') {
-    payment.status = 'failed';
+    updatePaymentRequest(payment.id, payment.user_id, { status: 'failed' });
     return res.json({ success: true, message: 'Payment rejected' });
   }
 

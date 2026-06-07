@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import paymentsRouter from '../routes/payments';
+import subscriptionRouter from '../routes/subscription';
 import { initDb } from '../data/db';
 import { questions, topics, cheatSheets, users, patternDetails } from '../data/seed';
 import { TEST_CASES } from '../data/testCases';
@@ -31,6 +32,7 @@ app.use(express.json({
 
 app.get('/health', (_req, res) => res.json({ service: 'payment', status: 'ok', timestamp: new Date().toISOString() }));
 app.use('/api/payments', paymentsRouter);
+app.use('/api/subscription', subscriptionRouter);
 
 (async () => {
   await initDb(questions, topics, cheatSheets, users, testCaseData, patternDetails);

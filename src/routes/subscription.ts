@@ -1,15 +1,22 @@
 import { Router, Response } from 'express';
+import { randomUUID } from 'crypto';
 import { authenticate, AuthRequest } from '../middleware/auth';
-import { getSubscription, addSubscription } from '../data/store';
+import { getSubscription, addSubscription, isPremium } from '../data/store';
 import type { Subscription } from '../types';
 
 const router = Router();
+const SUBSCRIPTION_DAYS = Number(process.env.SUBSCRIPTION_DAYS) || 30;
 
 router.use(authenticate);
 
 router.get('/', (req: AuthRequest, res: Response) => {
-  const sub = getSubscription(req.user!.id);
+  const userId = req.user!.id;
+  const sub = getSubscription(userId);
+
   if (sub) {
+    if (sub.status === 'active' && sub.end_date && new Date(sub.end_date) < new Date()) {
+      sub.status = 'inactive';
+    }
     res.json(sub);
   } else {
     res.json({ plan: 'free', status: 'active' });
@@ -23,12 +30,12 @@ router.post('/', (req: AuthRequest, res: Response) => {
   }
 
   const newSub: Subscription = {
-    id: String(Date.now()),
+    id: randomUUID(),
     user_id: req.user!.id,
     plan: plan as 'free' | 'premium',
     status: 'active',
     start_date: new Date().toISOString(),
-    end_date: plan === 'premium' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : undefined,
+    end_date: plan === 'premium' ? new Date(Date.now() + SUBSCRIPTION_DAYS * 24 * 60 * 60 * 1000).toISOString() : undefined,
   };
 
   addSubscription(newSub);
