@@ -410,6 +410,15 @@ function FlashcardsTab({ questions }: { questions: GeneratedQuestion[] }) {
   }
 
   const q = questions[idx];
+  if (!q) {
+    return (
+      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 text-center">
+        <AlertCircle className="w-10 h-10 text-amber-400 mx-auto mb-3" />
+        <h3 className="text-lg font-semibold text-white mb-1">No flashcard to show</h3>
+        <button onClick={() => setIdx(0)} className="text-sm text-primary-400 hover:text-primary-300 mt-2">Reset to first</button>
+      </div>
+    );
+  }
   const diffStyle = DIFFICULTY_COLORS[q.difficulty];
   const go = (delta: number) => {
     setFlipped(false);
@@ -589,6 +598,15 @@ function QuizTab({ questions, subject }: { questions: GeneratedQuestion[]; subje
   }
 
   const q = picks[idx];
+  if (!q) {
+    return (
+      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 text-center">
+        <AlertCircle className="w-10 h-10 text-amber-400 mx-auto mb-3" />
+        <h3 className="text-lg font-semibold text-white mb-1">No question to show</h3>
+        <button onClick={() => setResults([])} className="text-sm text-primary-400 hover:text-primary-300 mt-2">Back to menu</button>
+      </div>
+    );
+  }
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between text-sm text-slate-400">

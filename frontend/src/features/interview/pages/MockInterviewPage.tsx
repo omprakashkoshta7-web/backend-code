@@ -282,6 +282,29 @@ function MockSessionView({ session, onFinish }: { session: MockSession; onFinish
     return <MockResultScreen session={{ ...session, answers }} onClose={onFinish} />;
   }
 
+  if (!session.questions || session.questions.length === 0) {
+    return (
+      <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16 flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-slate-900/60 border border-slate-800 rounded-2xl p-6 text-center">
+          <AlertCircle className="w-10 h-10 text-amber-400 mx-auto mb-3" />
+          <h2 className="text-lg font-bold text-white mb-2">No questions available</h2>
+          <p className="text-sm text-slate-400 mb-4">We couldn't load questions for this subject. Please try again or pick a different subject.</p>
+          <button
+            onClick={onFinish}
+            className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg"
+          >
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (idx >= session.questions.length) {
+    setIdx(session.questions.length - 1);
+    return null;
+  }
+
   const q = session.questions[idx];
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
