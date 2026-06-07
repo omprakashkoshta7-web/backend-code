@@ -9,6 +9,7 @@ import type {
   CommunityNote, InterviewExperience, CommunityResource,
   Contest, ContestSubmission,
   Roadmap, RoadmapProgress,
+  InterviewPreference, GeneratedInterviewQuestion, MockInterviewSession, InterviewKit,
 } from '../types';
 
 export interface TestCaseData {
@@ -56,6 +57,10 @@ interface DbData {
   roadmapProgress: RoadmapProgress[];
   notifications: AppNotification[];
   paymentRequests: any[];
+  interviewPreferences: InterviewPreference[];
+  generatedInterviewQuestions: GeneratedInterviewQuestion[];
+  mockInterviewSessions: MockInterviewSession[];
+  interviewKits: InterviewKit[];
 }
 
 const DB_PATH = join(__dirname, '..', '..', 'data', 'db.json');
@@ -174,6 +179,10 @@ export async function initDb(questions: Question[], topics: Topic[], cheatSheets
           roadmaps: [], roadmapProgress: [],
           notifications: [],
           paymentRequests: [],
+          interviewPreferences: [],
+          generatedInterviewQuestions: [],
+          mockInterviewSessions: [],
+          interviewKits: [],
         };
         db = fresh;
         await persistToMongo();
@@ -206,6 +215,10 @@ export async function initDb(questions: Question[], topics: Topic[], cheatSheets
           roadmapProgress: await col('roadmapProgress').find({}).toArray() as any,
           notifications: await col('notifications').find({}).toArray() as any,
           paymentRequests: await col('paymentRequests').find({}).toArray() as any,
+          interviewPreferences: await col('interviewPreferences').find({}).toArray() as any,
+          generatedInterviewQuestions: await col('generatedInterviewQuestions').find({}).toArray() as any,
+          mockInterviewSessions: await col('mockInterviewSessions').find({}).toArray() as any,
+          interviewKits: await col('interviewKits').find({}).toArray() as any,
         };
         const adminUser = db.users.find((u: any) => u.email === 'admin@dsacheatsheets.com');
         if (adminUser) {
@@ -260,6 +273,10 @@ export async function initDb(questions: Question[], topics: Topic[], cheatSheets
     roadmaps: [], roadmapProgress: [],
     notifications: [],
     paymentRequests: [],
+    interviewPreferences: [],
+    generatedInterviewQuestions: [],
+    mockInterviewSessions: [],
+    interviewKits: [],
   };
   writeFileSync(DB_PATH, JSON.stringify(fresh, null, 2));
   db = fresh;
@@ -671,6 +688,99 @@ export function markAllNotificationsRead(userId: string): number {
   }
   if (count > 0) saveDb();
   return count;
+}
+
+// ====== INTERVIEW PREP ======
+
+export function getInterviewPreferences(): InterviewPreference[] { return (getDb().interviewPreferences || []) as InterviewPreference[]; }
+export function getInterviewPreferenceByUser(userId: string): InterviewPreference | undefined {
+  return getInterviewPreferences().find(p => p.user_id === userId);
+}
+export function upsertInterviewPreference(pref: InterviewPreference): InterviewPreference {
+  const db = getDb();
+  if (!db.interviewPreferences) (db as any).interviewPreferences = [];
+  const list = db.interviewPreferences as InterviewPreference[];
+  const idx = list.findIndex(p => p.user_id === pref.user_id);
+  if (idx >= 0) {
+    list[idx] = { ...list[idx], ...pref, updated_at: new Date().toISOString() };
+    saveDb();
+    return list[idx];
+  }
+  list.push(pref);
+  saveDb();
+  return pref;
+}
+export function deleteInterviewPreference(userId: string): boolean {
+  const db = getDb();
+  if (!db.interviewPreferences) return false;
+  const len = db.interviewPreferences.length;
+  db.interviewPreferences = db.interviewPreferences.filter(p => p.user_id !== userId);
+  if (db.interviewPreferences.length === len) return false;
+  saveDb();
+  return true;
+}
+
+export function getGeneratedInterviewQuestions(): GeneratedInterviewQuestion[] { return (getDb().generatedInterviewQuestions || []) as GeneratedInterviewQuestion[]; }
+export function getGeneratedQuestionsForSubject(userId: string, subject: string): GeneratedInterviewQuestion[] {
+  return getGeneratedInterviewQuestions().filter(q => q.user_id === userId && q.subject === subject);
+}
+export function addGeneratedInterviewQuestions(questions: GeneratedInterviewQuestion[]): void {
+  const db = getDb();
+  if (!db.generatedInterviewQuestions) (db as any).generatedInterviewQuestions = [];
+  db.generatedInterviewQuestions.push(...questions);
+  saveDb();
+}
+export function clearGeneratedQuestionsForSubject(userId: string, subject: string): number {
+  const db = getDb();
+  if (!db.generatedInterviewQuestions) return 0;
+  const before = db.generatedInterviewQuestions.length;
+  db.generatedInterviewQuestions = db.generatedInterviewQuestions.filter(q => !(q.user_id === userId && q.subject === subject));
+  const removed = before - db.generatedInterviewQuestions.length;
+  if (removed > 0) saveDb();
+  return removed;
+}
+
+export function getMockInterviewSessions(): MockInterviewSession[] { return (getDb().mockInterviewSessions || []) as MockInterviewSession[]; }
+export function getMockSessionsByUser(userId: string, limit = 20): MockInterviewSession[] {
+  return getMockInterviewSessions()
+    .filter(s => s.user_id === userId)
+    .sort((a, b) => b.started_at.localeCompare(a.started_at))
+    .slice(0, limit);
+}
+export function getMockSession(id: string, userId: string): MockInterviewSession | undefined {
+  return getMockInterviewSessions().find(s => s.id === id && s.user_id === userId);
+}
+export function addMockInterviewSession(session: MockInterviewSession): void {
+  const db = getDb();
+  if (!db.mockInterviewSessions) (db as any).mockInterviewSessions = [];
+  db.mockInterviewSessions.push(session);
+  saveDb();
+}
+export function updateMockInterviewSession(id: string, userId: string, updates: Partial<MockInterviewSession>): MockInterviewSession | null {
+  const db = getDb();
+  if (!db.mockInterviewSessions) return null;
+  const idx = db.mockInterviewSessions.findIndex(s => s.id === id && s.user_id === userId);
+  if (idx === -1) return null;
+  db.mockInterviewSessions[idx] = { ...db.mockInterviewSessions[idx], ...updates };
+  saveDb();
+  return db.mockInterviewSessions[idx];
+}
+
+export function getInterviewKits(): InterviewKit[] { return (getDb().interviewKits || []) as InterviewKit[]; }
+export function getInterviewKitsByUser(userId: string, limit = 20): InterviewKit[] {
+  return getInterviewKits()
+    .filter(k => k.user_id === userId)
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))
+    .slice(0, limit);
+}
+export function getInterviewKit(id: string, userId: string): InterviewKit | undefined {
+  return getInterviewKits().find(k => k.id === id && k.user_id === userId);
+}
+export function addInterviewKit(kit: InterviewKit): void {
+  const db = getDb();
+  if (!db.interviewKits) (db as any).interviewKits = [];
+  db.interviewKits.push(kit);
+  saveDb();
 }
 
 export function deleteNotification(id: string, userId: string): boolean {

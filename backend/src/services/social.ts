@@ -6,6 +6,7 @@ import bookmarksRouter from '../routes/bookmarks';
 import dashboardRouter from '../routes/dashboard';
 import subscriptionRouter from '../routes/subscription';
 import leaderboardRouter from '../routes/leaderboard';
+import interviewRouter from '../routes/interview';
 import { initDb } from '../data/db';
 import { questions, topics, cheatSheets, users, patternDetails } from '../data/seed';
 import { TEST_CASES } from '../data/testCases';
@@ -29,6 +30,7 @@ app.use('/api/bookmarks', bookmarksRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/subscription', subscriptionRouter);
 app.use('/api/leaderboard', leaderboardRouter);
+app.use('/api', interviewRouter);
 
 (async () => {
   await initDb(questions, topics, cheatSheets, users, testCaseData, patternDetails);

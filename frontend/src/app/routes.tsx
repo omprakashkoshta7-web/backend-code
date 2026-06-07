@@ -10,6 +10,10 @@ import LoginPage from '@/features/auth/pages/LoginPage';
 import PricingPage from '@/features/subscription/pages/PricingPage';
 import LeaderboardPage from '@/features/leaderboard/pages/LeaderboardPage';
 import InterviewPrepPage from '@/features/interview/pages/InterviewPrepPage';
+import InterviewSetupPage from '@/features/interview/pages/InterviewSetupPage';
+import InterviewDashboardPage from '@/features/interview/pages/InterviewDashboardPage';
+import InterviewSubjectPage from '@/features/interview/pages/InterviewSubjectPage';
+import MockInterviewPage from '@/features/interview/pages/MockInterviewPage';
 import GamesLandingPage from '@/features/games/pages/GamesLandingPage';
 import HeroSection from '@/shared/components/HeroSection';
 import FAQ from '@/shared/components/FAQ';
@@ -752,6 +756,10 @@ export const router = createBrowserRouter([
       { path: 'login', element: <LoginPage /> },
       { path: 'pricing', element: <PricingPage /> },
       { path: 'interview-prep', element: <InterviewPrepPage /> },
+      { path: 'interview-prep/setup', element: <ProtectedRoute><InterviewSetupPage /></ProtectedRoute> },
+      { path: 'interview-prep/dashboard', element: <ProtectedRoute><InterviewDashboardPage /></ProtectedRoute> },
+      { path: 'interview-prep/subject/:subject', element: <ProtectedRoute><InterviewSubjectPage /></ProtectedRoute> },
+      { path: 'interview-prep/mock', element: <ProtectedRoute><MockInterviewPage /></ProtectedRoute> },
       { path: 'leaderboard', element: <LeaderboardPage /> },
       { path: 'communities', element: <ProtectedRoute><Suspense fallback={<PageLoader />}><CommunitiesPage /></Suspense></ProtectedRoute> },
       { path: 'communities/:id', element: <ProtectedRoute><Suspense fallback={<PageLoader />}><CommunityDetailPage /></Suspense></ProtectedRoute> },
