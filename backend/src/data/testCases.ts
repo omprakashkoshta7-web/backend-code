@@ -9399,4 +9399,64 @@ export const TEST_CASES: Record<string, Omit<TestCaseData, 'slug'>[]> = {
   'good-triplets-bit': [
     { id: '1', input: `arr = [1,2,3,4,5]`, expected_output: `5`, is_hidden: false }
   ],
+  'mos-algorithm-mo-s-basic-implementation-1': [
+    { id: '1', input: `arr = [1,1,2,1,3,4,2,1], queries = [[0,4],[1,3]]`, expected_output: `[3,2]`, is_hidden: false },
+    { id: '2', input: `arr = [1,2,3,4,5], queries = [[0,2],[2,4]]`, expected_output: `[6,12]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-range-mode-2': [
+    { id: '1', input: `arr = [1,2,1,3,2,1], queries = [[0,5]]`, expected_output: `[1]`, is_hidden: false },
+    { id: '2', input: `arr = [1,2,3,4,5], queries = [[0,4]]`, expected_output: `[1,2,3,4,5]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-range-distinct-3': [
+    { id: '1', input: `arr = [1,2,1,3,2,1], queries = [[0,3],[0,5]]`, expected_output: `[3,3]`, is_hidden: false },
+    { id: '2', input: `arr = [1,2,3,4,5], queries = [[0,2]]`, expected_output: `[3]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-range-sum-4': [
+    { id: '1', input: `arr = [1,2,3,4,5], queries = [[0,2],[1,3]]`, expected_output: `[6,9]`, is_hidden: false },
+    { id: '2', input: `arr = [10,20,30], queries = [[0,2]]`, expected_output: `[60]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-range-median-5': [
+    { id: '1', input: `arr = [1,2,3,4,5], queries = [[0,4]]`, expected_output: `[3]`, is_hidden: false },
+    { id: '2', input: `arr = [5,3,1,4,2], queries = [[0,4]]`, expected_output: `[3]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-with-updates-6': [
+    { id: '1', input: `arr = [1,2,3], updates = [[1,10]], queries = [[0,2]]`, expected_output: `[14]`, is_hidden: false },
+    { id: '2', input: `arr = [1,1,1], updates = [[0,2],[2,3]], queries = [[0,2]]`, expected_output: `[6]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-tree-7': [
+    { id: '1', input: `n = 3, edges = [[1,2],[2,3]], values = [1,2,3], queries = [[1,2]]`, expected_output: `[3]`, is_hidden: false },
+    { id: '2', input: `n = 2, edges = [[1,2]], values = [5,5], queries = [[1,2]]`, expected_output: `[5]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-for-frequency-8': [
+    { id: '1', input: `arr = [1,2,1,3,2,1], queries = [[0,5]]`, expected_output: `[[1,3],[2,2],[3,1]]`, is_hidden: false },
+    { id: '2', input: `arr = [1,1,1], queries = [[0,2]]`, expected_output: `[[1,3]]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-comparator-9': [
+    { id: '1', input: `arr = [3,1,2], queries = [[0,2]]`, expected_output: `[[1,2,3]]`, is_hidden: false },
+    { id: '2', input: `arr = [1], queries = [[0,0]]`, expected_output: `[[1]]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-hilbert-order-10': [
+    { id: '1', input: `arr = [1,2,3,4], queries = [[0,1],[2,3]]`, expected_output: `[3,7]`, is_hidden: false },
+    { id: '2', input: `arr = [1,1,1,1], queries = [[0,3]]`, expected_output: `[4]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-min-max-11': [
+    { id: '1', input: `arr = [1,5,3,8,2], queries = [[0,2],[1,4]]`, expected_output: `[[1,5],[2,8]]`, is_hidden: false },
+    { id: '2', input: `arr = [1,1,1], queries = [[0,2]]`, expected_output: `[[1,1]]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-xor-query-12': [
+    { id: '1', input: `arr = [1,2,3], queries = [[0,2]]`, expected_output: `[0]`, is_hidden: false },
+    { id: '2', input: `arr = [1,2,4,8], queries = [[0,3]]`, expected_output: `[15]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-lazy-prop-13': [
+    { id: '1', input: `arr = [1,2,3,4,5], updates = [[0,2,10]], queries = [[0,4]]`, expected_output: `[35]`, is_hidden: false },
+    { id: '2', input: `arr = [1,1,1], updates = [[0,2,2]], queries = [[0,2]]`, expected_output: `[9]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-with-modifications-14': [
+    { id: '1', input: `arr = [1,2,3], mods = [[0,5]], queries = [[0,2]]`, expected_output: `[10]`, is_hidden: false },
+    { id: '2', input: `arr = [1,1,1], mods = [[1,2]], queries = [[0,2]]`, expected_output: `[4]`, is_hidden: true },
+  ],
+  'mos-algorithm-mo-s-performance-tuning-15': [
+    { id: '1', input: `arr = [1,2,3,4,5], queries = [[0,2],[2,4]]`, expected_output: `[6,12]`, is_hidden: false },
+    { id: '2', input: `arr = [10,20,30,40], queries = [[0,1],[2,3]]`, expected_output: `[30,70]`, is_hidden: true },
+  ],
 };
