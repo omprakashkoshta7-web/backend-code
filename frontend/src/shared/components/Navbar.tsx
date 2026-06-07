@@ -17,7 +17,6 @@ const navLinks = [
   { label: 'Games', href: '/games', icon: Gamepad2 },
   { label: 'Leaderboard', href: '/leaderboard', icon: Bell },
   { label: 'Community', href: '/communities', icon: Shield },
-  { label: 'Interview Prep', href: '/interview-prep', icon: LayoutDashboard },
   { label: 'Plan', href: '/pricing', icon: Bookmark },
 ];
 
