@@ -288,3 +288,78 @@ export interface RoadmapProgress {
   user_id: string;
   completed_steps: number[];
 }
+
+// ====== INTERVIEW PREP ======
+
+export type InterviewExperienceLevel = 'fresher' | 'junior' | 'mid' | 'senior';
+export type InterviewMode = 'study' | 'pdf' | 'mock' | 'quick';
+
+export interface InterviewPreference {
+  id: string;
+  user_id: string;
+  role: string;
+  custom_role?: string;
+  experience: InterviewExperienceLevel;
+  subjects: string[];
+  mode: InterviewMode;
+  daily_goal: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export type QuestionDifficulty = 'basic' | 'intermediate' | 'advanced';
+
+export interface GeneratedInterviewQuestion {
+  id: string;
+  user_id: string;
+  subject: string;
+  role: string;
+  difficulty: QuestionDifficulty;
+  question: string;
+  answer: string;
+  tags: string[];
+  source: 'ai';
+  created_at: string;
+}
+
+export type MockRoundType = 'technical' | 'coding' | 'behavioral' | 'hr';
+
+export interface MockAnswer {
+  question_id: string;
+  question: string;
+  expected_answer: string;
+  user_answer: string;
+  audio_data_url?: string;
+  feedback: string;
+  technical_accuracy: number;
+  score: number;
+  answered_at: string;
+}
+
+export interface MockInterviewSession {
+  id: string;
+  user_id: string;
+  role: string;
+  experience: InterviewExperienceLevel;
+  round_type: MockRoundType;
+  subject: string;
+  questions: { id: string; question: string; expected_answer: string }[];
+  answers: MockAnswer[];
+  overall_score: number;
+  started_at: string;
+  ended_at?: string;
+  status: 'in_progress' | 'completed' | 'abandoned';
+}
+
+export interface InterviewKit {
+  id: string;
+  user_id: string;
+  role: string;
+  custom_role?: string;
+  experience: InterviewExperienceLevel;
+  subjects: string[];
+  file_url: string;
+  total_questions: number;
+  page_count: number;
+  created_at: string;
+}
