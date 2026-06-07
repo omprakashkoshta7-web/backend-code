@@ -85,13 +85,47 @@ async function persistToMongo() {
     'contests', 'contestSubmissions', 'roadmaps', 'roadmapProgress', 'notifications',
     'paymentRequests',
   ];
+  const keyFor: Partial<Record<keyof DbData, string>> = {
+    users: 'id',
+    subscriptions: 'user_id',
+    questions: 'id',
+    topics: 'id',
+    cheatSheets: 'question_id',
+    testCases: 'id',
+    patternDetails: 'slug',
+    communities: 'id',
+    answers: 'id',
+    chatMessages: 'id',
+    discussions: 'id',
+    studyProgress: 'id',
+    points: 'id',
+    weeklyChallenges: 'id',
+    challengeProgress: 'id',
+    notes: 'id',
+    interviews: 'id',
+    resources: 'id',
+    contests: 'id',
+    contestSubmissions: 'id',
+    roadmaps: 'id',
+    roadmapProgress: 'id',
+    notifications: 'id',
+    paymentRequests: 'id',
+  };
   for (const col of collections) {
     const arr = db[col] as any[];
     if (!arr || arr.length === 0) continue;
+    const naturalKey = keyFor[col];
     try {
       const c = mongoDb.collection(col as string);
-      await c.deleteMany({});
-      await c.insertMany(arr as any[], { ordered: false });
+      if (naturalKey) {
+        for (const doc of arr) {
+          const filter = { [naturalKey]: doc[naturalKey] };
+          await c.replaceOne(filter, doc, { upsert: true });
+        }
+      } else {
+        await c.deleteMany({});
+        await c.insertMany(arr as any[], { ordered: false });
+      }
     } catch (e: any) {
       if (e?.code !== 11000) {
         console.error(`[DB] Mongo persist error on "${col}":`, e?.message || e);
