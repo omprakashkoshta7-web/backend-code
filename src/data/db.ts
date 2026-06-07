@@ -63,6 +63,7 @@ interface DbData {
   interviewKits: InterviewKit[];
   aiInterviewSessions: any[];
   shopProducts: ShopProduct[];
+  shopPurchases: any[];
 }
 
 const DB_PATH = join(__dirname, '..', '..', 'data', 'db.json');
@@ -90,7 +91,7 @@ async function persistToMongo() {
     'communities', 'answers', 'chatMessages', 'discussions', 'studyProgress', 'points',
     'weeklyChallenges', 'challengeProgress', 'notes', 'interviews', 'resources',
     'contests', 'contestSubmissions', 'roadmaps', 'roadmapProgress', 'notifications',
-    'paymentRequests', 'shopProducts',
+    'paymentRequests', 'shopProducts', 'shopPurchases',
   ];
   const keyFor: Partial<Record<keyof DbData, string>> = {
     users: 'id',
@@ -118,6 +119,7 @@ async function persistToMongo() {
     notifications: 'id',
     paymentRequests: 'id',
     shopProducts: 'id',
+    shopPurchases: 'id',
   };
   for (const col of collections) {
     const arr = db[col] as any[];
@@ -188,6 +190,7 @@ export async function initDb(questions: Question[], topics: Topic[], cheatSheets
           interviewKits: [],
           aiInterviewSessions: [],
           shopProducts: [],
+          shopPurchases: [],
         };
         db = fresh;
         await persistToMongo();
@@ -226,6 +229,7 @@ export async function initDb(questions: Question[], topics: Topic[], cheatSheets
           interviewKits: await col('interviewKits').find({}).toArray() as any,
           aiInterviewSessions: [],
           shopProducts: await col('shopProducts').find({}).toArray() as any,
+          shopPurchases: await col('shopPurchases').find({}).toArray() as any,
         };
         const adminUser = db.users.find((u: any) => u.email === 'admin@dsacheatsheets.com');
         if (adminUser) {
@@ -286,6 +290,7 @@ export async function initDb(questions: Question[], topics: Topic[], cheatSheets
     interviewKits: [],
     aiInterviewSessions: [],
     shopProducts: [],
+    shopPurchases: [],
   };
   db = fresh;
   console.log(`[DB] Initialized with ${questions.length} questions, ${testCases.length} test cases, ${patternDetails.length} pattern details`);
