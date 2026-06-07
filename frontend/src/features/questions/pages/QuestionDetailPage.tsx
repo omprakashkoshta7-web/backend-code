@@ -156,9 +156,9 @@ function QuestionDetailContent() {
 
   useEffect(() => {
     if (!slug) return;
-    fetch(`/api/execute/testcases/${slug}`)
+    fetch(`/api/execute/testcases/${slug}`, { credentials: 'include', headers: { Authorization: `Bearer ${localStorage.getItem('token') || ''}` } })
       .then(r => r.json())
-      .then(data => { if (Array.isArray(data)) setTestCases(data.filter((tc: any) => !tc.is_hidden).slice(0, 3)); })
+      .then(data => { const cases = Array.isArray(data) ? data : (data?.test_cases || []); if (Array.isArray(cases)) setTestCases(cases.filter((tc: any) => !tc.is_hidden).slice(0, 3)); })
       .catch(() => {});
   }, [slug]);
 

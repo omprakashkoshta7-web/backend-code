@@ -90,13 +90,14 @@ export default function CodeEditor({ slug, template }: CodeEditorProps) {
   const [expandedOutputs, setExpandedOutputs] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    fetch(`/api/execute/testcases/${slug}`)
+    fetch(`/api/execute/testcases/${slug}`, { credentials: 'include', headers: { Authorization: `Bearer ${localStorage.getItem('token') || ''}` } })
       .then(r => r.json())
       .then(data => {
-        if (Array.isArray(data)) {
-          setTestCases(data);
+        const cases = Array.isArray(data) ? data : (data?.test_cases || []);
+        if (Array.isArray(cases)) {
+          setTestCases(cases);
           const allExpanded: Record<string, boolean> = {};
-          data.forEach(tc => { allExpanded[tc.id] = true; });
+          cases.forEach(tc => { allExpanded[tc.id] = true; });
           setExpandedOutputs(allExpanded);
         }
       })

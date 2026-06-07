@@ -179,7 +179,7 @@ export default function Navbar() {
                           </div>
                           <div className="p-1.5 border-t border-white/5">
                             <button
-                              onClick={() => { localStorage.removeItem('token'); userStorage.clear(); subscriptionStorage.clear(); window.dispatchEvent(new Event('codesprout_user_change')); window.location.href = '/'; }}
+                              onClick={() => { localStorage.removeItem('token'); userStorage.clear(); subscriptionStorage.clearAll(); window.dispatchEvent(new Event('codesprout_user_change')); window.location.href = '/'; }}
                               className="flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-xl transition-colors w-full"
                             >
                               <LogOut className="w-4 h-4" /> Sign Out
@@ -260,7 +260,7 @@ export default function Navbar() {
                       <Link to="/bookmarks" onClick={() => setIsOpen(false)} className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/50 hover:text-white hover:bg-white/[0.06] rounded-xl transition-colors">
                         <Bookmark className="w-4 h-4" /> Bookmarks
                       </Link>
-                      <button onClick={() => { localStorage.removeItem('token'); userStorage.clear(); subscriptionStorage.clear(); window.dispatchEvent(new Event('codesprout_user_change')); window.location.href = '/'; }} className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-xl transition-colors w-full">
+                      <button onClick={() => { localStorage.removeItem('token'); userStorage.clear(); subscriptionStorage.clearAll(); window.dispatchEvent(new Event('codesprout_user_change')); window.location.href = '/'; }} className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-xl transition-colors w-full">
                         <LogOut className="w-4 h-4" /> Sign Out
                       </button>
                     </>

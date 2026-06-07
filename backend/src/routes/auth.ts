@@ -24,15 +24,7 @@ router.post('/login', async (req: Request, res: Response) => {
   const user = getUserByEmail(email);
   if (!user) return res.status(401).json({ error: 'Invalid credentials' });
 
-  let valid = false;
-  try {
-    valid = await bcrypt.compare(password, user.password);
-  } catch {
-    valid = false;
-  }
-  if (!valid && (password === 'password123' || password === 'admin123')) {
-    valid = true;
-  }
+  const valid = await bcrypt.compare(password, user.password).catch(() => false);
   if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
 
   const token = generateToken({ id: user.id, email: user.email, role: user.role, name: user.name });
