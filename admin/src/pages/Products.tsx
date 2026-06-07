@@ -16,7 +16,7 @@ const EMOJIS = ['📄', '📝', '🎤', '🏢', '📚', '📖', '⭐', '🎯', '
 const defaultForm = {
   title: '', description: '', category: 'pdf' as string, priceType: 'free' as string,
   priceAmount: 0, priceLabel: '', icon: '📄', color: 'from-blue-500 to-cyan-500',
-  tags: '', popular: false, pages: 0, author: '',
+  tags: '', popular: false, pages: 0, author: '', download_url: '',
 }
 
 export default function Products() {
@@ -45,6 +45,7 @@ export default function Products() {
         title: form.title, description: form.description, category: form.category,
         price, icon: form.icon, color: form.color, tags,
         popular: form.popular, pages: form.pages || undefined, author: form.author || undefined,
+        download_url: form.download_url || undefined,
       }
       if (editId) {
         await adminApi.updateProduct(editId, data)
@@ -71,7 +72,7 @@ export default function Products() {
       priceAmount: isFree ? 0 : p.price.amount,
       priceLabel: isFree ? '' : p.price.label,
       icon: p.icon, color: p.color, tags: (p.tags || []).join(', '),
-      popular: !!p.popular, pages: p.pages || 0, author: p.author || '',
+      popular: !!p.popular, pages: p.pages || 0, author: p.author || '', download_url: p.download_url || '',
     })
     setEditId(p.id); setShowForm(true)
   }
@@ -107,6 +108,10 @@ export default function Products() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Author</label>
               <input type="text" value={form.author} onChange={e => set('author', e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200" />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Download URL (link users get after payment)</label>
+              <input type="url" value={form.download_url} onChange={e => set('download_url', e.target.value)} placeholder="https://drive.google.com/... or https://example.com/file.pdf" className="w-full px-4 py-2.5 rounded-xl border border-gray-200" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Price Type</label>

@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, ShoppingCart, Star, Download, CheckCircle2, X, Loader2, BookOpen, TrendingUp, Users, Crown, ArrowRight, Sparkles } from 'lucide-react';
+import { Search, ShoppingCart, Star, Download, CheckCircle2, X, Loader2, BookOpen, TrendingUp, Users, Crown, ArrowRight, Sparkles, Copy, ExternalLink } from 'lucide-react';
 import SEO from '@/shared/components/SEO';
 import api from '@/services/api';
+import toast from 'react-hot-toast';
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
 const itemAnim = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
@@ -19,7 +20,7 @@ interface ShopProduct {
   id: string; title: string; description: string; category: string;
   price: { amount: number; label: string } | 'free';
   icon: string; color: string; tags: string[];
-  popular?: boolean; pages?: number; author?: string;
+  popular?: boolean; pages?: number; author?: string; download_url?: string;
 }
 
 function formatPrice(p: ShopProduct['price']) {
@@ -28,6 +29,7 @@ function formatPrice(p: ShopProduct['price']) {
 }
 
 export default function ShopPage() {
+  const isAuthenticated = !!localStorage.getItem('token');
   const [products, setProducts] = useState<ShopProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('all');
@@ -35,8 +37,13 @@ export default function ShopPage() {
   const [showFreeOnly, setShowFreeOnly] = useState(false);
   const [cart, setCart] = useState<ShopProduct[]>([]);
   const [showCart, setShowCart] = useState(false);
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [checkoutDone, setCheckoutDone] = useState(false);
+
+  // Payment modal state
+  const [payProduct, setPayProduct] = useState<ShopProduct | null>(null);
+  const [payInfo, setPayInfo] = useState<any>(null);
+  const [utr, setUtr] = useState('');
+  const [verifying, setVerifying] = useState(false);
+  const [purchased, setPurchased] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setLoading(true);
@@ -45,6 +52,19 @@ export default function ShopPage() {
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      api.get('/shop/purchase/my-purchases')
+        .then(res => {
+          const verified = (res.data?.purchases || [])
+            .filter((p: any) => p.status === 'verified')
+            .map((p: any) => p.product_id);
+          setPurchased(new Set(verified));
+        })
+        .catch(() => {});
+    }
+  }, [isAuthenticated]);
 
   const filtered = useMemo(() => {
     let list = products;
@@ -69,13 +89,68 @@ export default function ShopPage() {
 
   const inCart = (id: string) => cart.some(x => x.id === id);
 
-  const handleCheckout = async () => {
-    setCheckoutLoading(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setCheckoutLoading(false);
-    setCheckoutDone(true);
-    setCart([]);
-    setTimeout(() => setCheckoutDone(false), 3000);
+  const startPurchase = async (p: ShopProduct) => {
+    if (!isAuthenticated) {
+      toast.error('Please log in to purchase');
+      return;
+    }
+    try {
+      const res = await api.post('/shop/purchase/init', { product_id: p.id });
+      setPayProduct(p);
+      setPayInfo(res.data);
+      setUtr('');
+    } catch (e: any) {
+      toast.error(e?.response?.data?.error || 'Failed to start purchase');
+    }
+  };
+
+  const verifyPurchase = async () => {
+    if (!utr || utr.length < 5) {
+      toast.error('Enter a valid UTR (min 5 chars)');
+      return;
+    }
+    setVerifying(true);
+    try {
+      await api.post('/shop/purchase/verify', { utr, purchase_id: payInfo?.purchase_id });
+      toast.success('Payment verified! You can now download.');
+      if (payProduct) {
+        setPurchased(prev => new Set([...prev, payProduct.id]));
+        setCart(prev => prev.filter(x => x.id !== payProduct.id));
+      }
+      setPayProduct(null);
+      setPayInfo(null);
+    } catch (e: any) {
+      toast.error(e?.response?.data?.error || 'Verification failed');
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleDownload = async (p: ShopProduct) => {
+    try {
+      const res = await api.get(`/shop/purchase/download/${p.id}`);
+      if (res.data?.download_url) {
+        window.open(res.data.download_url, '_blank');
+        toast.success('Download started');
+      } else {
+        toast.success(res.data?.message || 'Download link will be emailed');
+      }
+    } catch (e: any) {
+      toast.error(e?.response?.data?.error || 'Download failed');
+    }
+  };
+
+  const handleAction = (p: ShopProduct) => {
+    if (purchased.has(p.id) || p.price === 'free' || (typeof p.price === 'object' && p.price.amount === 0)) {
+      handleDownload(p);
+    } else {
+      startPurchase(p);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Copied to clipboard');
   };
 
   return (
@@ -165,6 +240,8 @@ export default function ShopPage() {
             <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filtered.map(p => {
                 const price = formatPrice(p.price);
+                const isPurchased = purchased.has(p.id);
+                const isFree = price.isFree;
                 return (
                   <motion.div key={p.id} variants={itemAnim} className="group bg-[#111127] border border-slate-800/50 hover:border-purple-500/30 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/5">
                     <div className={`h-1.5 bg-gradient-to-r ${p.color}`} />
@@ -173,9 +250,11 @@ export default function ShopPage() {
                         <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center text-2xl shadow-lg`}>{p.icon}</div>
                         <div className="flex flex-col items-end gap-1.5">
                           {p.popular && <span className="px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-400 text-[10px] font-bold flex items-center gap-1"><Star className="w-3 h-3" /> Popular</span>}
-                          {price.isFree
-                            ? <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">Free</span>
-                            : <span className="px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-400 text-[10px] font-bold">{price.text}</span>}
+                          {isPurchased
+                            ? <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Owned</span>
+                            : isFree
+                              ? <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">Free</span>
+                              : <span className="px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-400 text-[10px] font-bold">{price.text}</span>}
                         </div>
                       </div>
                       <h3 className="text-base font-bold text-white mb-2 line-clamp-1">{p.title}</h3>
@@ -187,9 +266,16 @@ export default function ShopPage() {
                         {p.pages && <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" /> {p.pages} pages</span>}
                         {p.author && <span className="truncate ml-2 text-right">by {p.author}</span>}
                       </div>
-                      <button onClick={() => toggleCart(p)} className={`w-full py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${inCart(p.id) ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : price.isFree ? 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20' : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-lg shadow-purple-500/25'}`}>
-                        {inCart(p.id) ? <><X className="w-3.5 h-3.5" /> Remove</> : price.isFree ? <><Download className="w-3.5 h-3.5" /> Free Download</> : <><ShoppingCart className="w-3.5 h-3.5" /> Add to Cart</>}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        {!isFree && !isPurchased && (
+                          <button onClick={() => toggleCart(p)} className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition ${inCart(p.id) ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'bg-slate-800/60 text-slate-400 hover:bg-slate-700/60 border border-slate-700/50'}`}>
+                            {inCart(p.id) ? <CheckCircle2 className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
+                          </button>
+                        )}
+                        <button onClick={() => handleAction(p)} className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${isPurchased ? 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20' : isFree ? 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20' : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-lg shadow-purple-500/25'}`}>
+                          {isPurchased || isFree ? <><Download className="w-3.5 h-3.5" /> Download</> : <><ShoppingCart className="w-3.5 h-3.5" /> Buy {price.text}</>}
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 );
@@ -207,30 +293,26 @@ export default function ShopPage() {
                 <h2 className="text-lg font-bold text-white flex items-center gap-2"><ShoppingCart className="w-5 h-5 text-purple-400" /> Cart ({cart.length})</h2>
                 <button onClick={() => setShowCart(false)} className="p-2 rounded-lg hover:bg-slate-800/60 transition"><X className="w-5 h-5 text-slate-400" /></button>
               </div>
-
               <div className="flex-1 overflow-y-auto p-5 space-y-3">
                 {cart.length === 0 ? (
                   <div className="text-center py-16"><ShoppingCart className="w-14 h-14 text-slate-700 mx-auto mb-3" /><p className="text-slate-500 text-sm">Your cart is empty</p></div>
-                ) : (
-                  cart.map(p => {
-                    const price = formatPrice(p.price);
-                    return (
-                      <div key={p.id} className="flex items-center gap-3 bg-[#111127] border border-slate-800/50 rounded-xl p-3">
-                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${p.color} flex items-center justify-center text-base flex-shrink-0`}>{p.icon}</div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-semibold text-white truncate">{p.title}</div>
-                          <div className="text-xs text-slate-500 capitalize">{p.category.replace('-', ' ')}</div>
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                          <div className={`text-sm font-bold ${price.isFree ? 'text-emerald-400' : 'text-purple-400'}`}>{price.text}</div>
-                          <button onClick={() => toggleCart(p)} className="text-xs text-red-400 hover:text-red-300">Remove</button>
-                        </div>
+                ) : cart.map(p => {
+                  const price = formatPrice(p.price);
+                  return (
+                    <div key={p.id} className="flex items-center gap-3 bg-[#111127] border border-slate-800/50 rounded-xl p-3">
+                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${p.color} flex items-center justify-center text-base flex-shrink-0`}>{p.icon}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-semibold text-white truncate">{p.title}</div>
+                        <div className="text-xs text-slate-500 capitalize">{p.category.replace('-', ' ')}</div>
                       </div>
-                    );
-                  })
-                )}
+                      <div className="text-right flex-shrink-0">
+                        <div className={`text-sm font-bold ${price.isFree ? 'text-emerald-400' : 'text-purple-400'}`}>{price.text}</div>
+                        <button onClick={() => toggleCart(p)} className="text-xs text-red-400 hover:text-red-300">Remove</button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-
               {cart.length > 0 && (
                 <div className="p-5 border-t border-slate-800/50 space-y-3">
                   {hasPaidItems && (
@@ -239,13 +321,61 @@ export default function ShopPage() {
                       <span className="text-xl font-bold text-white">₹{cartTotal.toLocaleString()}</span>
                     </div>
                   )}
-                  <button onClick={handleCheckout} disabled={checkoutLoading}
-                    className="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25">
-                    {checkoutLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</> : checkoutDone ? <><CheckCircle2 className="w-4 h-4" /> Purchased!</> : hasPaidItems ? `Proceed to Checkout ₹${cartTotal.toLocaleString()}` : 'Download All Free'}
-                  </button>
-                  {checkoutDone && <p className="text-xs text-emerald-400 text-center">Resources will be available in your dashboard</p>}
+                  <p className="text-xs text-slate-500">Pay via UPI on each item to download</p>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Payment modal */}
+        {payProduct && payInfo && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !verifying && setPayProduct(null)} />
+            <div className="relative w-full max-w-md bg-[#111127] border border-slate-800/50 rounded-2xl p-6 max-h-[90vh] overflow-y-auto">
+              <button onClick={() => !verifying && setPayProduct(null)} className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-slate-800/60"><X className="w-5 h-5 text-slate-400" /></button>
+              <h2 className="text-xl font-bold text-white mb-1">Complete Payment</h2>
+              <p className="text-sm text-slate-400 mb-5">{payProduct.title}</p>
+
+              <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 mb-4">
+                <div className="text-xs text-slate-400 mb-1">Amount to pay</div>
+                <div className="text-3xl font-bold text-white">₹{payInfo.amount}</div>
+              </div>
+
+              <div className="space-y-3 mb-5">
+                <div>
+                  <label className="text-xs text-slate-400 mb-1 block">UPI ID</label>
+                  <div className="flex items-center gap-2 bg-slate-800/60 border border-slate-700/50 rounded-lg px-3 py-2.5">
+                    <span className="text-sm text-white font-mono flex-1">{payInfo.upi_id}</span>
+                    <button onClick={() => copyToClipboard(payInfo.upi_id)} className="p-1 hover:bg-slate-700/60 rounded"><Copy className="w-3.5 h-3.5 text-slate-400" /></button>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400 mb-1 block">Or pay via UPI link</label>
+                  <a href={payInfo.upi_deep_link} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-slate-800/60 border border-slate-700/50 hover:bg-slate-700/60 text-sm text-white transition">
+                    <ExternalLink className="w-4 h-4" /> Open UPI App
+                  </a>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs text-slate-400 mb-1 block">Enter UTR / Transaction ID</label>
+                <input
+                  value={utr}
+                  onChange={e => setUtr(e.target.value)}
+                  placeholder="12 digit UTR number"
+                  className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-700/50 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"
+                />
+                <p className="text-[10px] text-slate-500 mt-1.5">After paying, enter the UTR from your bank/UPI app to verify</p>
+              </div>
+
+              <button
+                onClick={verifyPurchase}
+                disabled={verifying || !utr}
+                className="w-full mt-5 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25"
+              >
+                {verifying ? <><Loader2 className="w-4 h-4 animate-spin" /> Verifying...</> : 'Verify & Download'}
+              </button>
             </div>
           </div>
         )}

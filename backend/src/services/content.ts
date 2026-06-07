@@ -7,6 +7,7 @@ import publicPatternsRouter from '../routes/publicPatterns';
 import publicStatsRouter from '../routes/publicStats';
 import adminRouter from '../routes/admin';
 import shopRouter from '../routes/shop';
+import shopPurchasesRouter from '../routes/shopPurchases';
 import { initDb } from '../data/db';
 import { questions, topics, cheatSheets, users, patternDetails } from '../data/seed';
 import { TEST_CASES } from '../data/testCases';
@@ -30,6 +31,7 @@ app.use('/api/questions', questionsRouter);
 app.use('/api/patterns', publicPatternsRouter);
 app.use('/api/stats', publicStatsRouter);
 app.use('/api/shop', shopRouter);
+app.use('/api/shop/purchase', shopPurchasesRouter);
 app.use('/api/admin', adminRouter);
 
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
