@@ -406,6 +406,21 @@ router.get('/debug/whoami', (req: AuthRequest, res: Response) => {
   });
 });
 
+router.get('/debug/all-data', (req: AuthRequest, res: Response) => {
+  const subs = (require('../data/db') as any).getSubscriptions();
+  const users = (require('../data/db') as any).getAllUsers();
+  const payments = (require('../data/db') as any).getPaymentRequests();
+  res.json({
+    caller: { id: req.user!.id, role: req.user!.role, email: req.user!.email },
+    users_count: users.length,
+    subs_count: subs.length,
+    payments_count: payments.length,
+    users: users.map((u: any) => ({ id: u.id, email: u.email, name: u.name, role: u.role, created_at: u.created_at })),
+    subs: subs,
+    payments: payments.map((p: any) => ({ id: p.id, user_id: p.user_id, status: p.status, amount: p.amount, provider: p.provider, created_at: p.created_at })),
+  });
+});
+
 router.get('/debug/users-and-subs', (req: AuthRequest, res: Response) => {
   if (req.user?.role !== 'admin') {
     return res.status(403).json({ error: 'Admin only' });
