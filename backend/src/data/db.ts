@@ -55,6 +55,7 @@ interface DbData {
   roadmaps: Roadmap[];
   roadmapProgress: RoadmapProgress[];
   notifications: AppNotification[];
+  paymentRequests: any[];
 }
 
 const DB_PATH = join(__dirname, '..', '..', 'data', 'db.json');
@@ -82,6 +83,7 @@ async function persistToMongo() {
     'communities', 'answers', 'chatMessages', 'discussions', 'studyProgress', 'points',
     'weeklyChallenges', 'challengeProgress', 'notes', 'interviews', 'resources',
     'contests', 'contestSubmissions', 'roadmaps', 'roadmapProgress', 'notifications',
+    'paymentRequests',
   ];
   for (const col of collections) {
     const arr = db[col] as any[];
@@ -137,6 +139,7 @@ export async function initDb(questions: Question[], topics: Topic[], cheatSheets
           contests: [], contestSubmissions: [],
           roadmaps: [], roadmapProgress: [],
           notifications: [],
+          paymentRequests: [],
         };
         db = fresh;
         await persistToMongo();
@@ -168,6 +171,7 @@ export async function initDb(questions: Question[], topics: Topic[], cheatSheets
           roadmaps: await col('roadmaps').find({}).toArray() as any,
           roadmapProgress: await col('roadmapProgress').find({}).toArray() as any,
           notifications: await col('notifications').find({}).toArray() as any,
+          paymentRequests: await col('paymentRequests').find({}).toArray() as any,
         };
         console.log(`[DB] Loaded ${db.questions.length} questions, ${db.users.length} users from MongoDB`);
       }
@@ -205,6 +209,7 @@ export async function initDb(questions: Question[], topics: Topic[], cheatSheets
     contests: [], contestSubmissions: [],
     roadmaps: [], roadmapProgress: [],
     notifications: [],
+    paymentRequests: [],
   };
   writeFileSync(DB_PATH, JSON.stringify(fresh, null, 2));
   db = fresh;
@@ -463,6 +468,30 @@ export function addSubscription(sub: Subscription): void {
   const idx = subs.findIndex(s => s.user_id === sub.user_id);
   if (idx >= 0) subs[idx] = sub; else subs.push(sub);
   saveDb();
+}
+
+// ====== PAYMENT REQUESTS ======
+export function getPaymentRequests(): any[] { return (getDb().paymentRequests || []) as any[]; }
+export function getPaymentRequestsByUser(userId: string): any[] {
+  return getPaymentRequests().filter((p: any) => p.user_id === userId);
+}
+export function addPaymentRequest(req: any): void {
+  const db = getDb();
+  if (!db.paymentRequests) (db as any).paymentRequests = [];
+  db.paymentRequests.push(req);
+  saveDb();
+}
+export function updatePaymentRequest(id: string, userId: string, updates: Partial<any>): any | null {
+  const db = getDb();
+  if (!db.paymentRequests) return null;
+  const idx = db.paymentRequests.findIndex((p: any) => p.id === id && p.user_id === userId);
+  if (idx === -1) return null;
+  db.paymentRequests[idx] = { ...db.paymentRequests[idx], ...updates };
+  saveDb();
+  return db.paymentRequests[idx];
+}
+export function findPaymentRequest(predicate: (p: any) => boolean): any | undefined {
+  return getPaymentRequests().find(predicate);
 }
 
 // ====== NOTIFICATIONS ======
