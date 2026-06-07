@@ -142,7 +142,7 @@ export default function AiInterviewPage() {
   if (phase === 'setup') {
     return (
       <div className="min-h-screen pt-20 sm:pt-24 pb-12 bg-slate-950">
-        <SEO title="AI Mock Interview - CodeSprout" path="/interview-prep/ai" noindex />
+        <SEO title="AI Mock Interview - CodeSprout" description="Practice with a complete AI mock interview across all rounds" path="/interview-prep/ai" noindex />
         <div className="max-w-2xl mx-auto px-4 sm:px-6">
           <Link to="/interview-prep/dashboard" className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition mb-6">
             <ArrowLeft className="w-4 h-4" /> Dashboard
@@ -192,7 +192,7 @@ export default function AiInterviewPage() {
   if (phase === 'report') {
     return (
       <div className="min-h-screen pt-20 sm:pt-24 pb-12 bg-slate-950">
-        <SEO title="Interview Report - CodeSprout" noindex />
+        <SEO title="Interview Report - CodeSprout" description="Your detailed AI interview feedback report" noindex />
         <div className="max-w-2xl mx-auto px-4 sm:px-6">
           <Link to="/interview-prep/dashboard" className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition mb-6">
             <ArrowLeft className="w-4 h-4" /> Dashboard
@@ -282,7 +282,7 @@ export default function AiInterviewPage() {
   // ====== CONVERSATION ======
   return (
     <div className="min-h-screen pt-16 sm:pt-20 pb-24 bg-slate-950 flex flex-col">
-      <SEO title="AI Interview - CodeSprout" noindex />
+      <SEO title="AI Interview - CodeSprout" description="AI-powered mock interview conversation" noindex />
 
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-lg border-b border-slate-800">

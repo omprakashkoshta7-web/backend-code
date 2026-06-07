@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu, X, ChevronDown, BookOpen, LogOut, LayoutDashboard,
-  Star, Shield, Search, Command, Bell, Bookmark, TrendingUp, Gamepad2
+  Star, Shield, Search, Command, Bell, Bookmark, TrendingUp, Gamepad2, ShoppingCart
 } from 'lucide-react';
 import { cn } from '@/shared/utils/helpers';
 import { subscriptionStorage } from '@/shared/utils/subscriptionStorage';
@@ -17,6 +17,7 @@ const navLinks = [
   { label: 'Games', href: '/games', icon: Gamepad2 },
   { label: 'Leaderboard', href: '/leaderboard', icon: Bell },
   { label: 'Community', href: '/communities', icon: Shield },
+  { label: 'Shop', href: '/shop', icon: ShoppingCart },
   { label: 'Plan', href: '/pricing', icon: Bookmark },
 ];
 
