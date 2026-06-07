@@ -3,9 +3,10 @@ import { executeCode, runTestCases, executeVisualize, analyzeComplexity, aiAnaly
 import { generateDriver, extractFunctionName } from '../drivers/driverGenerator';
 import { runCode } from '../runners/index';
 import { getTestCases, getQuestion } from '../data/db';
-import { recordSubmission, getSubmissions } from '../data/store';
+import { recordSubmission, getSubmissions, isPremiumFresh } from '../data/store';
 import { questions } from '../data/seed';
 import { v4 as uuidv4 } from 'uuid';
+import { authenticate, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
@@ -13,20 +14,40 @@ function getDefaultTestCases(slug: string): TestCase[] {
   return [];
 }
 
-router.get('/testcases/:slug', (req: Request, res: Response) => {
-  const testCases = getTestCases(req.params.slug);
-  res.json(testCases);
+async function getTestCasesForUser(slug: string, userId: string, isAdmin: boolean): Promise<{ visible: any[]; premiumRequired: boolean }> {
+  const testCases = getTestCases(slug);
+  const question = getQuestion(slug) || questions.find((q) => q.slug === slug);
+  const premiumRequired = !!question && question.difficulty !== 'Easy';
+  if (premiumRequired) {
+    const premium = isAdmin || await isPremiumFresh(userId);
+    if (!premium) {
+      return { visible: testCases.filter((tc: any) => !tc.is_hidden), premiumRequired: true };
+    }
+  }
+  return { visible: testCases, premiumRequired: false };
+}
+
+router.get('/testcases/:slug', authenticate, async (req: AuthRequest, res: Response) => {
+  const userId = req.user!.id;
+  const isAdmin = req.user!.role === 'admin';
+  const { visible, premiumRequired } = await getTestCasesForUser(req.params.slug, userId, isAdmin);
+  res.json({ test_cases: visible, premium_required: premiumRequired });
 });
 
-router.post('/run', (req: Request, res: Response) => {
+router.post('/run', authenticate, async (req: AuthRequest, res: Response) => {
   const { code, language, slug } = req.body;
   if (!code || !language) {
     return res.status(400).json({ error: 'Code and language required' });
   }
 
-  const allTestCases = getTestCases(slug || '');
+  const userId = req.user!.id;
+  const isAdmin = req.user!.role === 'admin';
+  const { visible: allTestCases, premiumRequired } = await getTestCasesForUser(slug || '', userId, isAdmin);
   if (allTestCases.length === 0) {
     return res.status(400).json({ error: 'No test cases found for this question' });
+  }
+  if (premiumRequired) {
+    return res.status(403).json({ error: 'Premium subscription required', requiresPremium: true });
   }
   const results = allTestCases.map((tc) => {
     let codeToRun = code;
@@ -57,7 +78,7 @@ router.post('/run', (req: Request, res: Response) => {
   });
 });
 
-router.post('/run-custom', (req: Request, res: Response) => {
+router.post('/run-custom', (req: AuthRequest, res: Response) => {
   const { code, language, input } = req.body;
   if (!code || !language) {
     return res.status(400).json({ error: 'Code and language required' });
@@ -73,18 +94,23 @@ router.post('/run-custom', (req: Request, res: Response) => {
   });
 });
 
-router.post('/submit', (req: Request, res: Response) => {
+router.post('/submit', authenticate, async (req: AuthRequest, res: Response) => {
   const { code, language, slug } = req.body;
-  const userId = (req as any).user?.id || (req.body.user_id as string) || 'guest';
-  const userName = (req as any).user?.name || (req.body.user_name as string) || 'Guest';
+  const userId = req.user!.id;
+  const userName = req.user!.name || 'User';
   if (!code || !language || !slug) {
     return res.status(400).json({ error: 'Code, language, and slug required' });
   }
 
-  const testCases = getTestCases(slug);
+  const isAdmin = req.user!.role === 'admin';
+  const { visible: testCases, premiumRequired } = await getTestCasesForUser(slug, userId, isAdmin);
   if (testCases.length === 0) {
     return res.status(400).json({ error: 'No test cases found for this question' });
   }
+  if (premiumRequired) {
+    return res.status(403).json({ error: 'Premium subscription required', requiresPremium: true });
+  }
+
   const result = runTestCases(code, language, testCases, slug);
 
   const question = getQuestion(slug) || questions.find((q) => q.slug === slug);
