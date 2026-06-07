@@ -58,8 +58,7 @@ export const subscriptionStorage = {
   async isPremium(userId?: string | null): Promise<boolean> {
     const id = userId ?? getUserId() ?? await refreshUserId();
     if (!id) return false;
-    const v = await secureStorage.getItem<string>(keysFor(id).plan);
-    return v === 'premium';
+    return localStorage.getItem(keysFor(id).plan) === 'premium';
   },
 
   isPremiumSync(userId?: string | null): boolean {
@@ -95,8 +94,8 @@ export const subscriptionStorage = {
     const id = userId ?? getUserId() ?? await refreshUserId();
     if (!id) return;
     const k = keysFor(id);
-    secureStorage.removeItem(k.plan);
-    secureStorage.removeItem(k.data);
+    localStorage.removeItem(k.plan);
+    await secureStorage.removeItem(k.data);
   },
 
   async clearAll() {

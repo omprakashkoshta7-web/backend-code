@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { Crown, Shield, Zap, Sparkles, Check, Calendar, ArrowRight, Star, Infinity, Lock, Code2, Brain, BarChart3, Lightbulb, Target, RefreshCw, ChevronRight } from 'lucide-react';
 import type { PricingPlan } from '../types/subscription';
 import { subscriptionApi } from '../api/subscriptionApi';
+import { authApi } from '@/features/auth/api/authApi';
 import SEO, { buildBreadcrumbJsonLd } from '@/shared/components/SEO';
 import { subscriptionStorage } from '@/shared/utils/subscriptionStorage';
 
@@ -69,7 +70,7 @@ function PricingContent() {
   const [subData, setSubData] = useState<SubData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch subscription from backend (force fresh data)
+  // Fetch subscription from backend (force fresh data) - use /api/auth/me as single source of truth
   const fetchSubFromApi = useCallback(async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -77,20 +78,37 @@ function PricingContent() {
       return;
     }
     try {
-      const res = await subscriptionApi.getStatus();
-      if (res.data && res.data.plan === 'premium') {
-        setSubData(res.data);
-        await subscriptionStorage.set('premium', res.data);
+      const meRes = await authApi.me();
+      const me = meRes.data;
+      if (me && me.is_premium === true && me.subscription_active === true) {
+        const sub = {
+          plan: 'premium',
+          status: me.subscription_status || 'active',
+          start_date: me.subscription_start,
+          end_date: me.subscription_end,
+        };
+        setSubData(sub);
+        await subscriptionStorage.set('premium', sub);
       } else {
         setSubData(null);
+        await subscriptionStorage.set('free', { plan: 'free', status: 'inactive' });
       }
-    } catch (err) {
-      // If API fails, try to use cached data as fallback
-      const cached = await subscriptionStorage.get();
-      if (cached && cached.plan === 'premium') {
-        setSubData(cached);
-      } else {
-        setSubData(null);
+    } catch {
+      try {
+        const res = await subscriptionApi.getStatus();
+        if (res.data && res.data.plan === 'premium') {
+          setSubData(res.data);
+          await subscriptionStorage.set('premium', res.data);
+        } else {
+          setSubData(null);
+        }
+      } catch {
+        const cached = await subscriptionStorage.get();
+        if (cached && cached.plan === 'premium') {
+          setSubData(cached);
+        } else {
+          setSubData(null);
+        }
       }
     } finally {
       setLoading(false);
