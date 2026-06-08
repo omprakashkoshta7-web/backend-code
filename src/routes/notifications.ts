@@ -13,6 +13,21 @@ import {
   sendNudgeNotification,
   sendSolveNotification,
   sendSystemNotification,
+  sendCommunityJoinedNotification,
+  sendCommunityLeftNotification,
+  sendCommunityCreatedNotification,
+  sendPostCreatedNotification,
+  sendReplyPostedNotification,
+  sendDiscussionCreatedNotification,
+  sendBookmarkedNotification,
+  sendBookmarkRemovedNotification,
+  sendNoteCreatedNotification,
+  sendResourceSharedNotification,
+  sendInterviewSharedNotification,
+  sendChallengeCreatedNotification,
+  sendRoadmapCreatedNotification,
+  sendUpvoteNotification,
+  sendChatSentNotification,
 } from '../services/notifications';
 
 const router = Router();
@@ -93,6 +108,51 @@ router.post('/trigger', (req: Request, res: Response) => {
         break;
       case 'system':
         notif = sendSystemNotification(userId, payload.title || 'Update', payload.message || '', payload.icon, payload.link);
+        break;
+      case 'community_joined':
+        notif = sendCommunityJoinedNotification(userId, payload.name || 'a community');
+        break;
+      case 'community_left':
+        notif = sendCommunityLeftNotification(userId, payload.name || 'a community');
+        break;
+      case 'community_created':
+        notif = sendCommunityCreatedNotification(userId, payload.name || 'your community');
+        break;
+      case 'post_created':
+        notif = sendPostCreatedNotification(userId);
+        break;
+      case 'reply_posted':
+        notif = sendReplyPostedNotification(userId);
+        break;
+      case 'discussion_created':
+        notif = sendDiscussionCreatedNotification(userId, payload.title || 'your discussion');
+        break;
+      case 'bookmarked':
+        notif = sendBookmarkedNotification(userId, payload.title || 'the question');
+        break;
+      case 'bookmark_removed':
+        notif = sendBookmarkRemovedNotification(userId);
+        break;
+      case 'note_created':
+        notif = sendNoteCreatedNotification(userId);
+        break;
+      case 'resource_shared':
+        notif = sendResourceSharedNotification(userId);
+        break;
+      case 'interview_shared':
+        notif = sendInterviewSharedNotification(userId);
+        break;
+      case 'challenge_created':
+        notif = sendChallengeCreatedNotification(userId, payload.name || 'your challenge');
+        break;
+      case 'roadmap_created':
+        notif = sendRoadmapCreatedNotification(userId);
+        break;
+      case 'upvote':
+        notif = sendUpvoteNotification(userId);
+        break;
+      case 'chat_sent':
+        notif = sendChatSentNotification(userId);
         break;
       default:
         return res.status(400).json({ error: 'unknown event' });
