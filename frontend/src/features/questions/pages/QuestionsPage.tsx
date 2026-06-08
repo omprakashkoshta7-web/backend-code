@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import { useQuestions } from '../hooks/useQuestions';
 import QuestionCard from '../components/QuestionCard';
+import RoadmapPopup from '../components/RoadmapPopup';
 import { Filter, Code2, BookOpen, Zap, Trophy, ChevronRight, BarChart3 } from 'lucide-react';
 import SEO, { buildBreadcrumbJsonLd } from '@/shared/components/SEO';
 
@@ -50,6 +51,7 @@ export default function QuestionsPage() {
 
 function QuestionsContent() {
   const [difficulty, setDifficulty] = useState<string>('All');
+  const [showRoadmap, setShowRoadmap] = useState(false);
   const { questions, loading } = useQuestions();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
@@ -135,12 +137,12 @@ function QuestionsContent() {
                 >
                   Explore Questions <ChevronRight className="w-4 h-4" />
                 </Link>
-                <Link
-                  to="/topics"
+                <button
+                  onClick={() => setShowRoadmap(true)}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-white/20 text-white/80 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all text-sm font-medium"
                 >
                   <BarChart3 className="w-4 h-4" /> View Roadmap
-                </Link>
+                </button>
               </motion.div>
 
               {/* Stats */}
@@ -254,6 +256,7 @@ function QuestionsContent() {
           </motion.div>
         )}
       </section>
+      <RoadmapPopup open={showRoadmap} onClose={() => setShowRoadmap(false)} />
     </div>
   );
 }
