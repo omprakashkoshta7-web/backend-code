@@ -7,10 +7,25 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
+// Trust proxy for correct IP when behind NGINX/reverse proxy
+app.set('trust proxy', 1);
+
 app.use(cors({
   origin: (_origin, callback) => callback(null, _origin || true),
   credentials: true,
 }));
+
+// Auth-specific rate limiter (stricter — login/register/Google OAuth)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 50,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => req.method === 'OPTIONS',
+  message: { error: 'Too many auth attempts, please try again later.' },
+});
+app.use('/api/auth', authLimiter);
+app.use('/auth', authLimiter);
 
 const globalLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -21,7 +36,9 @@ const globalLimiter = rateLimit({
     req.method === 'OPTIONS' ||
     req.path === '/health' ||
     req.path.startsWith('/api/notifications') ||
-    req.path.startsWith('/notifications'),
+    req.path.startsWith('/notifications') ||
+    req.path.startsWith('/api/auth') ||
+    req.path.startsWith('/auth'),
   keyGenerator: (req: any) => {
     const token = req.headers['authorization'];
     if (token) return token;
