@@ -9,6 +9,7 @@ import {
 import { communityApi } from '../api/communityApi';
 import type { Community } from '../types/community';
 import toast from 'react-hot-toast';
+import fireNotification from '@/shared/utils/fireNotification';
 import FeedTab from '../components/FeedTab';
 import ChatTab from '../components/ChatTab';
 import DiscussionsTab from '../components/DiscussionsTab';
@@ -59,7 +60,7 @@ export default function CommunityDetailPage() {
 
   const handleLeave = async () => {
     if (!id || !community) return;
-    try { await communityApi.leave(id); toast.success('Left community'); navigate('/communities'); }
+    try { await communityApi.leave(id); toast.success('Left community'); fireNotification('community_left', { name: community.name }); navigate('/communities'); }
     catch { toast.error('Failed to leave'); }
   };
 

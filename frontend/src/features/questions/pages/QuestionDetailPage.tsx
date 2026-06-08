@@ -8,6 +8,7 @@ import { bookmarksApi } from '@/features/bookmarks/api/bookmarksApi';
 import { subscriptionStorage } from '@/shared/utils/subscriptionStorage';
 import { useUser } from '@/shared/hooks/useUser';
 import toast from 'react-hot-toast';
+import fireNotification from '@/shared/utils/fireNotification';
 import SEO, { buildBreadcrumbJsonLd } from '@/shared/components/SEO';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { communityApi } from '@/features/community/api/communityApi';
@@ -140,6 +141,7 @@ function QuestionDetailContent() {
       await communityApi.createDiscussion({ question_slug: slug, title: discussTitle, content: discussContent });
       setShowDiscussForm(false); setDiscussTitle(''); setDiscussContent('');
       toast.success('Discussion started!'); loadDiscussions();
+      fireNotification('discussion_created', { title: discussTitle || 'your discussion' });
     } catch { toast.error('Failed to create discussion'); }
   };
 
@@ -151,6 +153,7 @@ function QuestionDetailContent() {
       setDiscussions(prev => prev.map(d => d.id === discussionId ? res.data : d));
       setReplyInputs(prev => ({ ...prev, [discussionId]: '' }));
       toast.success('Reply posted!');
+      fireNotification('reply_posted');
     } catch { toast.error('Failed to reply'); }
   };
 
@@ -186,6 +189,7 @@ function QuestionDetailContent() {
       setAnswerExplanation('');
       toast.success('Answer submitted!');
       loadAnswers();
+      fireNotification('post_created');
     } catch { toast.error('Failed to submit answer'); }
     setSubmittingAnswer(false);
   };
@@ -194,6 +198,7 @@ function QuestionDetailContent() {
     try {
       const res = await communityApi.upvoteAnswer(answerId);
       setAnswers(prev => prev.map(a => a.id === answerId ? res.data : a));
+      fireNotification('upvote');
     } catch { toast.error('Failed to upvote'); }
   };
 
@@ -212,6 +217,7 @@ function QuestionDetailContent() {
       await bookmarksApi.toggle(question!.id);
       setBookmarked(!bookmarked);
       toast.success(bookmarked ? 'Removed bookmark' : 'Bookmarked!');
+      fireNotification(bookmarked ? 'bookmark_removed' : 'bookmarked', { title: question!.title });
     } catch {
       toast.error('Failed to toggle bookmark');
     }

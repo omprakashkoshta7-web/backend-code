@@ -4,6 +4,7 @@ import { Link2, Plus, X, ExternalLink, Youtube, FileText, BookOpen, ChevronDown 
 import { communityApi } from '../api/communityApi';
 import type { CommunityResource } from '../types/community';
 import toast from 'react-hot-toast';
+import fireNotification from '@/shared/utils/fireNotification';
 
 const typeIcons: Record<string, any> = { youtube: Youtube, article: FileText, pdf: FileText, roadmap: BookOpen, other: Link2 };
 const typeColors: Record<string, string> = { youtube: 'text-red-400', article: 'text-blue-400', pdf: 'text-orange-400', roadmap: 'text-emerald-400', other: 'text-purple-400' };
@@ -33,6 +34,7 @@ export default function ResourcesTab({ community, communityId }: { community: an
     try {
       await communityApi.createResource({ community_id: communityId, ...form });
       toast.success('Resource shared!'); setShowForm(false); setForm({ title: '', type: 'other', url: '', description: '' }); load();
+      fireNotification('resource_shared');
     } catch { toast.error('Failed to share'); }
   };
 

@@ -5,6 +5,7 @@ import { communityApi } from '../api/communityApi';
 import type { WeeklyChallenge, ChallengeProgress } from '../types/community';
 import { useUser } from '@/shared/hooks/useUser';
 import toast from 'react-hot-toast';
+import fireNotification from '@/shared/utils/fireNotification';
 
 export default function ChallengesTab({ community, communityId }: { community: any; communityId: string }) {
   const user = useUser() ?? {};
@@ -36,6 +37,7 @@ export default function ChallengesTab({ community, communityId }: { community: a
     try {
       await communityApi.createChallenge({ community_id: communityId, title: form.title, description: form.description, days, start_date: startDate, end_date: endDate });
       toast.success('Challenge created!'); setShowForm(false); setForm({ title: '', description: '', days: 7 }); load();
+      fireNotification('challenge_created', { name: form.title });
     } catch { toast.error('Failed to create'); }
   };
 

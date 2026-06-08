@@ -9,6 +9,7 @@ import {
 import { communityApi } from '../api/communityApi';
 import type { Community } from '../types/community';
 import toast from 'react-hot-toast';
+import fireNotification from '@/shared/utils/fireNotification';
 
 const COLORS = ['from-purple-500 to-violet-600', 'from-emerald-500 to-teal-500', 'from-amber-500 to-orange-500', 'from-blue-500 to-cyan-500', 'from-rose-500 to-pink-500', 'from-indigo-500 to-purple-500'];
 
@@ -112,6 +113,7 @@ export default function CommunitiesPage() {
       setShowCreate(false);
       setForm({ name: '', description: '' });
       toast.success('Community created!');
+      fireNotification('community_created', { name: form.name });
     } catch { toast.error('Failed to create community'); }
     setCreating(false);
   };
@@ -129,6 +131,7 @@ export default function CommunitiesPage() {
       setShowJoin(false);
       setInviteCode('');
       toast.success('Joined community!');
+      fireNotification('community_joined', { name: res.data.name || 'a community' });
     } catch { toast.error('Invalid invite code'); }
     setJoining(false);
   };

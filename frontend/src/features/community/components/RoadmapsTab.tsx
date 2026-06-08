@@ -5,6 +5,7 @@ import { communityApi } from '../api/communityApi';
 import type { Roadmap, RoadmapProgress, RoadmapStep } from '../types/community';
 import { useUser } from '@/shared/hooks/useUser';
 import toast from 'react-hot-toast';
+import fireNotification from '@/shared/utils/fireNotification';
 
 export default function RoadmapsTab({ community, communityId }: { community: any; communityId: string }) {
   const user = useUser() ?? {};
@@ -35,6 +36,7 @@ export default function RoadmapsTab({ community, communityId }: { community: any
     try {
       await communityApi.createRoadmap({ community_id: communityId, title: form.title, description: form.description, steps });
       toast.success('Roadmap created!'); setShowForm(false); setForm({ title: '', description: '', stepsInput: '' }); load();
+      fireNotification('roadmap_created');
     } catch { toast.error('Failed to create'); }
   };
 

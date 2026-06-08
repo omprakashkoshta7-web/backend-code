@@ -5,6 +5,7 @@ import { communityApi } from '../api/communityApi';
 import type { Community, ChatMessage } from '../types/community';
 import { useUser } from '@/shared/hooks/useUser';
 import toast from 'react-hot-toast';
+import fireNotification from '@/shared/utils/fireNotification';
 
 export default function ChatTab({ community, communityId }: { community: Community; communityId: string }) {
   const user = useUser() ?? {};
@@ -34,6 +35,7 @@ export default function ChatTab({ community, communityId }: { community: Communi
       const res = await communityApi.sendChat(communityId, input);
       setMessages(prev => [...prev, res.data]);
       setInput('');
+      fireNotification('chat_sent');
     } catch { toast.error('Failed to send'); }
     setSending(false);
   };

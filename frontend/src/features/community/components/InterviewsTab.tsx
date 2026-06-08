@@ -4,6 +4,7 @@ import { Briefcase, Plus, X, Building2 } from 'lucide-react';
 import { communityApi } from '../api/communityApi';
 import type { InterviewExperience } from '../types/community';
 import toast from 'react-hot-toast';
+import fireNotification from '@/shared/utils/fireNotification';
 
 export default function InterviewsTab({ community, communityId }: { community: any; communityId: string }) {
   const [interviews, setInterviews] = useState<InterviewExperience[]>([]);
@@ -27,6 +28,7 @@ export default function InterviewsTab({ community, communityId }: { community: a
         experience: form.experience, result: form.result,
       });
       toast.success('Experience shared!'); setShowForm(false); setForm({ company: '', role: '', rounds: 1, questions_asked: '', experience: '', result: '' }); load();
+      fireNotification('interview_shared');
     } catch { toast.error('Failed to share'); }
   };
 

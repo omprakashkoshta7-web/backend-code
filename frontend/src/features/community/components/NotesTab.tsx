@@ -4,6 +4,7 @@ import { FileText, Plus, X, Edit3 } from 'lucide-react';
 import { communityApi } from '../api/communityApi';
 import type { CommunityNote } from '../types/community';
 import toast from 'react-hot-toast';
+import fireNotification from '@/shared/utils/fireNotification';
 
 export default function NotesTab({ community, communityId }: { community: any; communityId: string }) {
   const [notes, setNotes] = useState<CommunityNote[]>([]);
@@ -30,6 +31,7 @@ export default function NotesTab({ community, communityId }: { community: any; c
         toast.success('Note created!');
       }
       setShowForm(false); setEditing(null); setForm({ title: '', content: '' }); loadNotes();
+      if (!editing) fireNotification('note_created');
     } catch { toast.error('Failed to save'); }
   };
 

@@ -44,6 +44,59 @@ const FUN_MESSAGES = {
     { title: "📢 Heads up!", message: "New questions added! Fresh meat for your brain 🥩", icon: "📢" },
     { title: "🆕 New content!", message: "We just dropped fresh problems. Go check 'em out!", icon: "🆕" },
   ],
+  community_joined: [
+    { title: "🤝 Welcome to the crew!", message: "You just joined a community. Time to connect and learn together!", icon: "🤝" },
+    { title: "🎉 New community unlocked!", message: "You're in! Introduce yourself and start engaging.", icon: "🎉" },
+  ],
+  community_left: [
+    { title: "👋 Left community", message: "You've left a community. You can always rejoin later!", icon: "👋" },
+  ],
+  community_created: [
+    { title: "🏠 Community created!", message: "Your community is live! Invite members and start building.", icon: "🏠" },
+  ],
+  post_created: [
+    { title: "📝 Post published!", message: "Your answer is live. Others can now learn from you!", icon: "📝" },
+    { title: "✍️ Great contribution!", message: "Sharing knowledge is the best way to learn. Nice post!", icon: "✍️" },
+  ],
+  reply_posted: [
+    { title: "💬 Reply posted!", message: "Your thoughts are out there. Keep the conversation going!", icon: "💬" },
+    { title: "🗣️ Nice response!", message: "You just added value to the discussion!", icon: "🗣️" },
+  ],
+  discussion_created: [
+    { title: "💭 Discussion started!", message: "Your question is now open for the community to answer!", icon: "💭" },
+    { title: "🗣️ New thread!", message: "Great thinking starting this discussion. Answers incoming!", icon: "🗣️" },
+  ],
+  bookmarked: [
+    { title: "🔖 Bookmarked!", message: "Saved for later. Smart move — review is the key to mastery!", icon: "🔖" },
+    { title: "📌 Saved!", message: "Added to your bookmarks. Don't forget to come back and solve it!", icon: "📌" },
+  ],
+  bookmark_removed: [
+    { title: "📭 Bookmark removed", message: "Removed from your bookmarks. Hope you already nailed that one!", icon: "📭" },
+  ],
+  note_created: [
+    { title: "📝 Note saved!", message: "Your notes are growing. Keep capturing those insights!", icon: "📝" },
+    { title: "📒 Great note!", message: "Documenting what you learn makes it stick. Smart!", icon: "📒" },
+  ],
+  resource_shared: [
+    { title: "🔗 Resource shared!", message: "Thanks for sharing! Your community appreciates it.", icon: "🔗" },
+    { title: "📦 Great share!", message: "Helping others learn — that's what makes a great community member!", icon: "📦" },
+  ],
+  interview_shared: [
+    { title: "💼 Experience shared!", message: "Your interview story will help others prepare. Thank you!", icon: "💼" },
+    { title: "🎯 Great insight!", message: "Real interview experiences are gold. Thanks for sharing!", icon: "🎯" },
+  ],
+  challenge_created: [
+    { title: "🏆 Challenge created!", message: "A new challenge is live! Let's see who steps up!", icon: "🏆" },
+  ],
+  roadmap_created: [
+    { title: "🗺️ Roadmap created!", message: "Your learning path is set. Time to follow it step by step!", icon: "🗺️" },
+  ],
+  upvote: [
+    { title: "👍 Upvoted!", message: "Your answer got upvoted! Keep writing helpful solutions.", icon: "👍" },
+  ],
+  chat_sent: [
+    { title: "💭 Message sent!", message: "Your message is in the chat. Keep the conversation alive!", icon: "💭" },
+  ],
 };
 
 export function sendWelcomeNotification(userId: string, userName?: string) {
@@ -87,4 +140,79 @@ export function sendPremiumNotification(userId: string) {
 
 export function sendSystemNotification(userId: string, title: string, message: string, icon = '📢', link?: string) {
   return addNotification({ user_id: userId, type: 'system', title, message, icon, link });
+}
+
+export function sendCommunityJoinedNotification(userId: string, communityName: string) {
+  const m = randomPick(FUN_MESSAGES.community_joined);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: `You joined "${communityName}". ${m.message}`, icon: '🤝', link: '/communities' });
+}
+
+export function sendCommunityLeftNotification(userId: string, communityName: string) {
+  const m = randomPick(FUN_MESSAGES.community_left);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: `You left "${communityName}". ${m.message}`, icon: '👋', link: '/communities' });
+}
+
+export function sendCommunityCreatedNotification(userId: string, communityName: string) {
+  const m = randomPick(FUN_MESSAGES.community_created);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: `"${communityName}" is now live! ${m.message}`, icon: '🏠', link: '/communities' });
+}
+
+export function sendPostCreatedNotification(userId: string) {
+  const m = randomPick(FUN_MESSAGES.post_created);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: m.message, icon: '📝' });
+}
+
+export function sendReplyPostedNotification(userId: string) {
+  const m = randomPick(FUN_MESSAGES.reply_posted);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: m.message, icon: '💬' });
+}
+
+export function sendDiscussionCreatedNotification(userId: string, title: string) {
+  const m = randomPick(FUN_MESSAGES.discussion_created);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: `"${title}" — ${m.message}`, icon: '💭' });
+}
+
+export function sendBookmarkedNotification(userId: string, questionTitle: string) {
+  const m = randomPick(FUN_MESSAGES.bookmarked);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: `"${questionTitle}" — ${m.message}`, icon: '🔖' });
+}
+
+export function sendBookmarkRemovedNotification(userId: string) {
+  const m = randomPick(FUN_MESSAGES.bookmark_removed);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: m.message, icon: '📭' });
+}
+
+export function sendNoteCreatedNotification(userId: string) {
+  const m = randomPick(FUN_MESSAGES.note_created);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: m.message, icon: '📝' });
+}
+
+export function sendResourceSharedNotification(userId: string) {
+  const m = randomPick(FUN_MESSAGES.resource_shared);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: m.message, icon: '🔗' });
+}
+
+export function sendInterviewSharedNotification(userId: string) {
+  const m = randomPick(FUN_MESSAGES.interview_shared);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: m.message, icon: '💼' });
+}
+
+export function sendChallengeCreatedNotification(userId: string, challengeName: string) {
+  const m = randomPick(FUN_MESSAGES.challenge_created);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: `"${challengeName}" — ${m.message}`, icon: '🏆' });
+}
+
+export function sendRoadmapCreatedNotification(userId: string) {
+  const m = randomPick(FUN_MESSAGES.roadmap_created);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: m.message, icon: '🗺️' });
+}
+
+export function sendUpvoteNotification(userId: string) {
+  const m = randomPick(FUN_MESSAGES.upvote);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: m.message, icon: '👍' });
+}
+
+export function sendChatSentNotification(userId: string) {
+  const m = randomPick(FUN_MESSAGES.chat_sent);
+  return addNotification({ user_id: userId, type: 'system', title: m.title, message: m.message, icon: '💭' });
 }
