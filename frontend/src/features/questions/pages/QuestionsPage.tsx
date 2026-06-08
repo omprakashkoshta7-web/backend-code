@@ -108,11 +108,10 @@ function QuestionsContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+                className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
               >
-                <span className="text-white">Master Coding </span>
-                <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-violet-400 bg-clip-text text-transparent">Interviews</span>
-                <span className="text-white"> Faster</span>
+                <span className="text-white">Best Choice of </span>
+                <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-violet-400 bg-clip-text text-transparent">Questions</span>
               </motion.h1>
 
               <motion.p
@@ -168,7 +167,7 @@ function QuestionsContent() {
 
             {/* Right Illustration */}
             <div className="hidden lg:flex justify-end">
-              <img src="/questions-hero.png" alt="Questions" className="w-full max-w-md lg:max-w-lg object-contain drop-shadow-2xl" />
+              <img src="/questions-hero.png" alt="Questions" className="w-full max-w-lg xl:max-w-xl object-contain drop-shadow-2xl" />
             </div>
           </div>
         </div>
