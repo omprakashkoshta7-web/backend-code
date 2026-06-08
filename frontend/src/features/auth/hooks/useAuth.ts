@@ -50,6 +50,7 @@ export function useLogin() {
   const navigate = useNavigate();
 
   const login = async (payload: LoginPayload) => {
+    if (loading) return;
     setLoading(true);
     try {
       const res = await authApi.login(payload);
@@ -75,6 +76,7 @@ export function useRegister() {
   const navigate = useNavigate();
 
   const register = async (payload: RegisterPayload) => {
+    if (loading) return;
     setLoading(true);
     try {
       await authApi.register(payload);

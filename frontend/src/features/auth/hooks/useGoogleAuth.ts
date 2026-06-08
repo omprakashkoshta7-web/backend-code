@@ -81,12 +81,13 @@ export function useGoogleAuth() {
   });
 
   const login = useCallback(() => {
+    if (loading) return;
     if (!isConfigured) {
       toast.error('Google sign-in not configured. Set VITE_GOOGLE_CLIENT_ID in .env');
       return;
     }
     googleLogin();
-  }, [googleLogin]);
+  }, [googleLogin, loading]);
 
   return { login, loading, isConfigured };
 }
