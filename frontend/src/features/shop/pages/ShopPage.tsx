@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, ShoppingCart, Star, Download, CheckCircle2, X, Loader2, BookOpen, TrendingUp, Users, Crown, ArrowRight, Sparkles, Copy, ExternalLink } from 'lucide-react';
+import { Search, ShoppingCart, Star, Download, CheckCircle2, X, Loader2, BookOpen, TrendingUp, Users, Crown, ArrowRight, Sparkles } from 'lucide-react';
 import SEO from '@/shared/components/SEO';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
@@ -23,6 +23,12 @@ interface ShopProduct {
   popular?: boolean; pages?: number; author?: string; download_url?: string;
 }
 
+declare global {
+  interface Window {
+    Razorpay?: any;
+  }
+}
+
 function formatPrice(p: ShopProduct['price']) {
   if (p === 'free') return { text: 'Free', isFree: true, amount: 0 };
   return { text: p.label, isFree: false, amount: p.amount };
@@ -38,11 +44,10 @@ export default function ShopPage() {
   const [cart, setCart] = useState<ShopProduct[]>([]);
   const [showCart, setShowCart] = useState(false);
 
-  // Payment modal state
+  // Razorpay state
   const [payProduct, setPayProduct] = useState<ShopProduct | null>(null);
-  const [payInfo, setPayInfo] = useState<any>(null);
-  const [utr, setUtr] = useState('');
-  const [verifying, setVerifying] = useState(false);
+  const [payInfo, setPayInfo] = useState<{ order_id: string; amount: number; currency: string; key_id: string; purchase_id: string } | null>(null);
+  const [processing, setProcessing] = useState(false);
   const [purchased, setPurchased] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -81,13 +86,32 @@ export default function ShopPage() {
     if (p.price === 'free') return s;
     return s + p.price.amount;
   }, 0);
-  const hasPaidItems = cart.some(p => p.price !== 'free' && p.price.amount > 0);
 
   const toggleCart = (p: ShopProduct) => {
     setCart(prev => prev.find(x => x.id === p.id) ? prev.filter(x => x.id !== p.id) : [...prev, p]);
   };
 
   const inCart = (id: string) => cart.some(x => x.id === id);
+
+  const loadRazorpayScript = (): Promise<boolean> => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) return resolve(true);
+      const existing = document.querySelector('script[data-razorpay-checkout]');
+      if (existing) {
+        if (window.Razorpay) return resolve(true);
+        existing.addEventListener('load', () => resolve(!!window.Razorpay));
+        existing.addEventListener('error', () => resolve(false));
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      script.dataset.razorpayCheckout = 'true';
+      script.onload = () => resolve(!!window.Razorpay);
+      script.onerror = () => resolve(false);
+      document.head.appendChild(script);
+    });
+  };
 
   const startPurchase = async (p: ShopProduct) => {
     if (!isAuthenticated) {
@@ -98,31 +122,87 @@ export default function ShopPage() {
       const res = await api.post('/shop/purchase/init', { product_id: p.id });
       setPayProduct(p);
       setPayInfo(res.data);
-      setUtr('');
     } catch (e: any) {
       toast.error(e?.response?.data?.error || 'Failed to start purchase');
     }
   };
 
-  const verifyPurchase = async () => {
-    if (!utr || utr.length < 5) {
-      toast.error('Enter a valid UTR (min 5 chars)');
-      return;
-    }
-    setVerifying(true);
+  const payWithRazorpay = async () => {
+    if (!payInfo || !payProduct) return;
+    setProcessing(true);
+
     try {
-      await api.post('/shop/purchase/verify', { utr, purchase_id: payInfo?.purchase_id });
-      toast.success('Payment verified! You can now download.');
-      if (payProduct) {
+      const loaded = await loadRazorpayScript();
+      if (!loaded || !window.Razorpay) {
+        toast.error('Failed to load payment gateway');
+        setProcessing(false);
+        return;
+      }
+
+      const verifyRes = await new Promise<{ success: boolean; message: string; purchase: any } | null>((resolve) => {
+        let resolved = false;
+
+        const options = {
+          key: payInfo.key_id,
+          amount: payInfo.amount,
+          currency: payInfo.currency,
+          name: 'CodeSprout',
+          description: payProduct.title,
+          image: '/logo.png',
+          order_id: payInfo.order_id,
+          theme: { color: '#7C6CF6' },
+          handler: async (response: any) => {
+            try {
+              const res = await api.post('/shop/purchase/verify', {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                purchase_id: payInfo.purchase_id,
+              });
+              if (!resolved) {
+                resolved = true;
+                resolve(res.data);
+              }
+            } catch (err: any) {
+              if (!resolved) {
+                resolved = true;
+                toast.error(err?.response?.data?.error || 'Payment verification failed');
+                resolve(null);
+              }
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              if (!resolved) {
+                resolved = true;
+                resolve(null);
+              }
+            },
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', (resp: any) => {
+          toast.error(resp?.error?.description || 'Payment failed');
+          if (!resolved) {
+            resolved = true;
+            resolve(null);
+          }
+        });
+        rzp.open();
+      });
+
+      if (verifyRes?.success) {
+        toast.success('Payment verified! You can now download.');
         setPurchased(prev => new Set([...prev, payProduct.id]));
         setCart(prev => prev.filter(x => x.id !== payProduct.id));
+        setPayProduct(null);
+        setPayInfo(null);
       }
-      setPayProduct(null);
-      setPayInfo(null);
     } catch (e: any) {
-      toast.error(e?.response?.data?.error || 'Verification failed');
+      toast.error(e?.message || 'Payment failed');
     } finally {
-      setVerifying(false);
+      setProcessing(false);
     }
   };
 
@@ -146,11 +226,6 @@ export default function ShopPage() {
     } else {
       startPurchase(p);
     }
-  };
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success('Copied to clipboard');
   };
 
   return (
@@ -315,67 +390,42 @@ export default function ShopPage() {
               </div>
               {cart.length > 0 && (
                 <div className="p-5 border-t border-slate-800/50 space-y-3">
-                  {hasPaidItems && (
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-400">Total</span>
-                      <span className="text-xl font-bold text-white">₹{cartTotal.toLocaleString()}</span>
-                    </div>
-                  )}
-                  <p className="text-xs text-slate-500">Pay via UPI on each item to download</p>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-400">Total</span>
+                    <span className="text-xl font-bold text-white">₹{cartTotal.toLocaleString()}</span>
+                  </div>
                 </div>
               )}
             </div>
           </div>
         )}
 
-        {/* Payment modal */}
+        {/* Razorpay payment modal */}
         {payProduct && payInfo && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !verifying && setPayProduct(null)} />
-            <div className="relative w-full max-w-md bg-[#111127] border border-slate-800/50 rounded-2xl p-6 max-h-[90vh] overflow-y-auto">
-              <button onClick={() => !verifying && setPayProduct(null)} className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-slate-800/60"><X className="w-5 h-5 text-slate-400" /></button>
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !processing && setPayProduct(null)} />
+            <div className="relative w-full max-w-md bg-[#111127] border border-slate-800/50 rounded-2xl p-6">
+              <button onClick={() => !processing && setPayProduct(null)} className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-slate-800/60"><X className="w-5 h-5 text-slate-400" /></button>
               <h2 className="text-xl font-bold text-white mb-1">Complete Payment</h2>
               <p className="text-sm text-slate-400 mb-5">{payProduct.title}</p>
 
-              <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 mb-4">
+              <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 mb-6">
                 <div className="text-xs text-slate-400 mb-1">Amount to pay</div>
-                <div className="text-3xl font-bold text-white">₹{payInfo.amount}</div>
-              </div>
-
-              <div className="space-y-3 mb-5">
-                <div>
-                  <label className="text-xs text-slate-400 mb-1 block">UPI ID</label>
-                  <div className="flex items-center gap-2 bg-slate-800/60 border border-slate-700/50 rounded-lg px-3 py-2.5">
-                    <span className="text-sm text-white font-mono flex-1">{payInfo.upi_id}</span>
-                    <button onClick={() => copyToClipboard(payInfo.upi_id)} className="p-1 hover:bg-slate-700/60 rounded"><Copy className="w-3.5 h-3.5 text-slate-400" /></button>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Or pay via UPI link</label>
-                  <a href={payInfo.upi_deep_link} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-slate-800/60 border border-slate-700/50 hover:bg-slate-700/60 text-sm text-white transition">
-                    <ExternalLink className="w-4 h-4" /> Open UPI App
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs text-slate-400 mb-1 block">Enter UTR / Transaction ID</label>
-                <input
-                  value={utr}
-                  onChange={e => setUtr(e.target.value)}
-                  placeholder="12 digit UTR number"
-                  className="w-full px-3 py-2.5 bg-slate-800/60 border border-slate-700/50 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"
-                />
-                <p className="text-[10px] text-slate-500 mt-1.5">After paying, enter the UTR from your bank/UPI app to verify</p>
+                <div className="text-3xl font-bold text-white">₹{payInfo.amount / 100}</div>
               </div>
 
               <button
-                onClick={verifyPurchase}
-                disabled={verifying || !utr}
-                className="w-full mt-5 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25"
+                onClick={payWithRazorpay}
+                disabled={processing}
+                className="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25"
               >
-                {verifying ? <><Loader2 className="w-4 h-4 animate-spin" /> Verifying...</> : 'Verify & Download'}
+                {processing
+                  ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening Payment...</>
+                  : <><img src="https://razorpay.com/favicon.png" className="w-5 h-5" /> Pay with Razorpay</>
+                }
               </button>
+
+              <p className="text-xs text-slate-500 text-center mt-4">Secure payment powered by Razorpay</p>
             </div>
           </div>
         )}

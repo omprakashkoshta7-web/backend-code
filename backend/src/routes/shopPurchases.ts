@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { randomUUID } from 'crypto';
 import { authenticate, AuthRequest } from '../middleware/auth';
 import { getDb, saveDb } from '../data/db';
+import { createRazorpayOrder, verifyRazorpaySignature, isRazorpayEnabled } from '../services/razorpay';
 import type { ShopProduct } from '../types';
 
 const router = Router();
@@ -15,28 +16,18 @@ interface ShopPurchase {
   product_title: string;
   product_category: string;
   amount: number;
-  utr?: string;
   status: 'pending' | 'verified' | 'failed';
   created_at: string;
   verified_at?: string;
   download_count: number;
+  razorpay_order_id?: string;
+  razorpay_payment_id?: string;
+  razorpay_signature?: string;
 }
 
-const UPI_ID = process.env.UPI_ID || 'codesprout@upi';
-const UPI_PAYEE_NAME = process.env.UPI_PAYEE_NAME || 'CodeSprout';
-const UPI_CURRENCY = process.env.UPI_CURRENCY || 'INR';
-
-function buildUpiLink(amount: number, txnNote: string) {
-  const params = new URLSearchParams({
-    pa: UPI_ID, pn: UPI_PAYEE_NAME, am: String(amount), cu: UPI_CURRENCY, tn: txnNote,
-  });
-  return `upi://pay?${params.toString()}`;
-}
-
-// All routes require authentication
 router.use(authenticate);
 
-router.post('/init', (req: AuthRequest, res: Response) => {
+router.post('/init', async (req: AuthRequest, res: Response) => {
   const { product_id } = req.body;
   if (!product_id) return res.status(400).json({ error: 'product_id required' });
 
@@ -51,8 +42,7 @@ router.post('/init', (req: AuthRequest, res: Response) => {
 
   const amount = typeof product.price === 'object' ? product.price.amount : 0;
   const userId = req.user!.id;
-  const txnId = `SP${Date.now()}${userId.slice(-4).toUpperCase()}`;
-  const upiLink = buildUpiLink(amount, `Shop ${product.title} ${txnId}`);
+  const receipt = `SP${Date.now()}${userId.slice(-4).toUpperCase()}`;
 
   const purchase: ShopPurchase = {
     id: randomUUID(),
@@ -70,38 +60,63 @@ router.post('/init', (req: AuthRequest, res: Response) => {
 
   db.shopPurchases = db.shopPurchases || [];
   db.shopPurchases.push(purchase);
-  saveDb();
 
-  res.json({
-    purchase_id: purchase.id,
-    txn_id: txnId,
-    amount,
-    currency: UPI_CURRENCY,
-    upi_id: UPI_ID,
-    payee_name: UPI_PAYEE_NAME,
-    qr_data: upiLink,
-    upi_deep_link: upiLink,
-    status: 'pending',
-    expires_in: '15 minutes',
-  });
+  if (!isRazorpayEnabled()) {
+    saveDb();
+    return res.status(503).json({ error: 'Razorpay is not configured on the server' });
+  }
+
+  try {
+    const order = await createRazorpayOrder({
+      amount,
+      currency: 'INR',
+      receipt,
+      notes: { product_id, purchase_id: purchase.id, user_id: userId },
+    });
+
+    purchase.razorpay_order_id = order.id;
+    saveDb();
+
+    res.json({
+      order_id: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      key_id: process.env.RAZORPAY_KEY_ID || '',
+      purchase_id: purchase.id,
+    });
+  } catch (e: any) {
+    purchase.status = 'failed';
+    saveDb();
+    res.status(500).json({ error: e?.error?.description || e?.message || 'Failed to create Razorpay order' });
+  }
 });
 
 router.post('/verify', (req: AuthRequest, res: Response) => {
-  const { utr, purchase_id } = req.body;
-  if (!utr || utr.length < 5) {
-    return res.status(400).json({ error: 'Valid UTR number required' });
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, purchase_id } = req.body;
+  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    return res.status(400).json({ error: 'Missing Razorpay payment details' });
+  }
+
+  const valid = verifyRazorpaySignature({
+    orderId: razorpay_order_id,
+    paymentId: razorpay_payment_id,
+    signature: razorpay_signature,
+  });
+  if (!valid) {
+    return res.status(400).json({ error: 'Invalid payment signature' });
   }
 
   const db = getDb();
   const userId = req.user!.id;
   const purchase = purchase_id
     ? (db.shopPurchases || []).find((p: ShopPurchase) => p.id === purchase_id && p.user_id === userId)
-    : (db.shopPurchases || []).filter((p: ShopPurchase) => p.user_id === userId).slice(-1)[0];
+    : (db.shopPurchases || []).filter((p: ShopPurchase) => p.razorpay_order_id === razorpay_order_id && p.user_id === userId).slice(-1)[0];
 
   if (!purchase) return res.status(404).json({ error: 'Purchase not found' });
   if (purchase.status === 'verified') return res.status(400).json({ error: 'Already verified' });
 
-  purchase.utr = utr;
+  purchase.razorpay_payment_id = razorpay_payment_id;
+  purchase.razorpay_signature = razorpay_signature;
   purchase.status = 'verified';
   purchase.verified_at = new Date().toISOString();
   saveDb();
