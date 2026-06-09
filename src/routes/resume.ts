@@ -271,6 +271,44 @@ router.get('/templates', (_req: Request, res: Response) => {
   res.json({ templates: TEMPLATES });
 });
 
+router.get('/templates/:id', (req: Request, res: Response) => {
+  const tpl = TEMPLATES.find(t => t.id === req.params.id);
+  if (!tpl) return res.status(404).json({ error: 'Template not found' });
+  res.json({ template: tpl });
+});
+
+router.post('/templates', (req: Request, res: Response) => {
+  const body = req.body;
+  const id = body.id || `custom-${Date.now()}`;
+  if (TEMPLATES.find(t => t.id === id)) return res.status(409).json({ error: 'Template ID already exists' });
+  const tpl = { id, name: body.name || id, description: body.description || '', category: body.category || id, preview: body.preview || '', is_ats_friendly: body.is_ats_friendly ?? true, columns: (body.columns ?? 1) as 1 | 2, colors: body.colors || ['#6d28d9', '#f8fafc', '#ffffff'] };
+  TEMPLATES.push(tpl);
+  res.status(201).json({ template: tpl });
+});
+
+router.put('/templates/:id', (req: Request, res: Response) => {
+  const idx = TEMPLATES.findIndex(t => t.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Template not found' });
+  TEMPLATES[idx] = { ...TEMPLATES[idx], ...req.body, id: req.params.id };
+  res.json({ template: TEMPLATES[idx] });
+});
+
+router.delete('/templates/:id', (req: Request, res: Response) => {
+  const idx = TEMPLATES.findIndex(t => t.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Template not found' });
+  TEMPLATES.splice(idx, 1);
+  res.json({ success: true });
+});
+
+router.post('/templates/:id/duplicate', (req: Request, res: Response) => {
+  const src = TEMPLATES.find(t => t.id === req.params.id);
+  if (!src) return res.status(404).json({ error: 'Source template not found' });
+  const newId = `${req.params.id}-copy-${Date.now()}`;
+  const dup = { ...src, id: newId, name: `${src.name} (Copy)` };
+  TEMPLATES.push(dup);
+  res.status(201).json({ template: dup });
+});
+
 router.post('/rewrite', authenticate, async (req: AuthRequest, res: Response) => {
   try {
     const { text: bulletText } = req.body;
