@@ -165,8 +165,29 @@ export default function HeroSection() {
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-5 sm:mb-6 min-h-[3.5rem] sm:min-h-[4.5rem] md:min-h-[5.5rem]">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-400 to-indigo-400">
-                {fullText.substring(0, charIdx)}
+              <span className="bg-gradient-to-r from-primary-400 to-indigo-400 bg-clip-text" style={{ WebkitTextFillColor: 'transparent' }}>
+                {(() => {
+                  const typed = fullText.substring(0, charIdx);
+                  const words = ['Learn', 'Solve', 'Crack'];
+                  const parts: JSX.Element[] = [];
+                  let pos = 0;
+                  while (pos < typed.length) {
+                    const word = words.find(w => typed.startsWith(w, pos));
+                    if (word) {
+                      parts.push(<span key={pos} className="text-white" style={{ WebkitTextFillColor: 'white' }}>{typed[pos]}</span>);
+                      pos++;
+                      if (pos < typed.length) {
+                        const restLen = Math.min(word.length - 1, typed.length - pos);
+                        parts.push(<span key={`${pos}_r`}>{typed.substring(pos, pos + restLen)}</span>);
+                        pos += restLen;
+                      }
+                    } else {
+                      parts.push(<span key={pos}>{typed[pos]}</span>);
+                      pos++;
+                    }
+                  }
+                  return parts;
+                })()}
               </span>
               {charIdx < fullText.length && (
                 <span className="animate-pulse text-primary-400 font-light">|</span>
