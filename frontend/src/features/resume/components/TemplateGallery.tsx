@@ -117,8 +117,8 @@ export default function TemplateGallery({ templates: propTemplates, selected, on
                 </motion.div>
               )}
 
-              {/* Preview Image from API */}
-              {previewUrl && (
+              {/* Preview Image from API or fallback visual preview */}
+              {previewUrl ? (
                 <div className="w-24 h-24 rounded-md overflow-hidden flex-shrink-0 border border-white/10 bg-slate-800">
                   <img 
                     src={previewUrl} 
@@ -128,6 +128,16 @@ export default function TemplateGallery({ templates: propTemplates, selected, on
                       (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23374151" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="10" fill="%239CA3AF" text-anchor="middle" dy=".3em"%3ENo image%3C/text%3E%3C/svg%3E';
                     }}
                   />
+                </div>
+              ) : (
+                <div className="w-24 h-24 rounded-md overflow-hidden flex-shrink-0 border border-white/10 bg-slate-800 p-2">
+                  <div className="h-7 rounded-md bg-slate-700 mb-2" />
+                  <div className="space-y-2">
+                    <div className="h-2 rounded-full bg-slate-600 w-[85%]" />
+                    <div className="h-2 rounded-full bg-slate-600 w-[60%]" />
+                    <div className="h-2 rounded-full bg-slate-600 w-[95%]" />
+                    <div className="h-2 rounded-full bg-slate-600 w-[50%]" />
+                  </div>
                 </div>
               )}
 
