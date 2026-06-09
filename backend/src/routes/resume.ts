@@ -20,6 +20,11 @@ const TEMPLATES: ResumeTemplate[] = [
   { id: 'backend', name: 'Backend Resume', description: 'System design & architecture focused clean format', category: 'backend', preview: '/resume-templates/backend.png', is_ats_friendly: true, columns: 1, colors: ['#1e3a5f', '#f1f5f9', '#ffffff'] },
   { id: 'ai-ml', name: 'AI/ML Resume', description: 'Research & model-focused layout for data scientists', category: 'ai-ml', preview: '/resume-templates/ai-ml.png', is_ats_friendly: false, columns: 2, colors: ['#581c87', '#fdf4ff', '#ffffff'] },
   { id: 'fullstack', name: 'Full Stack Resume', description: 'Versatile format balancing frontend & backend skills', category: 'fullstack', preview: '/resume-templates/fullstack.png', is_ats_friendly: true, columns: 1, colors: ['#0d9488', '#f0fdfa', '#ffffff'] },
+  { id: 'executive', name: 'Executive Resume', description: 'Leadership-focused layout for senior management roles', category: 'executive', preview: '/resume-templates/executive.png', is_ats_friendly: true, columns: 1, colors: ['#1e3a8a', '#f8fafc', '#ffffff'] },
+  { id: 'minimalist', name: 'Minimalist Resume', description: 'Clean, spacious design with elegant typography', category: 'minimalist', preview: '/resume-templates/minimalist.png', is_ats_friendly: true, columns: 1, colors: ['#475569', '#ffffff', '#ffffff'] },
+  { id: 'creative', name: 'Creative Resume', description: 'Bold gradient header with portfolio metrics section', category: 'creative', preview: '/resume-templates/creative.png', is_ats_friendly: false, columns: 1, colors: ['#7c3aed', '#fdf4ff', '#ffffff'] },
+  { id: 'technical', name: 'Technical Resume', description: 'Skills-first layout with visual proficiency bars', category: 'technical', preview: '/resume-templates/technical.png', is_ats_friendly: true, columns: 1, colors: ['#0369a1', '#f0f9ff', '#ffffff'] },
+  { id: 'academic', name: 'Academic Resume', description: 'Research & publication focused for academia roles', category: 'academic', preview: '/resume-templates/academic.png', is_ats_friendly: false, columns: 1, colors: ['#b91c1c', '#fef2f2', '#ffffff'] },
 ];
 
 // ====== RULE ENGINE ======
