@@ -10,6 +10,8 @@ import LoginPage from '@/features/auth/pages/LoginPage';
 import ForgotPasswordPage from '@/features/auth/pages/ForgotPasswordPage';
 import ResetPasswordPage from '@/features/auth/pages/ResetPasswordPage';
 import PricingPage from '@/features/subscription/pages/PricingPage';
+import PrivacyPolicyPage from '@/features/legal/pages/PrivacyPolicyPage';
+import TermsOfServicePage from '@/features/legal/pages/TermsOfServicePage';
 import LeaderboardPage from '@/features/leaderboard/pages/LeaderboardPage';
 import InterviewPrepPage from '@/features/interview/pages/InterviewPrepPage';
 import InterviewSetupPage from '@/features/interview/pages/InterviewSetupPage';
@@ -787,6 +789,8 @@ export const router = createBrowserRouter([
       { path: 'games', element: <GamesLandingPage /> },
       { path: 'games/:topic', element: lazyRoute(GameTopicPage) },
       { path: 'games/:topic/:level', element: lazyRoute(GamePlayPage) },
+      { path: 'privacy-policy', element: <PrivacyPolicyPage /> },
+      { path: 'terms-of-service', element: <TermsOfServicePage /> },
     ],
   },
   {

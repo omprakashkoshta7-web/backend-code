@@ -9,7 +9,6 @@ const columns = [
     links: [
       { label: 'Topics', to: '/topics' },
       { label: 'Questions', to: '/questions' },
-      { label: 'Interview Prep', to: '/interview-prep' },
       { label: 'Patterns', to: '/patterns' },
     ],
   },
@@ -27,8 +26,8 @@ const columns = [
     underline: 'from-amber-400 to-orange-500',
     links: [
       { label: 'Pricing', to: '/pricing' },
-      { label: 'Privacy Policy', to: '#' },
-      { label: 'Terms of Service', to: '#' },
+      { label: 'Privacy Policy', to: '/privacy-policy' },
+      { label: 'Terms of Service', to: '/terms-of-service' },
       { label: 'Login', to: '/login' },
     ],
   },
