@@ -325,6 +325,124 @@ function MiniResume({ type, colors }: { type: string; colors: string[] }) {
         </div>
       </div>
     ),
+    'modern-professional': (
+      <div className="flex h-full text-xs">
+        <div className="w-[38%] h-full p-2.5 flex flex-col gap-1.5" style={{ backgroundColor: accent }}>
+          <div className="w-10 h-10 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div>
+            <div className="text-[7px] font-bold text-white/90 uppercase tracking-wide">Contact</div>
+            <div className="text-[6px] text-white/70 mt-0.5 space-y-0">
+              <div>+1 234 567 890</div>
+              <div>hello@email.com</div>
+              <div>123 Anywhere St.</div>
+            </div>
+          </div>
+          <div>
+            <div className="text-[7px] font-bold text-white/90 uppercase tracking-wide">About Me</div>
+            <div className="text-[6px] text-white/70 mt-0.5 leading-tight">Creative professional with 5+ years of experience in visual design, UX/UI, and brand development.</div>
+          </div>
+          <div>
+            <div className="text-[7px] font-bold text-white/90 uppercase tracking-wide">Skills</div>
+            <div className="text-[6px] text-white/70 mt-0.5 space-y-0">
+              <div>• Management Skills</div>
+              <div>• Creativity</div>
+              <div>• Digital Marketing</div>
+            </div>
+          </div>
+          <div>
+            <div className="text-[7px] font-bold text-white/90 uppercase tracking-wide">Language</div>
+            <div className="text-[6px] text-white/70">English · Spanish</div>
+          </div>
+        </div>
+        <div className="flex-1 p-2.5 space-y-1.5" style={{ backgroundColor: bg }}>
+          <div className="text-sm font-bold text-gray-900">Lorna Alvarado</div>
+          <div className="text-[8px] text-gray-500">Marketing Manager</div>
+          <div><div className="text-[7px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Education</div>
+            <div className="text-[6px] text-gray-600 mt-0.5">Bachelor of Business Management</div>
+            <div className="text-[6px] text-gray-400">2015 - 2020</div>
+          </div>
+          <div><div className="text-[7px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[6px] text-gray-600 mt-0.5"><span className="font-semibold">Product Design Manager</span> · 2015 - 2020</div>
+            <div className="text-[6px] text-gray-500">Creative Agency, Inc.</div>
+          </div>
+        </div>
+      </div>
+    ),
+    'blackwhite-minimalist': (
+      <div className="flex h-full text-xs" style={{ backgroundColor: bg }}>
+        <div className="w-full p-3 space-y-2">
+          <div className="text-center pb-1 border-b border-gray-200">
+            <div className="text-sm font-bold text-gray-900">Mariana Anderson</div>
+            <div className="text-[8px] text-gray-500">Marketing Manager</div>
+          </div>
+          <div><div className="text-[7px] font-bold text-gray-500 uppercase">Education</div>
+            <div className="text-[6px] text-gray-600">Bachelor of Business · Bonchille University</div>
+            <div className="text-[6px] text-gray-400">2015 - 2020</div>
+          </div>
+          <div><div className="text-[7px] font-bold text-gray-500 uppercase">Experience</div>
+            <div className="text-[6px] text-gray-600"><span className="font-semibold">Marketing Manager</span> · 2022 - Present</div>
+            <div className="text-[6px] text-gray-500">Acme International Co.</div>
+          </div>
+          <div><div className="text-[7px] font-bold text-gray-500 uppercase">Expertise</div>
+            <div className="text-[6px] text-gray-600">UX/UI · Wireframes · Storyboards · User Flows</div>
+          </div>
+        </div>
+      </div>
+    ),
+    'bluegray-simple': (
+      <div className="flex h-full text-xs">
+        <div className="flex-1 p-2.5 space-y-1.5" style={{ backgroundColor: bg }}>
+          <div className="text-xs font-bold text-gray-900 uppercase tracking-wide">Richard Sanchez</div>
+          <div className="text-[8px] text-gray-500">Marketing Manager</div>
+          <div><div className="text-[7px] font-bold uppercase flex items-center gap-1" style={{ color: accent }}>● Profile</div>
+            <div className="text-[6px] text-gray-600 mt-0.5 leading-tight">Creative marketing professional with 10+ years experience in digital campaigns and brand strategy.</div>
+          </div>
+          <div><div className="text-[7px] font-bold uppercase flex items-center gap-1" style={{ color: accent }}>● Work Experience</div>
+            <div className="text-[6px] text-gray-600 mt-0.5"><span className="font-semibold">Senior Marketing Manager</span></div>
+            <div className="text-[6px] text-gray-500">Beacon Studio · 2020 - PRESENT</div>
+          </div>
+        </div>
+        <div className="w-[38%] h-full p-2.5 flex flex-col gap-1.5" style={{ backgroundColor: accent }}>
+          <div className="w-10 h-10 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div>
+            <div className="text-[7px] font-bold text-white/90 uppercase">Contact</div>
+            <div className="text-[6px] text-white/70 mt-0.5 space-y-0">
+              <div>+123 456 7890</div>
+              <div>hello@email.com</div>
+            </div>
+          </div>
+          <div>
+            <div className="text-[7px] font-bold text-white/90 uppercase">Skills</div>
+            <div className="text-[6px] text-white/70 mt-0.5 space-y-0">
+              <div>• Project Management</div>
+              <div>• Public Relations</div>
+              <div>• Time Management</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+    'professional-modern': (
+      <div className="flex h-full text-xs" style={{ backgroundColor: bg }}>
+        <div className="w-full p-3 space-y-2">
+          <div className="text-center">
+            <div className="text-sm font-bold text-gray-900">Lorna Alvarado</div>
+            <div className="text-[8px] text-gray-500">Marketing Manager</div>
+          </div>
+          <div><div className="text-[7px] font-bold text-gray-500 uppercase">Contact</div>
+            <div className="text-[6px] text-gray-600 mt-0.5">+123 456 7890 · hello@email.com</div>
+          </div>
+          <div><div className="text-[7px] font-bold text-gray-500 uppercase">About Me</div>
+            <div className="text-[6px] text-gray-600 mt-0.5 leading-tight">Creative professional with 5+ years experience in visual design, UX/UI, and brand development.</div>
+          </div>
+          <div><div className="text-[7px] font-bold text-gray-500 uppercase">Skills</div>
+            <div className="flex flex-wrap gap-0.5 mt-0.5">
+              {['Management','Creativity','Digital Marketing','Negotiation'].map(s => <span key={s} className="text-[5px] px-1 py-0.5 rounded bg-gray-100 text-gray-600">{s}</span>)}
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
   };
 
   return (
@@ -541,6 +659,10 @@ export default function TemplateWizard({ onComplete, onCancel }: Props) {
     { id: 'creative', name: 'Creative Resume', description: 'Bold gradient header with portfolio metrics section', is_ats_friendly: false, columns: 1, colors: ['#7c3aed', '#fdf4ff'] },
     { id: 'technical', name: 'Technical Resume', description: 'Skills-first layout with visual proficiency bars', is_ats_friendly: true, columns: 1, colors: ['#0369a1', '#f0f9ff'] },
     { id: 'academic', name: 'Academic Resume', description: 'Research & publication focused for academia roles', is_ats_friendly: false, columns: 1, colors: ['#b91c1c', '#fef2f2'] },
+    { id: 'modern-professional', name: 'Modern Professional CV', description: 'Dark sidebar with photo, About Me, Skills & Language sections', is_ats_friendly: false, columns: 2, colors: ['#2d3748', '#ffffff'] },
+    { id: 'blackwhite-minimalist', name: 'Black White Minimalist', description: 'Clean black & white single-column, ATS-friendly', is_ats_friendly: true, columns: 1, colors: ['#1a1a1a', '#ffffff'] },
+    { id: 'bluegray-simple', name: 'Blue & Gray Professional', description: 'Blue sidebar right with Skills, Languages & References', is_ats_friendly: false, columns: 2, colors: ['#1a365d', '#f7fafc'] },
+    { id: 'professional-modern', name: 'Professional Modern', description: 'Centered name, About Me, Skills & References layout', is_ats_friendly: true, columns: 1, colors: ['#2d3748', '#f7fafc'] },
   ];
 
   useEffect(() => {
@@ -1308,6 +1430,315 @@ function ResumePreview({ template, form, accent, bg }: {
     </div>
   );
 
+  /* ── Modern Professional CV layout ── */
+  const ModernProfessionalLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden flex" style={{ minHeight: '800px' }}>
+      <div className="w-[38%] p-5 flex flex-col gap-4" style={{ backgroundColor: accent }}>
+        <div className="w-20 h-20 rounded-full mx-auto border-3 border-white/30 bg-white/10 flex items-center justify-center text-white text-xl font-bold">
+          {(form.name || 'YN').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+        </div>
+        <div>
+          <div className="text-[10px] font-bold text-white/90 uppercase tracking-wide mb-1.5">Contact</div>
+          <div className="space-y-1 text-[9px] text-white/80">
+            {form.phone && <div className="flex items-center gap-1.5">📞 {form.phone}</div>}
+            {form.email && <div className="flex items-center gap-1.5">✉️ {form.email}</div>}
+            {form.linkedin && <div className="flex items-center gap-1.5">🔗 {form.linkedin}</div>}
+          </div>
+        </div>
+        {form.summary && (
+          <div>
+            <div className="text-[10px] font-bold text-white/90 uppercase tracking-wide mb-1.5">About Me</div>
+            <p className="text-[9px] text-white/80 leading-relaxed whitespace-pre-wrap">{form.summary}</p>
+          </div>
+        )}
+        {form.skills && (
+          <div>
+            <div className="text-[10px] font-bold text-white/90 uppercase tracking-wide mb-1.5">Skills</div>
+            <div className="space-y-1">
+              {form.skills.split(',').map((s: string, i: number) => s.trim() && (
+                <div key={i} className="text-[9px] text-white/80">• {s.trim()}</div>
+              ))}
+            </div>
+          </div>
+        )}
+        {form.education.some((e: any) => e.degree || e.institution) && (
+          <div>
+            <div className="text-[10px] font-bold text-white/90 uppercase tracking-wide mb-1.5">Education</div>
+            {form.education.filter((e: any) => e.degree || e.institution).map((edu: any, i: number) => (
+              <div key={i} className="mb-1.5">
+                <div className="text-[9px] font-semibold text-white/90">{edu.degree}</div>
+                <div className="text-[8px] text-white/70">{edu.institution}</div>
+                <div className="text-[8px] text-white/60">{edu.year}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="flex-1 p-6 space-y-4" style={{ backgroundColor: bg }}>
+        <div>
+          <div className="text-xl font-bold text-gray-900">{form.name || 'Your Name'}</div>
+          <div className="text-sm text-gray-500 mt-0.5">{form.email || 'email@example.com'}</div>
+        </div>
+        {form.experience.some((e: any) => e.role || e.company) && (
+          <div>
+            <SectionTitle text="Experience" accent={accent} />
+            {form.experience.filter((e: any) => e.role || e.company).map((exp: any, i: number) => (
+              <div key={i} className="mb-3">
+                <div className="flex justify-between items-start">
+                  <span className="text-xs font-semibold text-gray-800">{exp.role}</span>
+                  <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2">{exp.duration}</span>
+                </div>
+                <div className="text-[11px] text-gray-500">{exp.company}</div>
+                {exp.description && <div className="text-[11px] text-gray-600 mt-0.5 whitespace-pre-wrap">{exp.description}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+        {form.projects.some((p: any) => p.title) && (
+          <div>
+            <SectionTitle text="Projects" accent={accent} />
+            {form.projects.filter((p: any) => p.title).map((proj: any, i: number) => (
+              <div key={i} className="mb-2">
+                <div className="text-xs font-semibold text-gray-800">{proj.title}{proj.link ? <span className="text-[10px] text-gray-400 ml-2">{proj.link}</span> : ''}</div>
+                {proj.description && <div className="text-[11px] text-gray-600 mt-0.5 whitespace-pre-wrap">{proj.description}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+        {form.certifications.some((c: any) => c.name) && (
+          <div>
+            <SectionTitle text="References" accent={accent} />
+            {form.certifications.filter((c: any) => c.name).map((cert: any, i: number) => (
+              <div key={i} className="text-[11px] text-gray-600"><span className="font-semibold">{cert.name}</span> · {cert.issuer}</div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  /* ── Black & White Minimalist layout ── */
+  const BlackWhiteLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden" style={{ minHeight: '800px' }}>
+      <div className="p-8 text-center border-b border-gray-200">
+        <div className="text-2xl font-bold text-gray-900 tracking-tight">{form.name || 'Your Name'}</div>
+        <div className="text-sm text-gray-500 mt-1 tracking-wide">{form.email || 'email@example.com'}</div>
+        <div className="flex justify-center gap-3 text-[11px] text-gray-500 mt-2">
+          {form.phone && <span>{form.phone}</span>}
+          {form.linkedin && <span>{form.linkedin}</span>}
+          {form.github && <span>{form.github}</span>}
+        </div>
+      </div>
+      <div className="p-8 space-y-6">
+        {form.experience.some((e: any) => e.role || e.company) && (
+          <div>
+            <div className="text-[10px] font-bold uppercase text-gray-500 mb-2">Experience</div>
+            {form.experience.filter((e: any) => e.role || e.company).map((exp: any, i: number) => (
+              <div key={i} className="mb-3 pb-3 border-b border-gray-100 last:border-0">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-xs font-semibold text-gray-900">{exp.role}</span>
+                  <span className="text-[10px] text-gray-400">{exp.duration}</span>
+                </div>
+                <div className="text-[11px] text-gray-500">{exp.company}</div>
+                {exp.description && <div className="text-[11px] text-gray-600 mt-1 whitespace-pre-wrap">{exp.description}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+        {form.education.some((e: any) => e.degree || e.institution) && (
+          <div>
+            <div className="text-[10px] font-bold uppercase text-gray-500 mb-2">Education</div>
+            {form.education.filter((e: any) => e.degree || e.institution).map((edu: any, i: number) => (
+              <div key={i} className="mb-2">
+                <div className="flex justify-between">
+                  <span className="text-xs font-semibold text-gray-900">{edu.degree}</span>
+                  <span className="text-[10px] text-gray-400">{edu.year}</span>
+                </div>
+                <div className="text-[11px] text-gray-500">{edu.institution}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        {form.skills && (
+          <div>
+            <div className="text-[10px] font-bold uppercase text-gray-500 mb-2">Expertise</div>
+            <div className="text-[11px] text-gray-600">{form.skills.split(',').map((s: string) => s.trim()).filter(Boolean).join(' · ')}</div>
+          </div>
+        )}
+        {form.projects.some((p: any) => p.title) && (
+          <div>
+            <div className="text-[10px] font-bold uppercase text-gray-500 mb-2">Projects</div>
+            {form.projects.filter((p: any) => p.title).map((proj: any, i: number) => (
+              <div key={i} className="mb-2">
+                <div className="text-xs font-semibold text-gray-900">{proj.title}</div>
+                {proj.description && <div className="text-[11px] text-gray-600 mt-0.5 whitespace-pre-wrap">{proj.description}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  /* ── Blue & Gray Simple Professional layout ── */
+  const BlueGrayLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden flex" style={{ minHeight: '800px' }}>
+      <div className="flex-1 p-6 space-y-4" style={{ backgroundColor: bg }}>
+        <div>
+          <div className="text-xl font-bold text-gray-900 uppercase tracking-wide">{form.name || 'YOUR NAME'}</div>
+          <div className="text-sm text-gray-500 mt-0.5">{form.email || 'email@example.com'}</div>
+        </div>
+        <div>
+          <SectionTitle text="Profile" accent={accent} />
+          {form.summary ? (
+            <p className="text-[11px] text-gray-600 leading-relaxed whitespace-pre-wrap">{form.summary}</p>
+          ) : (
+            <p className="text-[11px] text-gray-600 leading-relaxed">Creative marketing professional with extensive experience in digital campaigns and brand strategy.</p>
+          )}
+        </div>
+        {form.experience.some((e: any) => e.role || e.company) && (
+          <div>
+            <SectionTitle text="Work Experience" accent={accent} />
+            {form.experience.filter((e: any) => e.role || e.company).map((exp: any, i: number) => (
+              <div key={i} className="mb-3">
+                <div className="flex justify-between items-start">
+                  <span className="text-xs font-semibold text-gray-800">{exp.role}</span>
+                  <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2">{exp.duration}</span>
+                </div>
+                <div className="text-[11px] text-gray-500">{exp.company}</div>
+                {exp.description && <div className="text-[11px] text-gray-600 mt-0.5 whitespace-pre-wrap">{exp.description}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+        {form.education.some((e: any) => e.degree || e.institution) && (
+          <div>
+            <SectionTitle text="Education" accent={accent} />
+            {form.education.filter((e: any) => e.degree || e.institution).map((edu: any, i: number) => (
+              <div key={i} className="mb-2">
+                <div className="text-xs font-semibold text-gray-800">{edu.degree}</div>
+                <div className="text-[11px] text-gray-500">{edu.institution}</div>
+                <div className="text-[10px] text-gray-400">{edu.year}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="w-[38%] p-5 flex flex-col gap-4" style={{ backgroundColor: accent }}>
+        <div className="w-20 h-20 rounded-full mx-auto border-3 border-white/30 bg-white/10 flex items-center justify-center text-white text-xl font-bold">
+          {(form.name || 'YN').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+        </div>
+        <div>
+          <div className="text-[10px] font-bold text-white/90 uppercase tracking-wide mb-1.5">Contact</div>
+          <div className="space-y-1 text-[9px] text-white/80">
+            {form.phone && <div>{form.phone}</div>}
+            {form.email && <div>{form.email}</div>}
+            {form.linkedin && <div>{form.linkedin}</div>}
+          </div>
+        </div>
+        {form.skills && (
+          <div>
+            <div className="text-[10px] font-bold text-white/90 uppercase tracking-wide mb-1.5">Skills</div>
+            <div className="space-y-1">
+              {form.skills.split(',').map((s: string, i: number) => s.trim() && (
+                <div key={i} className="text-[9px] text-white/80">• {s.trim()}</div>
+              ))}
+            </div>
+          </div>
+        )}
+        {form.certifications.some((c: any) => c.name) && (
+          <div>
+            <div className="text-[10px] font-bold text-white/90 uppercase tracking-wide mb-1.5">Languages</div>
+            {form.certifications.filter((c: any) => c.name).map((cert: any, i: number) => (
+              <div key={i} className="text-[9px] text-white/80">• {cert.name}</div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  /* ── Professional Modern layout ── */
+  const ProfessionalModernLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden" style={{ minHeight: '800px', backgroundColor: bg }}>
+      <div className="p-8 text-center border-b border-gray-100">
+        <div className="text-2xl font-bold text-gray-900 tracking-tight">{form.name || 'Your Name'}</div>
+        <div className="text-sm text-gray-500 mt-1 tracking-wide">{form.email || 'email@example.com'}</div>
+        <div className="flex justify-center gap-3 text-[11px] text-gray-500 mt-2">
+          {form.phone && <span>{form.phone}</span>}
+          {form.linkedin && <span>{form.linkedin}</span>}
+          {form.github && <span>{form.github}</span>}
+        </div>
+      </div>
+      <div className="p-8 space-y-6">
+        {form.summary && (
+          <div>
+            <div className="text-[10px] font-bold uppercase text-gray-500 mb-2">About Me</div>
+            <p className="text-[11px] text-gray-600 leading-relaxed whitespace-pre-wrap">{form.summary}</p>
+          </div>
+        )}
+        {form.education.some((e: any) => e.degree || e.institution) && (
+          <div>
+            <div className="text-[10px] font-bold uppercase text-gray-500 mb-2">Education</div>
+            {form.education.filter((e: any) => e.degree || e.institution).map((edu: any, i: number) => (
+              <div key={i} className="mb-2">
+                <div className="flex justify-between">
+                  <span className="text-xs font-semibold text-gray-900">{edu.degree}</span>
+                  <span className="text-[10px] text-gray-400">{edu.year}</span>
+                </div>
+                <div className="text-[11px] text-gray-500">{edu.institution}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        {form.experience.some((e: any) => e.role || e.company) && (
+          <div>
+            <div className="text-[10px] font-bold uppercase text-gray-500 mb-2">Experience</div>
+            {form.experience.filter((e: any) => e.role || e.company).map((exp: any, i: number) => (
+              <div key={i} className="mb-3">
+                <div className="flex justify-between items-start">
+                  <span className="text-xs font-semibold text-gray-800">{exp.role}</span>
+                  <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2">{exp.duration}</span>
+                </div>
+                <div className="text-[11px] text-gray-500">{exp.company}</div>
+                {exp.description && <div className="text-[11px] text-gray-600 mt-0.5 whitespace-pre-wrap">{exp.description}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+        {form.skills && (
+          <div>
+            <div className="text-[10px] font-bold uppercase text-gray-500 mb-2">Skills</div>
+            <div className="flex flex-wrap gap-1.5">
+              {form.skills.split(',').map((s: string, i: number) => s.trim() && (
+                <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{s.trim()}</span>
+              ))}
+            </div>
+          </div>
+        )}
+        {form.projects.some((p: any) => p.title) && (
+          <div>
+            <div className="text-[10px] font-bold uppercase text-gray-500 mb-2">Projects</div>
+            {form.projects.filter((p: any) => p.title).map((proj: any, i: number) => (
+              <div key={i} className="mb-2">
+                <div className="text-xs font-semibold text-gray-800">{proj.title}{proj.link ? <span className="text-[10px] text-gray-400 ml-2">{proj.link}</span> : ''}</div>
+                {proj.description && <div className="text-[11px] text-gray-600 mt-0.5 whitespace-pre-wrap">{proj.description}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+        {form.certifications.some((c: any) => c.name) && (
+          <div>
+            <div className="text-[10px] font-bold uppercase text-gray-500 mb-2">References</div>
+            {form.certifications.filter((c: any) => c.name).map((cert: any, i: number) => (
+              <div key={i} className="text-[11px] text-gray-600"><span className="font-semibold">{cert.name}</span> · {cert.issuer}</div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   // pick layout based on template id
   switch (tid) {
     case 'fullstack': return <FullstackLayout />;
@@ -1316,6 +1747,10 @@ function ResumePreview({ template, form, accent, bg }: {
     case 'creative': return <CreativeLayout />;
     case 'technical': return <TechnicalLayout />;
     case 'academic': return <AcademicLayout />;
+    case 'modern-professional': return <ModernProfessionalLayout />;
+    case 'blackwhite-minimalist': return <BlackWhiteLayout />;
+    case 'bluegray-simple': return <BlueGrayLayout />;
+    case 'professional-modern': return <ProfessionalModernLayout />;
     default: if (isTwoCol) return <TwoColumn />; return <SingleColumn />;
   }
 }
