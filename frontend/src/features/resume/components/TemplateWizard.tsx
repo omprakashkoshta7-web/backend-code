@@ -601,6 +601,35 @@ function MiniResume({ type, colors }: { type: string; colors: string[] }) {
         </div>
       </div>
     ),
+    'blank-canvas': (
+      <div className="flex h-full text-xs">
+        <div className="w-[30%] h-full p-2 flex flex-col gap-1" style={{ backgroundColor: '#f8fafc' }}>
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <div className="w-6 h-6 rounded-full border border-blue-400 overflow-hidden shrink-0 bg-blue-100 flex items-center justify-center text-[6px] font-bold text-blue-600">Y</div>
+            <div className="text-[6px] leading-tight"><div className="font-bold text-gray-900">Your Name</div><div className="text-gray-500">Job Title</div></div>
+          </div>
+          <div><div className="text-[6px] font-bold text-blue-600 uppercase tracking-wide">Skills</div>
+            <div className="text-[5px] text-gray-600 mt-0.5">React · Node.js · TypeScript</div>
+          </div>
+          <div><div className="text-[6px] font-bold text-blue-600 uppercase tracking-wide">Education</div>
+            <div className="text-[5px] text-gray-600 mt-0.5">B.Tech CSE · University 2024</div>
+          </div>
+        </div>
+        <div className="w-[70%] p-2 space-y-1" style={{ backgroundColor: bg }}>
+          <div className="flex items-center gap-2 border-b border-gray-200 pb-1">
+            <div className="text-[6px] text-gray-400">✉️ your@email.com</div>
+            <div className="text-[6px] text-gray-400">📞 +1 234 567 890</div>
+          </div>
+          <div><div className="text-[6px] font-bold text-blue-600 uppercase">Experience</div>
+            <div className="text-[5px] text-gray-600 mt-0.5"><span className="font-semibold">Job Title</span> · Company Name · 2022-Present</div>
+            <div className="text-[5px] text-gray-500">• Responsibility description here</div>
+          </div>
+          <div><div className="text-[6px] font-bold text-blue-600 uppercase">Projects</div>
+            <div className="text-[5px] text-gray-600 mt-0.5">Project Name · Description here</div>
+          </div>
+        </div>
+      </div>
+    ),
   };
 
   return (
@@ -796,7 +825,7 @@ export default function TemplateWizard({ onComplete, onCancel }: Props) {
 
   // form state for step 5
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', linkedin: '', github: '', skills: '', photo: '',
+    name: '', email: '', phone: '', address: '', linkedin: '', github: '', skills: '', photo: '',
     experience: [{ role: '', company: '', duration: '', description: '' }],
     education: [{ degree: '', institution: '', year: '' }],
     projects: [{ title: '', description: '', link: '' }],
@@ -827,6 +856,7 @@ export default function TemplateWizard({ onComplete, onCancel }: Props) {
     { id: 'centered-light', name: 'Centered Light', description: 'Centered layout with summary, education, skills & experience', is_ats_friendly: true, columns: 1, colors: ['#2d3748', '#f7fafc'] },
     { id: 'brown-sidebar', name: 'Brown Sidebar', description: 'White main left, brown sidebar right with photo & skills', is_ats_friendly: false, columns: 2, colors: ['#744210', '#ffffff'] },
     { id: 'dark-sidebar-right', name: 'Dark Sidebar Right', description: 'White main left, dark sidebar right with photo & contact', is_ats_friendly: false, columns: 2, colors: ['#1a202c', '#ffffff'] },
+    { id: 'blank-canvas', name: 'Blank Canvas Builder', description: 'Fully editable blank canvas — add/remove sections, upload photo, two-column professional layout', is_ats_friendly: true, columns: 2, colors: ['#2563eb', '#ffffff'] },
   ];
 
   useEffect(() => {
@@ -1180,6 +1210,7 @@ export default function TemplateWizard({ onComplete, onCancel }: Props) {
                 <Input label="Email" value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} placeholder="john@email.com" />
                 <Input label="Phone" value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v }))} placeholder="+1 234 567 890" />
               </div>
+              <Input label="Address / Location" value={form.address} onChange={v => setForm(f => ({ ...f, address: v }))} placeholder="New York, NY" />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input label="LinkedIn" value={form.linkedin} onChange={v => setForm(f => ({ ...f, linkedin: v }))} placeholder="linkedin.com/in/johndoe" />
                 <Input label="GitHub" value={form.github} onChange={v => setForm(f => ({ ...f, github: v }))} placeholder="github.com/johndoe" />
@@ -2381,6 +2412,141 @@ function ResumePreview({ template, form, accent, bg }: {
     </div>
   );
 
+  /* ── Blank Canvas Builder layout ── */
+  const BlankCanvasLayout = () => {
+    const accentColor = '#2563eb';
+    return (
+      <div className="mx-auto max-w-[210mm] bg-white" style={{ minHeight: '297mm', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        {/* Header */}
+        <div className="flex gap-6 p-8 pb-5 border-b border-gray-200">
+          {form.photo ? (
+            <div className="w-28 h-28 rounded-xl overflow-hidden shrink-0 border-2 border-gray-100"><img src={form.photo} alt="Profile" className="w-full h-full object-cover" /></div>
+          ) : (
+            <div className="w-28 h-28 rounded-xl shrink-0 border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50">
+              <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight" style={{ color: accentColor }}>{form.name || 'Your Name'}</h1>
+            <p className="text-sm text-gray-500 mt-0.5">{form.summary ? form.summary.split(' ').slice(0, 6).join(' ') + (form.summary.split(' ').length > 6 ? '...' : '') : 'Job Title / Professional Role'}</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[11px] text-gray-500">
+              {form.phone && <span className="flex items-center gap-1">📞 {form.phone}</span>}
+              {form.email && <span className="flex items-center gap-1">✉️ {form.email}</span>}
+              {form.address && <span className="flex items-center gap-1">📍 {form.address}</span>}
+              {form.linkedin && <span className="flex items-center gap-1">🔗 {form.linkedin}</span>}
+            </div>
+          </div>
+        </div>
+
+        {/* Body: Two Column */}
+        <div className="flex">
+          {/* Left Sidebar (30%) */}
+          <div className="w-[30%] p-6 pr-4 space-y-5 bg-gray-50/50">
+            {/* Profile Summary */}
+            {form.summary && (
+              <div>
+                <h3 className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: accentColor }}>Profile</h3>
+                <p className="text-[11px] text-gray-600 leading-relaxed whitespace-pre-wrap">{form.summary}</p>
+              </div>
+            )}
+
+            {/* Skills */}
+            {form.skills && (
+              <div>
+                <h3 className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: accentColor }}>Skills</h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {form.skills.split(',').map((s: string, i: number) => s.trim() && (
+                    <span key={i} className="text-[10px] px-2 py-0.5 rounded-md border" style={{ borderColor: accentColor + '30', color: accentColor, backgroundColor: accentColor + '08' }}>{s.trim()}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Education */}
+            {form.education.some((e: any) => e.degree || e.institution) && (
+              <div>
+                <h3 className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: accentColor }}>Education</h3>
+                <div className="space-y-2">
+                  {form.education.filter((e: any) => e.degree || e.institution).map((edu: any, i: number) => (
+                    <div key={i} className="border-l-2 pl-2.5" style={{ borderColor: accentColor }}>
+                      <div className="text-[11px] font-semibold text-gray-800">{edu.degree}</div>
+                      <div className="text-[10px] text-gray-500">{edu.institution}</div>
+                      <div className="text-[9px] text-gray-400">{edu.year}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Certifications */}
+            {form.certifications.some((c: any) => c.name) && (
+              <div>
+                <h3 className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: accentColor }}>Certifications</h3>
+                <div className="space-y-1">
+                  {form.certifications.filter((c: any) => c.name).map((cert: any, i: number) => (
+                    <div key={i} className="text-[11px]"><span className="font-medium text-gray-800">{cert.name}</span><span className="text-gray-400 ml-1">{cert.issuer}</span></div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right Main (70%) */}
+          <div className="w-[70%] p-6 pl-4 space-y-5 border-l border-gray-100">
+            {/* Work Experience */}
+            {form.experience.some((e: any) => e.role || e.company) && (
+              <div>
+                <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: accentColor }}>Work Experience</h3>
+                {form.experience.filter((e: any) => e.role || e.company).map((exp: any, i: number) => (
+                  <div key={i} className="mb-4 pb-3 border-b border-gray-100 last:border-0 last:pb-0 last:mb-0">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="text-sm font-semibold text-gray-800">{exp.role}</div>
+                        <div className="text-[11px] text-gray-500">{exp.company}</div>
+                      </div>
+                      <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2 mt-0.5">{exp.duration}</span>
+                    </div>
+                    {exp.description && (
+                      <ul className="mt-1.5 space-y-0.5">
+                        {exp.description.split('\n').filter(Boolean).map((line: string, j: number) => (
+                          <li key={j} className="text-[11px] text-gray-600 flex items-start gap-1.5">
+                            <span className="text-[8px] mt-0.5 shrink-0" style={{ color: accentColor }}>●</span>
+                            <span>{line}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Projects */}
+            {form.projects.some((p: any) => p.title) && (
+              <div>
+                <h3 className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: accentColor }}>Projects</h3>
+                {form.projects.filter((p: any) => p.title).map((proj: any, i: number) => (
+                  <div key={i} className="mb-3 pb-2 border-b border-gray-100 last:border-0 last:pb-0 last:mb-0">
+                    <div className="text-sm font-semibold text-gray-800">{proj.title}{proj.link ? <span className="text-[10px] text-gray-400 font-normal ml-2">{proj.link}</span> : ''}</div>
+                    {proj.description && <div className="text-[11px] text-gray-600 mt-0.5 whitespace-pre-wrap">{proj.description}</div>}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Languages (from certifications that don't have issuer) */}
+            {form.certifications.filter((c: any) => c.name && !c.issuer).length > 0 && (
+              <div>
+                <h3 className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: accentColor }}>Languages</h3>
+                <div className="text-[11px] text-gray-600">{form.certifications.filter((c: any) => c.name && !c.issuer).map((c: any) => c.name).join(' · ')}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // pick layout based on template id
   switch (tid) {
     case 'fullstack': return <FullstackLayout />;
@@ -2399,6 +2565,7 @@ function ResumePreview({ template, form, accent, bg }: {
     case 'centered-light': return <CenteredLightLayout />;
     case 'brown-sidebar': return <BrownSidebarLayout />;
     case 'dark-sidebar-right': return <DarkSidebarRightLayout />;
+    case 'blank-canvas': return <BlankCanvasLayout />;
     default: if (isTwoCol) return <TwoColumn />; return <SingleColumn />;
   }
 }
