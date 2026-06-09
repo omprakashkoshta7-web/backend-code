@@ -114,6 +114,15 @@ export default function HeroSection() {
   const [activeLine, setActiveLine] = useState(5);
   const [isPlaying, setIsPlaying] = useState(true);
 
+  const fullText = 'Learn Patterns. Solve Faster. Crack Interviews.';
+  const [charIdx, setCharIdx] = useState(0);
+
+  useEffect(() => {
+    if (charIdx >= fullText.length) return;
+    const timeout = setTimeout(() => setCharIdx((c) => c + 1), 45);
+    return () => clearTimeout(timeout);
+  }, [charIdx, fullText]);
+
   useEffect(() => {
     if (!isPlaying) return;
     const timer = setInterval(() => {
@@ -155,13 +164,13 @@ export default function HeroSection() {
               Free Access for All Questions
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-5 sm:mb-6">
-              Master{' '}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-5 sm:mb-6 min-h-[3.5rem] sm:min-h-[4.5rem] md:min-h-[5.5rem]">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-400 to-indigo-400">
-                Coding Patterns
+                {fullText.substring(0, charIdx)}
               </span>
-              <br />
-              Faster Than Ever
+              {charIdx < fullText.length && (
+                <span className="animate-pulse text-primary-400 font-light">|</span>
+              )}
             </h1>
 
             <p className="text-base sm:text-lg text-gray-300 mb-6 sm:mb-8 max-w-lg leading-relaxed">
