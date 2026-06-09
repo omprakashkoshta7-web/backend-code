@@ -118,7 +118,7 @@ async function callOllama(prompt: string): Promise<string> {
     body: JSON.stringify({ model: OLLAMA_MODEL, prompt, stream: false, options: { num_predict: 2048 } }),
   });
   if (!r.ok) throw new Error(`Ollama error: ${r.status}`);
-  const d = await r.json();
+  const d: any = await r.json();
   return d.response || '';
 }
 
@@ -130,7 +130,7 @@ async function callGemini(prompt: string): Promise<string> {
     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: 2048 } }),
   });
   if (!r.ok) throw new Error(`Gemini error: ${r.status}`);
-  const d = await r.json();
+  const d: any = await r.json();
   return d?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
