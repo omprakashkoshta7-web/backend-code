@@ -137,6 +137,30 @@ const extractText = async (buffer: Buffer, mime: string): Promise<string> => {
   return buffer.toString('utf-8');
 };
 
+// ====== In-memory cache ======
+const memoryCache = new Map<string, { data: any; expiry: number }>();
+const CACHEABLE_PATHS = ['/topics', '/patterns', '/stats', '/leaderboard', '/roadmaps', '/questions'];
+const CACHE_TTL = {
+  '/topics': 5 * 60 * 1000,
+  '/patterns': 10 * 60 * 1000,
+  '/stats': 3 * 60 * 1000,
+  '/leaderboard': 2 * 60 * 1000,
+  '/roadmaps': 5 * 60 * 1000,
+  '/questions': 3 * 60 * 1000,
+};
+
+function getCacheKey(path: string, req: Request): string {
+  const auth = (req.headers['authorization'] || '') as string;
+  return `${req.method}:${path}:${auth}`;
+}
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of memoryCache) {
+    if (now > entry.expiry) memoryCache.delete(key);
+  }
+}, 60 * 1000);
+
 const extractSections = (text: string) => {
   const sections: any[] = [];
   const emailMatch = text.match(/[\w.-]+@[\w.-]+\.\w+/);
@@ -160,27 +184,12 @@ const extractSections = (text: string) => {
 
 const resumeUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
-const handle = (req: Request, res: Response, next: NextFunction) => {
+const handle = async (req: Request, res: Response, next: NextFunction) => {
   const path = req.path;
 
   // Resume templates served directly from gateway
   if (path === '/resume/templates') {
     return res.json({ templates: RESUME_TEMPLATES });
-  }
-
-  // Resume list — return empty (resume microservice DB not available via gateway)
-  if (path === '/resume/list') {
-    return res.json({ resumes: [] });
-  }
-
-  // Resume analyze — return error (AI analysis only available via resume microservice)
-  if (path === '/resume/analyze') {
-    return res.status(503).json({ error: 'Resume analysis service unavailable. Please try again later.' });
-  }
-
-  // Resume rewrite — return error (AI rewrite only available via resume microservice)
-  if (path === '/resume/rewrite') {
-    return res.status(503).json({ error: 'Resume rewrite service unavailable. Please try again later.' });
   }
 
   // Resume upload & parse served directly from gateway
@@ -196,6 +205,18 @@ const handle = (req: Request, res: Response, next: NextFunction) => {
         res.status(500).json({ error: 'Failed to parse resume', details: e.message });
       }
     });
+  }
+
+  // In-memory cache for frequent GET endpoints
+  const isGet = req.method === 'GET';
+  const isCacheable = isGet && CACHEABLE_PATHS.some(p => path.startsWith(p));
+  if (isCacheable) {
+    const cacheKey = getCacheKey(path, req);
+    const cached = memoryCache.get(cacheKey);
+    if (cached && Date.now() < cached.expiry) {
+      console.log(`[gateway] CACHE HIT ${req.originalUrl}`);
+      return res.json(cached.data);
+    }
   }
 
   let target: string | null = null;
@@ -215,6 +236,30 @@ const handle = (req: Request, res: Response, next: NextFunction) => {
   }
 
   if (!target) return res.status(404).json({ error: 'Route not found', path });
+
+  // For cacheable GET requests, use fetch instead of proxy for caching
+  if (isCacheable) {
+    const cacheKey = getCacheKey(path, req);
+    const url = `${target}${req.originalUrl}`;
+    console.log(`[gateway] ${req.method} ${req.originalUrl} -> ${target} (cached)`);
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      const auth = req.headers['authorization'];
+      if (auth) headers['authorization'] = auth as string;
+      const proxyRes = await fetch(url, { headers, signal: AbortSignal.timeout(10000) });
+      if (!proxyRes.ok) {
+        return res.status(proxyRes.status).json({ error: `Upstream error: ${proxyRes.status}` });
+      }
+      const data = await proxyRes.json();
+      const ttl = (CACHE_TTL as any)[CACHEABLE_PATHS.find(p => path.startsWith(p))!] || 5 * 60 * 1000;
+      memoryCache.set(cacheKey, { data, expiry: Date.now() + ttl });
+      return res.json(data);
+    } catch (e: any) {
+      console.error(`[gateway] fetch error to ${target}:`, e.message);
+      return res.status(502).json({ error: 'Service unavailable', service: target });
+    }
+  }
+
   console.log(`[gateway] ${req.method} ${req.originalUrl} -> ${target}`);
   return getProxy(target)(req, res, next);
 };
