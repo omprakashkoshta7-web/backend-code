@@ -7,6 +7,7 @@ import {
   Zap, Shield, Star, ThumbsUp, MessageSquare, PenTool, Copy, Check,
 } from 'lucide-react';
 import { resumeApi } from '../api/resumeApi';
+import TemplateGallery from '../components/TemplateGallery';
 import toast from 'react-hot-toast';
 import SEO from '@/shared/components/SEO';
 
@@ -428,39 +429,12 @@ function BuilderPanel({ selectedAnalysis }: { selectedAnalysis?: ResumeAnalysis 
 
   return (
     <>
-      {/* Template Selector */}
-      <div className="rounded-2xl border border-white/10 p-6 shadow-2xl shadow-purple-900/40" style={{ backgroundColor: 'rgba(17, 24, 39, 0.9)', backdropFilter: 'blur(20px)' }}>
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2"><Layout className="w-5 h-5 text-violet-400" /> Choose Template</h3>
-        {selectedAnalysis?.template_recommendation && (
-          <p className="text-sm text-slate-400 mb-6">AI recommends: <span className="text-violet-400 font-medium">{selectedAnalysis.template_recommendation}</span></p>
-        )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {templates.map(t => {
-            const isRec = selectedAnalysis?.template_recommendation && t.name.toLowerCase() === selectedAnalysis.template_recommendation.toLowerCase();
-            return (
-              <div
-                key={t.id}
-                onClick={() => setSelectedTemplate(t.id)}
-                className={`relative p-4 rounded-xl border cursor-pointer transition-all ${selectedTemplate === t.id ? 'border-violet-500 bg-violet-500/10 ring-2 ring-violet-500/30' : 'border-white/10 bg-white/5 hover:border-white/20'}`}
-              >
-                {isRec && <span className="absolute top-2 right-2 text-[10px] font-medium px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-400">AI Pick</span>}
-                <div className="w-full h-24 rounded-lg mb-3 flex items-center justify-center overflow-hidden relative" style={{ backgroundColor: (t.colors?.[1] || '#f8fafc') }}>
-                  <div className="absolute top-0 left-0 w-full h-3" style={{ backgroundColor: t.colors?.[0] || '#1e293b' }} />
-                  <FileText className="w-8 h-8" style={{ color: t.colors?.[0] || '#1e293b' }} />
-                </div>
-                <p className="text-sm font-medium text-white">{t.name}</p>
-                <p className="text-xs text-slate-500 mt-1">{t.description}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${t.is_ats_friendly ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
-                    {t.is_ats_friendly ? 'ATS Friendly' : 'Creative'}
-                  </span>
-                  <span className="text-[10px] text-slate-500">{t.columns === 1 ? 'Single Column' : 'Two Column'}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      <TemplateGallery
+        templates={templates}
+        selected={selectedTemplate}
+        onSelect={setSelectedTemplate}
+        recommended={selectedAnalysis?.template_recommendation}
+      />
 
       {/* Builder Form */}
       <div className="rounded-2xl border border-white/10 p-6 shadow-2xl shadow-purple-900/40" style={{ backgroundColor: 'rgba(17, 24, 39, 0.9)', backdropFilter: 'blur(20px)' }}>
