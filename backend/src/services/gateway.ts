@@ -109,19 +109,19 @@ app.get('/health', (_req, res) => res.json({
   services: SERVICES,
 }));
 
-// ====== Resume Templates (served directly from gateway) ======
-const RESUME_TEMPLATES = [
-  { id: 'ats-beginner', name: 'ATS Beginner', description: 'Clean single-column layout optimized for ATS parsers', is_ats_friendly: true, columns: 1, colors: ['#1e293b', '#f8fafc', '#ffffff'] },
-  { id: 'sde', name: 'SDE Resume', description: 'Software engineering focused with technical skills emphasis', is_ats_friendly: true, columns: 1, colors: ['#0f172a', '#e2e8f0', '#ffffff'] },
-  { id: 'frontend', name: 'Frontend Resume', description: 'Modern layout with visual portfolio & project highlights', is_ats_friendly: false, columns: 2, colors: ['#312e81', '#f0f9ff', '#ffffff'] },
-  { id: 'backend', name: 'Backend Resume', description: 'System design & architecture focused clean format', is_ats_friendly: true, columns: 1, colors: ['#1e3a5f', '#f1f5f9', '#ffffff'] },
-  { id: 'ai-ml', name: 'AI/ML Resume', description: 'Research & model-focused layout for data scientists', is_ats_friendly: false, columns: 2, colors: ['#581c87', '#fdf4ff', '#ffffff'] },
-  { id: 'fullstack', name: 'Full Stack Resume', description: 'Versatile format balancing frontend & backend skills', is_ats_friendly: true, columns: 1, colors: ['#0d9488', '#f0fdfa', '#ffffff'] },
-  { id: 'executive', name: 'Executive Resume', description: 'Leadership-focused layout for senior management roles', is_ats_friendly: true, columns: 1, colors: ['#1e3a8a', '#f8fafc', '#ffffff'] },
-  { id: 'minimalist', name: 'Minimalist Resume', description: 'Clean spacious design with elegant typography', is_ats_friendly: true, columns: 1, colors: ['#475569', '#ffffff', '#ffffff'] },
-  { id: 'creative', name: 'Creative Resume', description: 'Bold gradient header with portfolio metrics section', is_ats_friendly: false, columns: 1, colors: ['#7c3aed', '#fdf4ff', '#ffffff'] },
-  { id: 'technical', name: 'Technical Resume', description: 'Skills-first layout with visual proficiency bars', is_ats_friendly: true, columns: 1, colors: ['#0369a1', '#f0f9ff', '#ffffff'] },
-  { id: 'academic', name: 'Academic Resume', description: 'Research & publication focused for academia roles', is_ats_friendly: false, columns: 1, colors: ['#b91c1c', '#fef2f2', '#ffffff'] },
+// ====== Resume Templates (mutable, CRUD via API) ======
+let RESUME_TEMPLATES: any[] = [
+  { id: 'ats-beginner', name: 'ATS Beginner', description: 'Clean single-column layout optimized for ATS parsers', is_ats_friendly: true, columns: 1, colors: ['#1e293b', '#f8fafc', '#ffffff'], is_premium: false, price: 0 },
+  { id: 'sde', name: 'SDE Resume', description: 'Software engineering focused with technical skills emphasis', is_ats_friendly: true, columns: 1, colors: ['#0f172a', '#e2e8f0', '#ffffff'], is_premium: false, price: 0 },
+  { id: 'frontend', name: 'Frontend Resume', description: 'Modern layout with visual portfolio & project highlights', is_ats_friendly: false, columns: 2, colors: ['#312e81', '#f0f9ff', '#ffffff'], is_premium: false, price: 0 },
+  { id: 'backend', name: 'Backend Resume', description: 'System design & architecture focused clean format', is_ats_friendly: true, columns: 1, colors: ['#1e3a5f', '#f1f5f9', '#ffffff'], is_premium: false, price: 0 },
+  { id: 'ai-ml', name: 'AI/ML Resume', description: 'Research & model-focused layout for data scientists', is_ats_friendly: false, columns: 2, colors: ['#581c87', '#fdf4ff', '#ffffff'], is_premium: false, price: 0 },
+  { id: 'fullstack', name: 'Full Stack Resume', description: 'Versatile format balancing frontend & backend skills', is_ats_friendly: true, columns: 1, colors: ['#0d9488', '#f0fdfa', '#ffffff'], is_premium: false, price: 0 },
+  { id: 'executive', name: 'Executive Resume', description: 'Leadership-focused layout for senior management roles', is_ats_friendly: true, columns: 1, colors: ['#1e3a8a', '#f8fafc', '#ffffff'], is_premium: false, price: 0 },
+  { id: 'minimalist', name: 'Minimalist Resume', description: 'Clean spacious design with elegant typography', is_ats_friendly: true, columns: 1, colors: ['#475569', '#ffffff', '#ffffff'], is_premium: false, price: 0 },
+  { id: 'creative', name: 'Creative Resume', description: 'Bold gradient header with portfolio metrics section', is_ats_friendly: false, columns: 1, colors: ['#7c3aed', '#fdf4ff', '#ffffff'], is_premium: false, price: 0 },
+  { id: 'technical', name: 'Technical Resume', description: 'Skills-first layout with visual proficiency bars', is_ats_friendly: true, columns: 1, colors: ['#0369a1', '#f0f9ff', '#ffffff'], is_premium: false, price: 0 },
+  { id: 'academic', name: 'Academic Resume', description: 'Research & publication focused for academia roles', is_ats_friendly: false, columns: 1, colors: ['#b91c1c', '#fef2f2', '#ffffff'], is_premium: false, price: 0 },
 ];
 
 const extractText = async (buffer: Buffer, mime: string): Promise<string> => {
@@ -192,9 +192,52 @@ const resumeUpload = multer({ storage: multer.memoryStorage(), limits: { fileSiz
 const handle = async (req: Request, res: Response, next: NextFunction) => {
   const path = req.path;
 
-  // Resume templates served directly from gateway
-  if (path === '/resume/templates') {
+  // ====== Resume Templates CRUD (gateway-direct) ======
+  if (path === '/resume/templates' && req.method === 'GET') {
     return res.json({ templates: RESUME_TEMPLATES });
+  }
+  if (path === '/resume/templates' && req.method === 'POST') {
+    const body = req.body;
+    const id = body.id || `custom-${Date.now()}`;
+    if (RESUME_TEMPLATES.find(t => t.id === id)) {
+      return res.status(409).json({ error: 'Template ID already exists' });
+    }
+    const tpl = { id, name: body.name || id, description: body.description || '', is_ats_friendly: body.is_ats_friendly ?? true, columns: body.columns ?? 1, colors: body.colors || ['#6d28d9', '#f8fafc', '#ffffff'], is_premium: body.is_premium ?? false, price: body.price ?? 0 };
+    RESUME_TEMPLATES.push(tpl);
+    return res.status(201).json({ template: tpl });
+  }
+
+  const tplMatch = path.match(/^\/resume\/templates\/([^/]+)$/);
+  if (tplMatch) {
+    const tplId = tplMatch[1];
+    if (req.method === 'GET') {
+      const tpl = RESUME_TEMPLATES.find(t => t.id === tplId);
+      if (!tpl) return res.status(404).json({ error: 'Template not found' });
+      return res.json({ template: tpl });
+    }
+    if (req.method === 'PUT') {
+      const idx = RESUME_TEMPLATES.findIndex(t => t.id === tplId);
+      if (idx === -1) return res.status(404).json({ error: 'Template not found' });
+      RESUME_TEMPLATES[idx] = { ...RESUME_TEMPLATES[idx], ...req.body, id: tplId };
+      return res.json({ template: RESUME_TEMPLATES[idx] });
+    }
+    if (req.method === 'DELETE') {
+      const idx = RESUME_TEMPLATES.findIndex(t => t.id === tplId);
+      if (idx === -1) return res.status(404).json({ error: 'Template not found' });
+      RESUME_TEMPLATES.splice(idx, 1);
+      return res.json({ success: true });
+    }
+  }
+
+  const dupMatch = path.match(/^\/resume\/templates\/([^/]+)\/duplicate$/);
+  if (dupMatch && req.method === 'POST') {
+    const srcId = dupMatch[1];
+    const src = RESUME_TEMPLATES.find(t => t.id === srcId);
+    if (!src) return res.status(404).json({ error: 'Source template not found' });
+    const newId = `${srcId}-copy-${Date.now()}`;
+    const dup = { ...src, id: newId, name: `${src.name} (Copy)` };
+    RESUME_TEMPLATES.push(dup);
+    return res.status(201).json({ template: dup });
   }
 
   // Resume upload & parse served directly from gateway

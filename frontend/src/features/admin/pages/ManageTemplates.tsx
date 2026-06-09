@@ -189,18 +189,12 @@ export default function ManageTemplates() {
   };
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try { setTemplates(JSON.parse(stored)); } catch { setTemplates(FALLBACK_TEMPLATES); }
-    } else {
-      setTemplates(FALLBACK_TEMPLATES);
-    }
+    import('@/features/resume/api/resumeApi').then(({ resumeApi }) =>
+      resumeApi.getTemplates().then(r => setTemplates(r.data.templates || [])).catch(() => setTemplates(FALLBACK_TEMPLATES))
+    );
   }, []);
 
-  const persist = (ts: TemplateData[]) => {
-    setTemplates(ts);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ts));
-  };
+  const persist = (ts: TemplateData[]) => { setTemplates(ts); };
 
   const filtered = useMemo(() => {
     if (!search) return templates;
@@ -208,29 +202,44 @@ export default function ManageTemplates() {
     return templates.filter(t => t.name.toLowerCase().includes(q) || t.id.includes(q));
   }, [templates, search]);
 
-  const handleSave = (data: TemplateData) => {
-    if (editData) {
-      persist(templates.map(t => t.id === editData.id ? data : t));
-      toast.success('Template updated!');
-    } else {
-      if (!data.id.trim()) { toast.error('Template ID is required'); return; }
-      if (templates.some(t => t.id === data.id)) { toast.error('Template ID already exists'); return; }
-      persist([...templates, data]);
-      toast.success('Template created!');
+  const handleSave = async (data: TemplateData) => {
+    try {
+      const { resumeApi } = await import('@/features/resume/api/resumeApi');
+      if (editData) {
+        await resumeApi.updateTemplate(editData.id, data);
+        persist(templates.map(t => t.id === editData.id ? data : t));
+        toast.success('Template updated!');
+      } else {
+        if (!data.id.trim()) { toast.error('Template ID is required'); return; }
+        await resumeApi.createTemplate(data);
+        persist([...templates, data]);
+        toast.success('Template created!');
+      }
+      setShowModal(false);
+      setEditData(undefined);
+    } catch (e: any) {
+      toast.error(e.response?.data?.error || 'Save failed');
     }
-    setShowModal(false);
-    setEditData(undefined);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Delete this template?')) return;
-    persist(templates.filter(t => t.id !== id));
-    toast.success('Template deleted');
+    try {
+      const { resumeApi } = await import('@/features/resume/api/resumeApi');
+      await resumeApi.deleteTemplate(id);
+      persist(templates.filter(t => t.id !== id));
+      toast.success('Template deleted');
+    } catch { toast.error('Delete failed'); }
   };
 
-  const togglePremium = (id: string) => {
-    persist(templates.map(t => t.id === id ? { ...t, isPremium: !t.isPremium, price: !t.isPremium ? 5 : 0 } : t));
-    toast.success('Premium status toggled');
+  const togglePremium = async (id: string) => {
+    try {
+      const { resumeApi } = await import('@/features/resume/api/resumeApi');
+      const tpl = templates.find(t => t.id === id);
+      await resumeApi.updateTemplate(id, { isPremium: !tpl?.isPremium, price: !tpl?.isPremium ? 5 : 0 });
+      persist(templates.map(t => t.id === id ? { ...t, isPremium: !t.isPremium, price: !t.isPremium ? 5 : 0 } : t));
+      toast.success('Premium status toggled');
+    } catch { toast.error('Toggle failed'); }
   };
 
   const handleAdd = () => {
@@ -243,11 +252,15 @@ export default function ManageTemplates() {
     setShowModal(true);
   };
 
-  const handleDuplicate = (t: TemplateData) => {
-    const newId = uniqueId(t.id + '-copy');
-    const copy = { ...t, id: newId, name: t.name + ' (Copy)' };
-    persist([...templates, copy]);
-    toast.success('Template duplicated!');
+  const handleDuplicate = async (t: TemplateData) => {
+    try {
+      const { resumeApi } = await import('@/features/resume/api/resumeApi');
+      await resumeApi.duplicateTemplate(t.id);
+      const newId = uniqueId(t.id + '-copy');
+      const copy = { ...t, id: newId, name: t.name + ' (Copy)' };
+      persist([...templates, copy]);
+      toast.success('Template duplicated!');
+    } catch { toast.error('Duplicate failed'); }
   };
 
   return (
