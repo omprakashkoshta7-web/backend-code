@@ -684,10 +684,6 @@ export default function TemplateWizard({ onComplete, onCancel }: Props) {
                   <div className="h-80 overflow-hidden">
                     <MiniResume type={t.id} colors={t.colors || ['#6d28d9', '#f8fafc']} />
                   </div>
-                  <div className="p-4 border-t border-white/10">
-                    <p className="text-sm font-semibold text-white">{t.name}</p>
-                    <p className="text-xs text-slate-500 mt-1">{t.description}</p>
-                  </div>
                 </div>
               </motion.div>
             ))}
