@@ -3,6 +3,8 @@ import type { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import multer from 'multer';
+// pdf-parse and mammoth are loaded via require() in extractText()
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -117,12 +119,68 @@ const RESUME_TEMPLATES = [
   { id: 'fullstack', name: 'Full Stack Resume', description: 'Versatile format balancing frontend & backend skills', is_ats_friendly: true, columns: 1, colors: ['#0d9488', '#f0fdfa', '#ffffff'] },
 ];
 
+const extractText = async (buffer: Buffer, mime: string): Promise<string> => {
+  if (mime.includes('pdf')) {
+    try {
+      const pdfParse = require('pdf-parse');
+      const data = await pdfParse(buffer);
+      return data.text || '';
+    } catch { return buffer.toString('utf-8').replace(/[^\x20-\x7E\n]/g, ''); }
+  }
+  if (mime.includes('word') || mime.includes('docx') || mime.includes('officedocument')) {
+    try {
+      const mammoth = require('mammoth');
+      const r = await mammoth.extractRawText({ buffer });
+      return r.value || '';
+    } catch { return buffer.toString('utf-8'); }
+  }
+  return buffer.toString('utf-8');
+};
+
+const extractSections = (text: string) => {
+  const sections: any[] = [];
+  const emailMatch = text.match(/[\w.-]+@[\w.-]+\.\w+/);
+  if (emailMatch) sections.push({ type: 'email', value: emailMatch[0] });
+  const phoneMatch = text.match(/[\+]?[\d\s\-\(\)]{10,}/);
+  if (phoneMatch) sections.push({ type: 'phone', value: phoneMatch[0].trim() });
+  const linkedinMatch = text.match(/linkedin\.com\/in\/[\w-]+/i);
+  if (linkedinMatch) sections.push({ type: 'linkedin', value: linkedinMatch[0] });
+  const githubMatch = text.match(/github\.com\/[\w-]+/i);
+  if (githubMatch) sections.push({ type: 'github', value: githubMatch[0] });
+  const nameMatch = text.match(/^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)/m);
+  if (nameMatch) sections.push({ type: 'name', value: nameMatch[1] });
+  const skillKeywords = ['python', 'javascript', 'typescript', 'java', 'c++', 'react', 'node', 'angular', 'vue', 'docker', 'kubernetes', 'aws', 'gcp', 'azure', 'sql', 'mongodb', 'redis', 'graphql', 'rest', 'git', 'linux', 'html', 'css', 'tailwind', 'sass', 'express', 'django', 'flask', 'spring', 'next', 'nuxt', 'nestjs'];
+  const foundSkills = skillKeywords.filter((sk: string) => new RegExp('\\b' + sk.replace(/[+\/]/g, '\\$&') + '\\b', 'i').test(text));
+  if (foundSkills.length > 0) sections.push({ type: 'skills', value: foundSkills.join(', '), items: foundSkills });
+  const eduKeywords = ['bachelor', 'b.tech', 'b.e', 'master', 'm.tech', 'm.s', 'phd', 'ph.d', 'bca', 'mca', 'degree', 'university', 'college', 'school', 'institute', 'b.sc', 'm.sc'];
+  const eduLines = text.split('\n').filter((l: string) => eduKeywords.some((k: string) => l.toLowerCase().includes(k)));
+  if (eduLines.length > 0) sections.push({ type: 'education', value: eduLines.join('; '), items: eduLines.map((l: string) => l.trim()) });
+  return sections;
+};
+
+const resumeUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+
 const handle = (req: Request, res: Response, next: NextFunction) => {
   const path = req.path;
 
   // Resume templates served directly from gateway
   if (path === '/resume/templates') {
     return res.json({ templates: RESUME_TEMPLATES });
+  }
+
+  // Resume upload & parse served directly from gateway
+  if (path === '/resume/upload') {
+    return resumeUpload.single('resume')(req, res, async (err) => {
+      if (err) return res.status(400).json({ error: 'Upload error', details: err.message });
+      if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+      try {
+        const text = await extractText(req.file.buffer, req.file.mimetype);
+        const sections = extractSections(text);
+        res.json({ sections, text, filename: req.file.originalname });
+      } catch (e: any) {
+        res.status(500).json({ error: 'Failed to parse resume', details: e.message });
+      }
+    });
   }
 
   let target: string | null = null;
