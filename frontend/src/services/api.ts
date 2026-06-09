@@ -2,6 +2,7 @@ import axios from 'axios';
 import axiosRetry from 'axios-retry';
 import { subscriptionStorage } from '@/shared/utils/subscriptionStorage';
 import { userStorage } from '@/shared/utils/userStorage';
+import { getCached, setCache, clearApiCache } from '@/shared/utils/apiCache';
 
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL || ''}/api`,
@@ -22,12 +23,41 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  // Serve GET from cache if fresh
+  if (config.method === 'get' || config.method === 'GET') {
+    const cached = getCached<any>(config.url || '');
+    if (cached) {
+      config.adapter = () => Promise.resolve({ data: cached, status: 200, statusText: 'OK', headers: config.headers, config });
+    }
+  }
+
   return config;
 });
 
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    const url = res.config.url || '';
+    const method = res.config.method;
+    // Cache successful GET responses
+    if (method === 'get' && res.status === 200 && url) {
+      setCache(url, res.data);
+    }
+    // Invalidate cache on mutating requests
+    if (['post', 'put', 'patch', 'delete'].includes(method || '')) {
+      clearApiCache();
+    }
+    return res;
+  },
   (err) => {
+    // Invalidate cache on mutating requests
+    if (err.config) {
+      const method = err.config.method;
+      const url = err.config.url || '';
+      if (['post', 'put', 'patch', 'delete'].includes(method)) {
+        clearApiCache();
+      }
+    }
     if (err.response?.status === 401) {
       localStorage.removeItem('token');
       userStorage.clear();
