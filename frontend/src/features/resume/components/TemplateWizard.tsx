@@ -545,8 +545,12 @@ export default function TemplateWizard({ onComplete, onCancel }: Props) {
   useEffect(() => {
     resumeApi.getTemplates()
       .then(r => {
-        const t = r.data.templates || [];
-        setTemplates(t.length > 0 ? t : FALLBACK_TEMPLATES);
+        const apiTemplates = r.data.templates || [];
+        const merged = FALLBACK_TEMPLATES.map(ft => apiTemplates.find((at: any) => at.id === ft.id) || ft);
+        apiTemplates.forEach((at: any) => {
+          if (!merged.find((m: any) => m.id === at.id)) merged.push(at);
+        });
+        setTemplates(merged);
       })
       .catch(() => setTemplates(FALLBACK_TEMPLATES));
   }, []);
