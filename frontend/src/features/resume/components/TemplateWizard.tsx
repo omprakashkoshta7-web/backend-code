@@ -787,86 +787,458 @@ function LargeResumePreview({ template }: { template: Template }) {
     </div>
   );
 
-  if (tid === 'executive') return renderExecutive();
-  if (tid === 'minimalist') return renderMinimalist();
-  if (tid === 'creative') return renderCreative();
-  if (tid === 'technical') return renderTechnical();
-  if (tid === 'academic') return renderAcademic();
-
-  return (
-    <div className="w-full h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200 flex" style={{ backgroundColor: bg, minHeight: '500px' }}>
-      {isTwoCol && (
+  const layouts: Record<string, React.ReactNode> = {
+    'ats-beginner': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
         <div className="w-[35%] h-full p-4 flex flex-col gap-3" style={{ backgroundColor: accent }}>
-          <div className="w-16 h-16 rounded-full bg-white/20 mx-auto" />
-          <div>
-            <div className="text-[10px] font-bold text-white uppercase tracking-wide mb-1">Contact</div>
-            <div className="space-y-0.5 text-[8px] text-white/70">
-              <div>email@email.com</div><div>+1 234 567 890</div><div>linkedin.com/in/user</div><div>github.com/user</div>
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] font-bold text-white uppercase tracking-wide mb-1">Skills</div>
-            <div className="flex flex-wrap gap-1">
-              {['React', 'Node.js', 'TypeScript', 'Python', 'SQL', 'Docker', 'AWS', 'MongoDB'].map(s => (
-                <span key={s} className="text-[7px] px-1.5 py-0.5 rounded bg-white/10 text-white/80">{s}</span>
-              ))}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] font-bold text-white uppercase tracking-wide mb-1">Education</div>
-            <div className="space-y-1 text-[8px] text-white/70">
-              <div><div className="font-semibold text-white/90">B.Tech CSE</div><div>University Name</div><div>2020 - 2024</div></div>
-            </div>
-          </div>
+          <div className="w-14 h-14 rounded-full bg-white/20 mx-auto" />
+          <div><div className="text-[10px] font-bold text-white/90 uppercase tracking-wide">Contact</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>john@email.com</div><div>+1 234 567 890</div><div>linkedin.com/in/john</div><div>github.com/john</div></div></div>
+          <div><div className="text-[10px] font-bold text-white/90 uppercase tracking-wide">Skills</div>
+            <div className="flex flex-wrap gap-1 mt-1">{['React','Node.js','TypeScript','Python','SQL'].map(s => <span key={s} className="text-[7px] px-1.5 py-0.5 rounded bg-white/10 text-white/80">{s}</span>)}</div></div>
         </div>
-      )}
-      <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
-        <div>
-          <div className="text-lg font-bold" style={{ color: accent }}>John Doe</div>
-          <div className="text-xs text-gray-500">Software Engineer</div>
-          {!isTwoCol && <div className="text-[10px] text-gray-400 mt-1">email@email.com | +1 234 567 890 | linkedin.com/in/user</div>}
-        </div>
-        <div>
-          <div className="text-[10px] font-bold uppercase border-b-2 pb-0.5 mb-1" style={{ borderColor: accent, color: accent }}>Professional Summary</div>
-          <div className="text-[9px] text-gray-600 leading-relaxed">Results-driven software engineer with 5+ years of experience building scalable web applications. Proficient in React, Node.js, and cloud technologies. Passionate about clean code and user-centric design.</div>
-        </div>
-        <div>
-          <div className="text-[10px] font-bold uppercase border-b-2 pb-0.5 mb-1" style={{ borderColor: accent, color: accent }}>Experience</div>
-          <div className="space-y-2">
-            <div>
-              <div className="flex justify-between items-start"><div className="text-[9px] font-semibold text-gray-800">Senior Developer</div><div className="text-[8px] text-gray-400">2022 - Present</div></div>
-              <div className="text-[8px] text-gray-500">Tech Company Inc.</div>
-              <div className="text-[8px] text-gray-600 mt-0.5 space-y-0.5">
-                <div>• Led development of microservices architecture serving 1M+ users</div>
-                <div>• Mentored junior developers and conducted code reviews</div>
-                <div>• Improved application performance by 40% through optimization</div>
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between items-start"><div className="text-[9px] font-semibold text-gray-800">Full Stack Developer</div><div className="text-[8px] text-gray-400">2020 - 2022</div></div>
-              <div className="text-[8px] text-gray-500">Startup Corp</div>
-              <div className="text-[8px] text-gray-600 mt-0.5 space-y-0.5">
-                <div>• Built and deployed 10+ features using React and Node.js</div>
-                <div>• Implemented CI/CD pipelines reducing deployment time by 60%</div>
-              </div>
-            </div>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div><div className="text-lg font-bold" style={{ color: accent }}>John Doe</div><div className="text-xs text-gray-500">Software Engineer</div></div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Senior Dev</span> - Tech Co. <span className="text-gray-400">2022-Present</span></div>
+            <div className="text-[9px] text-gray-600">Built scalable microservices serving 1M+ users</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Developer</span> - StartupX <span className="text-gray-400">2020-2022</span></div>
           </div>
-        </div>
-        <div>
-          <div className="text-[10px] font-bold uppercase border-b-2 pb-0.5 mb-1" style={{ borderColor: accent, color: accent }}>Projects</div>
-          <div className="space-y-1">
-            <div>
-              <div className="text-[9px] font-semibold text-gray-800">E-Commerce Platform</div>
-              <div className="text-[8px] text-gray-600 space-y-0.5">
-                <div>• Full-stack e-commerce with React, Node.js, MongoDB, Stripe integration</div>
-                <div>• Features: cart, payments, admin dashboard, real-time inventory</div>
-              </div>
-            </div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Education</div>
+            <div className="text-[9px] text-gray-600 mt-1">B.Tech Computer Science - University (2020-2024)</div>
+          </div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Projects</div>
+            <div className="text-[9px] text-gray-600 mt-1">E-Commerce Platform - React, Node.js, MongoDB</div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    ),
+    'sde': (
+      <div className="w-full h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200 flex flex-col" style={{ backgroundColor: bg, minHeight: '500px' }}>
+        <div className="p-5 text-center border-b-2" style={{ borderColor: accent }}>
+          <div className="text-lg font-bold" style={{ color: accent }}>Ravi Kumar</div>
+          <div className="text-xs text-gray-500">Senior Software Engineer</div>
+          <div className="text-[10px] text-gray-400 mt-1">ravi@email.com | +1 234 567 890 | linkedin.com/in/ravi</div>
+        </div>
+        <div className="flex-1 p-5 space-y-3">
+          <div className="flex flex-wrap gap-1.5 justify-center">
+            {['Java','Python','SQL','Docker','AWS','Redis','Kafka','Microservices','System Design'].map(s => <span key={s} className="text-[8px] px-2 py-0.5 rounded border" style={{ borderColor: accent, color: accent }}>{s}</span>)}
+          </div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Senior Software Engineer</span> - Tech Company (2022-Present)</div>
+            <div className="text-[9px] text-gray-600">Led microservices architecture serving 1M+ users across 50+ services</div>
+            <div className="text-[9px] text-gray-600 mt-1.5"><span className="font-semibold">Software Developer</span> - StartupX (2020-2022)</div>
+            <div className="text-[9px] text-gray-600">Built scalable backend systems using Java Spring Boot & PostgreSQL</div>
+          </div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Education</div>
+            <div className="text-[9px] text-gray-600 mt-1">B.Tech Computer Science - IIT Delhi (2020-2024)</div>
+          </div>
+        </div>
+      </div>
+    ),
+    'frontend': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="w-[35%] h-full p-4 flex flex-col gap-3" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full bg-white/20 mx-auto" />
+          <div><div className="text-[10px] font-bold text-white/90 uppercase">Contact</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>john@email.com</div><div>+1 234 567 890</div><div>linkedin.com/in/john</div></div></div>
+          <div><div className="text-[10px] font-bold text-white/90 uppercase">Skills</div>
+            <div className="flex flex-wrap gap-1 mt-1">{['React','TypeScript','Tailwind','Next.js','Redux','CSS3','GraphQL'].map(s => <span key={s} className="text-[7px] px-1.5 py-0.5 rounded bg-white/10 text-white/80">{s}</span>)}</div></div>
+          <div><div className="text-[10px] font-bold text-white/90 uppercase">Education</div>
+            <div className="text-[8px] text-white/70 mt-1">B.Tech CSE<br/>University<br/>2020-2024</div></div>
+        </div>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="pb-1 border-b-2 mb-2" style={{ borderColor: accent }}>
+            <div className="text-lg font-bold" style={{ color: accent }}>Alex Chen</div>
+            <div className="text-xs text-gray-500">Frontend Developer</div>
+          </div>
+          <div><div className="text-[10px] font-bold uppercase" style={{ color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Senior Frontend Dev</span> - Tech Co. (2022-Present)</div>
+            <div className="text-[9px] text-gray-600 ml-2">Built scalable React apps with 99.9% uptime, served 2M+ users</div>
+            <div className="text-[9px] text-gray-600 mt-1.5"><span className="font-semibold">Frontend Dev</span> - StartupX (2020-2022)</div>
+          </div>
+          <div><div className="text-[10px] font-bold uppercase" style={{ color: accent }}>Projects</div>
+            <div className="text-[9px] text-gray-600 mt-1">Design System - React, Storybook, Tailwind CSS</div>
+            <div className="text-[9px] text-gray-600">E-Commerce Dashboard - Analytics, Charts, Real-time data</div>
+          </div>
+        </div>
+      </div>
+    ),
+    'backend': (
+      <div className="w-full h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200 flex flex-col" style={{ backgroundColor: bg, minHeight: '500px' }}>
+        <div className="p-5 text-center border-b-2" style={{ borderColor: accent }}>
+          <div className="text-lg font-bold" style={{ color: accent }}>Maria Santos</div>
+          <div className="text-xs text-gray-500">Backend Developer</div>
+          <div className="text-[10px] text-gray-400 mt-1">maria@email.com | linkedin.com/in/maria</div>
+        </div>
+        <div className="flex-1 p-5 space-y-3">
+          <div className="flex flex-wrap gap-1.5">
+            {['Java','Python','Node.js','SQL','Docker','AWS','Redis','Kafka','PostgreSQL','GraphQL'].map(s => <span key={s} className="text-[8px] px-2 py-0.5 rounded border" style={{ borderColor: accent, color: accent }}>{s}</span>)}
+          </div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Backend Engineer</span> - Tech Co. (2022-Present)</div>
+            <div className="text-[9px] text-gray-600">Designed REST APIs handling 10M+ requests/day with 99.9% uptime</div>
+            <div className="text-[9px] text-gray-600 mt-1.5"><span className="font-semibold">Junior Developer</span> - StartupX (2020-2022)</div>
+            <div className="text-[9px] text-gray-600">Built and maintained microservices in Node.js and Python</div>
+          </div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Architecture</div>
+            <div className="flex gap-1 mt-1">{['REST APIs','Event-Driven','CQRS','Microservices','Serverless'].map(s => <span key={s} className="text-[7px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: accent + '15', color: accent }}>{s}</span>)}</div>
+          </div>
+        </div>
+      </div>
+    ),
+    'ai-ml': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="w-[35%] h-full p-4 flex flex-col gap-3" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full bg-white/20 mx-auto" />
+          <div><div className="text-[10px] font-bold text-white/90 uppercase">Contact</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>john@email.com</div><div>linkedin.com/in/john</div><div>github.com/john</div></div></div>
+          <div><div className="text-[10px] font-bold text-white/90 uppercase">ML/AI Skills</div>
+            <div className="flex flex-wrap gap-1 mt-1">{['TensorFlow','PyTorch','Scikit-learn','NLP','CV','Deep Learning','LLMs'].map(s => <span key={s} className="text-[7px] px-1.5 py-0.5 rounded bg-white/10 text-white/80">{s}</span>)}</div></div>
+        </div>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="flex justify-between items-start border-b pb-1" style={{ borderColor: accent }}>
+            <div><div className="text-lg font-bold" style={{ color: accent }}>Dr. Sarah Lee</div><div className="text-xs text-gray-500">ML Engineer</div></div>
+            <div className="text-right text-[10px] text-gray-400"><div>Ph.D. AI</div><div>Stanford</div></div>
+          </div>
+          <div><div className="text-[10px] font-bold uppercase" style={{ color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">ML Engineer</span> - AI Corp (2022-Present)</div>
+            <div className="text-[9px] text-gray-600">Built NLP pipelines processing 1M+ docs/day with 95% accuracy</div>
+            <div className="text-[9px] text-gray-600 mt-1.5"><span className="font-semibold">Research Scientist</span> - Research Lab (2018-2022)</div>
+          </div>
+          <div><div className="text-[10px] font-bold uppercase" style={{ color: accent }}>Projects</div>
+            <div className="text-[9px] text-gray-600 mt-1">Image Classification - ResNet, PyTorch, 95% accuracy</div>
+            <div className="text-[9px] text-gray-600">LLM Fine-tuning - LLaMA 2, QLoRA, instruction tuning</div>
+          </div>
+        </div>
+      </div>
+    ),
+    'fullstack': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="w-[35%] h-full p-4 flex flex-col gap-3" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full bg-white/20 mx-auto" />
+          <div><div className="text-[10px] font-bold text-white/90 uppercase">Contact</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>john@email.com</div><div>+1 234 567 890</div><div>linkedin.com/in/john</div><div>github.com/john</div></div></div>
+          <div><div className="text-[10px] font-bold text-white/90 uppercase">Skills</div>
+            <div className="flex flex-wrap gap-1 mt-1">{['React','Node.js','TypeScript','Python','SQL','Docker','AWS'].map(s => <span key={s} className="text-[7px] px-1.5 py-0.5 rounded bg-white/10 text-white/80">{s}</span>)}</div></div>
+        </div>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div><div className="text-lg font-bold" style={{ color: accent }}>Jordan Park</div><div className="text-xs text-gray-500">Full Stack Developer</div></div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Full Stack Dev</span> - Tech Co. (2022-Present)</div>
+            <div className="text-[9px] text-gray-600">Built full-stack apps with React + Node.js serving 500K+ users</div>
+            <div className="text-[9px] text-gray-600 mt-1.5"><span className="font-semibold">Developer</span> - StartupX (2020-2022)</div>
+          </div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Projects</div>
+            <div className="text-[9px] text-gray-600 mt-1">E-Commerce Platform - Full stack with React, Node.js, Stripe</div>
+          </div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Education</div>
+            <div className="text-[9px] text-gray-600 mt-1">B.Tech Computer Science - University (2020-2024)</div>
+          </div>
+        </div>
+      </div>
+    ),
+    'modern-professional': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="w-[38%] h-full p-4 flex flex-col gap-2.5" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div><div className="text-[9px] font-bold text-white/90 uppercase tracking-wide">Contact</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>+1 234 567 890</div><div>hello@email.com</div><div>123 Anywhere St.</div></div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase tracking-wide">About Me</div>
+            <div className="text-[8px] text-white/70 mt-1 leading-relaxed">Creative professional with 5+ years of experience in visual design, UX/UI, and brand development.</div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase tracking-wide">Skills</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>• Management Skills</div><div>• Creativity</div><div>• Digital Marketing</div><div>• Negotiation</div></div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase tracking-wide">Language</div>
+            <div className="text-[8px] text-white/70">English · Spanish</div></div>
+        </div>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="text-xl font-bold text-gray-900">Lorna Alvarado</div>
+          <div className="text-xs text-gray-500 mb-2">Marketing Manager</div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Education</div>
+            <div className="text-[9px] text-gray-600 mt-1">Bachelor of Business Management</div>
+            <div className="text-[9px] text-gray-400">Bonchille University · 2015 - 2020</div></div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Product Design Manager</span> · 2015 - 2020</div>
+            <div className="text-[9px] text-gray-500">Creative Agency, Inc.</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Marketing Specialist</span> · 2012 - 2015</div>
+            <div className="text-[9px] text-gray-500">Digital Corp</div></div>
+        </div>
+      </div>
+    ),
+    'blackwhite-minimalist': (
+      <div className="w-full h-full rounded-lg overflow-hidden shadow-2xl border border-gray-300 flex flex-col" style={{ backgroundColor: '#ffffff', minHeight: '500px' }}>
+        <div className="p-5 text-center border-b border-gray-300">
+          <div className="text-xl font-bold text-gray-900">Mariana Anderson</div>
+          <div className="text-xs text-gray-600">Marketing Manager</div>
+          <div className="text-[10px] text-gray-400 mt-1">mariana@email.com | +1 234 567 890</div>
+        </div>
+        <div className="flex-1 p-5 space-y-3">
+          <div><div className="text-[10px] font-bold text-gray-700 uppercase border-b border-gray-200 pb-1">Education</div>
+            <div className="text-[9px] text-gray-700 mt-1">Bachelor of Business · Bonchille University</div>
+            <div className="text-[9px] text-gray-500">2015 - 2020</div></div>
+          <div><div className="text-[10px] font-bold text-gray-700 uppercase border-b border-gray-200 pb-1">Experience</div>
+            <div className="text-[9px] text-gray-700 mt-1"><span className="font-semibold">Marketing Manager</span> · 2022 - Present</div>
+            <div className="text-[9px] text-gray-600">Acme International Co.</div>
+            <div className="text-[9px] text-gray-700 mt-1.5"><span className="font-semibold">Junior Marketer</span> · 2020 - 2022</div>
+            <div className="text-[9px] text-gray-600">Startup Ltd.</div></div>
+          <div><div className="text-[10px] font-bold text-gray-700 uppercase border-b border-gray-200 pb-1">Expertise</div>
+            <div className="text-[9px] text-gray-700 mt-1">UX/UI · Wireframes · Storyboards · User Flows · Prototyping</div></div>
+        </div>
+      </div>
+    ),
+    'bluegray-simple': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="text-base font-bold text-gray-900 uppercase tracking-wide">Richard Sanchez</div>
+          <div className="text-xs text-gray-500">Marketing Manager</div>
+          <div><div className="text-[10px] font-bold uppercase flex items-center gap-1" style={{ color: accent }}>● Profile</div>
+            <div className="text-[9px] text-gray-600 mt-1 leading-relaxed">Creative marketing professional with 10+ years experience in digital campaigns and brand strategy development.</div></div>
+          <div><div className="text-[10px] font-bold uppercase flex items-center gap-1" style={{ color: accent }}>● Work Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Senior Marketing Manager</span></div>
+            <div className="text-[9px] text-gray-500">Beacon Studio · 2020 - PRESENT</div>
+            <div className="text-[9px] text-gray-600 mt-1.5"><span className="font-semibold">Marketing Coordinator</span></div>
+            <div className="text-[9px] text-gray-500">Agency Co. · 2015 - 2020</div></div>
+        </div>
+        <div className="w-[38%] h-full p-4 flex flex-col gap-2.5" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Contact</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>+123 456 7890</div><div>hello@email.com</div><div>linkedin.com/in/richard</div></div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Skills</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>• Project Management</div><div>• Public Relations</div><div>• Time Management</div><div>• Leadership</div></div></div>
+        </div>
+      </div>
+    ),
+    'professional-modern': (
+      <div className="w-full h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200 flex flex-col" style={{ backgroundColor: bg, minHeight: '500px' }}>
+        <div className="p-5 text-center">
+          <div className="text-xl font-bold text-gray-900">Lorna Alvarado</div>
+          <div className="text-xs text-gray-500">Marketing Manager</div>
+        </div>
+        <div className="flex-1 p-5 pt-0 space-y-3">
+          <div className="flex justify-center gap-4 text-[9px] text-gray-500">+123 456 7890 · hello@email.com · linkedin.com/in/lorna</div>
+          <div><div className="text-[10px] font-bold text-gray-700 uppercase border-b pb-1">About Me</div>
+            <div className="text-[9px] text-gray-600 mt-1 leading-relaxed">Creative professional with 5+ years of experience in visual design, UX/UI, and brand development. Passionate about delivering impactful marketing campaigns.</div></div>
+          <div><div className="text-[10px] font-bold text-gray-700 uppercase border-b pb-1">Skills</div>
+            <div className="flex flex-wrap gap-1.5 mt-1">{['Management','Creativity','Digital Marketing','Negotiation','SEO','Analytics'].map(s => <span key={s} className="text-[8px] px-2 py-0.5 rounded bg-gray-100 text-gray-700">{s}</span>)}</div></div>
+          <div><div className="text-[10px] font-bold text-gray-700 uppercase border-b pb-1">Experience</div>
+            <div className="text-[9px] text-gray-700 mt-1"><span className="font-semibold">Marketing Manager</span> · Acme International · 2020-Present</div>
+            <div className="text-[9px] text-gray-600">Led team of 10 marketing professionals, increased ROI by 40%</div></div>
+        </div>
+      </div>
+    ),
+    'grayblue-sidebar': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="w-[35%] h-full p-4 flex flex-col gap-2.5" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Contact</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>+1 234 567 890</div><div>hello@email.com</div></div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Education</div>
+            <div className="text-[8px] text-white/70 mt-1">BA Marketing · University 2015-2020</div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Skills</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>• Marketing Strategy</div><div>• SEO/SEM</div><div>• Content Creation</div><div>• Analytics</div></div></div>
+        </div>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="text-xl font-bold text-gray-900">Olivia Sanchez</div>
+          <div className="text-xs text-gray-500">Marketing Manager</div>
+          <div><div className="text-[10px] font-bold uppercase border-b pb-1" style={{ borderColor: accent, color: accent }}>Summary</div>
+            <div className="text-[9px] text-gray-600 mt-1 leading-relaxed">Creative marketing professional with 8+ years of experience driving brand growth and digital strategy for Fortune 500 companies.</div></div>
+          <div><div className="text-[10px] font-bold uppercase border-b pb-1" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Marketing Manager</span> · Acme International · 2020-Present</div>
+            <div className="text-[9px] text-gray-500">Led campaigns generating $5M+ in revenue</div>
+            <div className="text-[9px] text-gray-600 mt-1.5"><span className="font-semibold">Digital Marketing Specialist</span> · Agency X · 2016-2020</div></div>
+        </div>
+      </div>
+    ),
+    'dark-sidebar-photo': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="w-[35%] h-full p-4 flex flex-col gap-2.5" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Contact</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>+1 234 567 890</div><div>hello@email.com</div><div>linkedin.com/in/user</div></div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Education</div>
+            <div className="text-[8px] text-white/70 mt-1">BA Marketing · University 2015-2020</div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Skills</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>• Marketing</div><div>• SEO</div><div>• Content Strategy</div></div></div>
+        </div>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="text-xl font-bold text-gray-900">Olivia Sanchez</div>
+          <div className="text-xs text-gray-500">Marketing Manager</div>
+          <div><div className="text-[10px] font-bold uppercase border-b pb-1" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Marketing Manager</span> · Acme International · 2020-Present</div>
+            <div className="text-[9px] text-gray-500">Managed $2M annual marketing budget</div>
+            <div className="text-[9px] text-gray-600 mt-1.5"><span className="font-semibold">SEO Specialist</span> · Digital Agency · 2017-2020</div></div>
+          <div><div className="text-[10px] font-bold uppercase border-b pb-1" style={{ borderColor: accent, color: accent }}>References</div>
+            <div className="text-[9px] text-gray-600 mt-1">Harumi Kobayashi · CEO, Acme International</div>
+            <div className="text-[9px] text-gray-600">Dr. James Wilson · Professor, University</div></div>
+        </div>
+      </div>
+    ),
+    'gray-sidebar-right': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="text-xl font-bold text-gray-900">Lorna Alvarado</div>
+          <div className="text-xs text-gray-500">Digital Marketing Specialist</div>
+          <div><div className="text-[10px] font-bold uppercase" style={{ color: accent }}>About Me</div>
+            <div className="text-[9px] text-gray-600 mt-1 leading-relaxed">Creative professional with 5+ years of experience in visual design, UX/UI, and brand development. Passionate about creating meaningful digital experiences.</div></div>
+          <div><div className="text-[10px] font-bold uppercase" style={{ color: accent }}>Work Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Marketing Manager</span> · Acme International · 2020-Present</div>
+            <div className="text-[9px] text-gray-500">Led cross-functional marketing campaigns</div>
+            <div className="text-[9px] text-gray-600 mt-1.5"><span className="font-semibold">Digital Marketing Intern</span> · Agency Co. · 2019-2020</div></div>
+        </div>
+        <div className="w-[35%] h-full p-4 flex flex-col gap-2.5" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Contact</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>+1 234 567 890</div><div>hello@email.com</div></div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Education</div>
+            <div className="text-[8px] text-white/70 mt-1">BA Marketing · University 2015-2020</div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Skills</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>• Digital Strategy</div><div>• SEO/SEM</div><div>• Content Marketing</div></div></div>
+        </div>
+      </div>
+    ),
+    'centered-light': (
+      <div className="w-full h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200 flex flex-col" style={{ backgroundColor: bg, minHeight: '500px' }}>
+        <div className="p-5 text-center border-b border-gray-200">
+          <div className="text-xl font-bold text-gray-900">Emma Warner</div>
+          <div className="text-xs text-gray-500">Accounting Executive</div>
+        </div>
+        <div className="flex-1 p-5 space-y-3">
+          <div className="flex justify-center gap-3 text-[9px] text-gray-500">emma@email.com · +1 234 567 890 · linkedin.com/in/emma</div>
+          <div><div className="text-[10px] font-bold text-gray-700 uppercase border-b border-gray-200 pb-1">Summary</div>
+            <div className="text-[9px] text-gray-600 mt-1 leading-relaxed">Detail-oriented accounting executive with 7+ years of experience in financial reporting, auditing, and strategic financial planning.</div></div>
+          <div><div className="text-[10px] font-bold text-gray-700 uppercase border-b border-gray-200 pb-1">Education</div>
+            <div className="text-[9px] text-gray-600 mt-1">Bachelor of Marketing · University (2015-2019)</div></div>
+          <div><div className="text-[10px] font-bold text-gray-700 uppercase border-b border-gray-200 pb-1">Skills</div>
+            <div className="text-[9px] text-gray-600 mt-1">Client Relations · Budgeting · Strategic Planning · Financial Analysis</div></div>
+          <div><div className="text-[10px] font-bold text-gray-700 uppercase border-b border-gray-200 pb-1">Experience</div>
+            <div className="text-[9px] text-gray-700 mt-1"><span className="font-semibold">Accounting Executive</span> · Acme International · 2020-Present</div>
+            <div className="text-[9px] text-gray-600">Managed $10M+ portfolio, reduced costs by 15%</div></div>
+        </div>
+      </div>
+    ),
+    'brown-sidebar': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="text-xl font-bold text-gray-900">Lorna Alvarado</div>
+          <div className="text-xs text-gray-500">Marketing Manager</div>
+          <div><div className="text-[10px] font-bold uppercase" style={{ color: accent }}>About Me</div>
+            <div className="text-[9px] text-gray-600 mt-1 leading-relaxed">Creative marketing professional with 8+ years of experience in digital campaigns, brand strategy, and team leadership.</div></div>
+          <div><div className="text-[10px] font-bold uppercase" style={{ color: accent }}>Education</div>
+            <div className="text-[9px] text-gray-600 mt-1">BA Marketing · University (2015-2020)</div></div>
+          <div><div className="text-[10px] font-bold uppercase" style={{ color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-700 mt-1"><span className="font-semibold">Marketing Manager</span> · Agency Inc. · 2020-Present</div>
+            <div className="text-[9px] text-gray-600">Led 15-person team, managed $3M annual budget</div></div>
+        </div>
+        <div className="w-[35%] h-full p-4 flex flex-col gap-2.5" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Skills</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>• Project Management</div><div>• Public Relations</div><div>• Time Management</div></div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Education</div>
+            <div className="text-[8px] text-white/70 mt-1">BA Marketing<br/>University</div></div>
+        </div>
+      </div>
+    ),
+    'dark-sidebar-right': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="text-xl font-bold text-gray-900">Connor Hamilton</div>
+          <div className="text-xs text-gray-500">Accounting Executive</div>
+          <div><div className="text-[10px] font-bold uppercase border-b pb-1" style={{ borderColor: accent, color: accent }}>Work Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Accounting Executive</span> · Acme International · 2020-Present</div>
+            <div className="text-[9px] text-gray-500">Managed financial reporting for $50M+ portfolio</div>
+            <div className="text-[9px] text-gray-600 mt-1.5"><span className="font-semibold">Junior Accountant</span> · Finance Corp · 2017-2020</div></div>
+          <div><div className="text-[10px] font-bold uppercase border-b pb-1" style={{ borderColor: accent, color: accent }}>Projects</div>
+            <div className="text-[9px] text-gray-600 mt-1">Financial Analysis Dashboard · Automated reporting system</div></div>
+        </div>
+        <div className="w-[35%] h-full p-4 flex flex-col gap-2.5" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Contact</div>
+            <div className="text-[8px] text-white/70 mt-1 space-y-0.5"><div>+1 234 567 890</div><div>hello@email.com</div><div>linkedin.com/in/connor</div></div></div>
+          <div><div className="text-[9px] font-bold text-white/90 uppercase">Education</div>
+            <div className="text-[8px] text-white/70 mt-1">BA Accounting · University</div></div>
+        </div>
+      </div>
+    ),
+    'blank-canvas': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="w-[30%] h-full p-3 flex flex-col gap-1.5" style={{ backgroundColor: '#f8fafc' }}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <div className="w-8 h-8 rounded-full border border-blue-400 overflow-hidden shrink-0 bg-blue-100 flex items-center justify-center text-[9px] font-bold text-blue-600">Y</div>
+            <div className="text-[9px] leading-tight"><div className="font-bold text-gray-900">Your Name</div><div className="text-gray-500">Job Title</div></div>
+          </div>
+          <div><div className="text-[8px] font-bold text-blue-600 uppercase tracking-wide">Skills</div>
+            <div className="text-[7px] text-gray-600 mt-0.5">React · Node.js · TypeScript</div></div>
+          <div><div className="text-[8px] font-bold text-blue-600 uppercase tracking-wide">Education</div>
+            <div className="text-[7px] text-gray-600 mt-0.5">B.Tech CSE · University 2024</div></div>
+        </div>
+        <div className="w-[70%] p-3 space-y-1.5" style={{ backgroundColor: bg }}>
+          <div className="flex items-center gap-2 border-b border-gray-200 pb-1">
+            <div className="text-[8px] text-gray-400">✉ your@email.com</div>
+            <div className="text-[8px] text-gray-400">📞 +1 234 567 890</div>
+          </div>
+          <div><div className="text-[8px] font-bold text-blue-600 uppercase tracking-wide">Experience</div>
+            <div className="text-[7px] text-gray-600 mt-0.5"><span className="font-semibold">Job Title</span> · Company Name · 2022-Present</div>
+            <div className="text-[7px] text-gray-500">• Responsibility description here</div>
+          </div>
+          <div><div className="text-[8px] font-bold text-blue-600 uppercase tracking-wide">Projects</div>
+            <div className="text-[7px] text-gray-600 mt-0.5">Project Name · Description</div>
+          </div>
+        </div>
+      </div>
+    ),
+    'blue-sidebar-profile': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="w-[35%] h-full p-4 flex flex-col gap-2.5" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div className="text-center"><div className="text-[10px] font-bold text-white">Sarah Johnson</div><div className="text-[8px] text-white/70">Product Designer</div></div>
+          <div><div className="text-[8px] font-bold text-white/80 uppercase tracking-wide">Contact</div>
+            <div className="text-[7px] text-white/60 mt-1 space-y-0.5">sarah@email.com<br/>+1 234 567 890<br/>linkedin.com/in/sarah</div></div>
+          <div><div className="text-[8px] font-bold text-white/80 uppercase">Skills</div>
+            <div className="text-[7px] text-white/60 mt-1 space-y-0.5"><div>• UX Research</div><div>• UI Design</div><div>• Figma</div><div>• Prototyping</div></div></div>
+        </div>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="text-base font-bold text-gray-900 uppercase tracking-wide">About Me</div>
+          <div className="text-[9px] text-gray-600 leading-relaxed">Creative product designer with 5+ years of experience crafting user-centered digital experiences for web and mobile platforms.</div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Education</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">B.Des</span> · Design School · 2016-2020</div></div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Product Designer</span> · Design Co. · 2020-Present</div>
+            <div className="text-[9px] text-gray-500">Led redesign of core product, improving UX by 40%</div></div>
+        </div>
+      </div>
+    ),
+    'orange-sidebar-profile': (
+      <div className="flex h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>
+        <div className="w-[35%] h-full p-4 flex flex-col gap-2.5" style={{ backgroundColor: accent }}>
+          <div className="w-14 h-14 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div className="text-center"><div className="text-[10px] font-bold text-white">Lorna Alvarado</div><div className="text-[8px] text-white/70">Marketing Manager</div></div>
+          <div><div className="text-[8px] font-bold text-white/80 uppercase">Contact</div>
+            <div className="text-[7px] text-white/60 mt-1 space-y-0.5">+1 234 567 890<br/>lorna@email.com</div></div>
+          <div><div className="text-[8px] font-bold text-white/80 uppercase">Skills</div>
+            <div className="text-[7px] text-white/60 mt-1 space-y-0.5"><div>• Marketing Strategy</div><div>• SEO</div><div>• Content Creation</div></div></div>
+          <div><div className="text-[8px] font-bold text-white/80 uppercase">Education</div>
+            <div className="text-[7px] text-white/60">BA Marketing · University</div></div>
+        </div>
+        <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: bg }}>
+          <div className="text-base font-bold text-gray-900 uppercase tracking-wide">About Me</div>
+          <div className="text-[9px] text-gray-600 leading-relaxed">Creative marketing manager with 8+ years of experience driving digital campaigns, brand strategy, and team growth.</div>
+          <div><div className="text-[10px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[9px] text-gray-600 mt-1"><span className="font-semibold">Marketing Manager</span> · Agency Inc. · 2020-Present</div>
+            <div className="text-[9px] text-gray-500">Managed $2M annual budget, led 12-person team</div></div>
+        </div>
+      </div>
+    ),
+  };
+
+  const premiumToFree: Record<string, string> = {
+    'grayblue-premium': 'grayblue-sidebar',
+    'dark-photo-premium': 'dark-sidebar-photo',
+    'gray-right-premium': 'gray-sidebar-right',
+    'centered-premium': 'centered-light',
+    'brown-premium': 'brown-sidebar',
+    'dark-right-premium': 'dark-sidebar-right',
+  };
+  return <div className="w-full h-full rounded-lg overflow-hidden shadow-2xl border border-gray-200" style={{ minHeight: '500px' }}>{layouts[tid] || layouts[premiumToFree[tid]] || (isTwoCol ? layouts['grayblue-sidebar'] : layouts['ats-beginner'])}</div>;
 }
 
 /* ─── main wizard ───────────────────────────────────────────────────────── */
@@ -1570,6 +1942,121 @@ function ResumePreview({ template, form, accent, bg }: {
           <div className="text-[11px] text-gray-500 mt-0.5">
             {form.email || 'email@example.com'} {form.phone && `| ${form.phone}`}
           </div>
+        </div>
+        <Summary /><Experience /><Projects /><Certs />
+      </div>
+    </div>
+  );
+
+  /* ── ATS Beginner layout (ultra-clean, single-column, minimal) ── */
+  const AtsBeginnerLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden" style={{ minHeight: '800px' }}>
+      <div className="flex">
+        <div className="w-[8px] shrink-0" style={{ backgroundColor: accent }} />
+        <div className="flex-1 p-6">
+          <div className="flex items-center gap-4 mb-4">
+            {form.photo ? <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200"><img src={form.photo} alt="" className="w-full h-full object-cover" /></div> : <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-lg font-bold" style={{ color: accent }}>{(form.name || 'Y')[0]}</div>}
+            <div>
+              <div className="text-xl font-bold text-gray-900">{form.name || 'Your Name'}</div>
+              <div className="text-xs text-gray-500 mt-0.5">{form.email}{form.phone ? ` | ${form.phone}` : ''}</div>
+              <div className="flex gap-3 text-[10px] text-gray-400 mt-0.5">{form.linkedin && <span>{form.linkedin}</span>}{form.github && <span>{form.github}</span>}</div>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <Summary /><Experience /><Education /><Skills /><Projects /><Certs />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  /* ── SDE layout (tech-focused, centered header, pill skills) ── */
+  const SdeLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden" style={{ minHeight: '800px' }}>
+      <div className="text-center p-6 border-b border-gray-100">
+        <div className="text-2xl font-bold text-gray-900">{form.name || 'Your Name'}</div>
+        <div className="text-sm text-gray-500 font-medium mt-0.5">Software Engineer</div>
+        <div className="flex flex-wrap justify-center gap-3 text-xs text-gray-400 mt-2">
+          {form.email && <span>{form.email}</span>}{form.phone && <span>{form.phone}</span>}{form.github && <span>{form.github}</span>}
+        </div>
+      </div>
+      <div className="p-6 space-y-4">
+        {form.skills && (
+          <div className="flex flex-wrap gap-1.5 justify-center mb-4">
+            {form.skills.split(',').map((s: string, i: number) => s.trim() && (
+              <span key={i} className="text-xs px-3 py-1 rounded-full border" style={{ borderColor: accent, color: accent }}>{s.trim()}</span>
+            ))}
+          </div>
+        )}
+        <Summary /><Experience /><Education /><Projects /><Certs />
+      </div>
+    </div>
+  );
+
+  /* ── Backend layout (system architecture focus, tech badges) ── */
+  const BackendLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden" style={{ minHeight: '800px' }}>
+      <div className="p-5" style={{ backgroundColor: accent }}>
+        <div className="text-xl font-bold text-white">{form.name || 'Your Name'}</div>
+        <div className="text-xs text-white/80 mt-0.5">Backend Developer</div>
+        <div className="text-[10px] text-white/60 mt-1 flex flex-wrap gap-x-3">{form.email && <span>{form.email}</span>}{form.phone && <span>{form.phone}</span>}{form.github && <span>{form.github}</span>}</div>
+      </div>
+      <div className="p-5 space-y-4">
+        {form.skills && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {form.skills.split(',').map((s: string, i: number) => s.trim() && (
+              <span key={i} className="text-[10px] px-2 py-0.5 rounded" style={{ backgroundColor: accent + '15', color: accent }}>{s.trim()}</span>
+            ))}
+          </div>
+        )}
+        <Summary /><Experience /><Education /><Projects /><Certs />
+      </div>
+    </div>
+  );
+
+  /* ── Frontend layout (two-column, visual portfolio emphasis) ── */
+  const FrontendLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden flex" style={{ minHeight: '800px' }}>
+      <div className="w-[35%] p-4 flex flex-col gap-4" style={{ backgroundColor: accent }}>
+        {form.photo ? <div className="w-16 h-16 rounded-full mx-auto overflow-hidden border-2 border-white/30"><img src={form.photo} alt="" className="w-full h-full object-cover" /></div> : <div className="w-14 h-14 rounded-full bg-white/20 mx-auto" />}
+        <div><div className="text-[9px] font-bold text-white/90 uppercase tracking-wide mb-1">Contact</div>
+          <div className="space-y-0.5 text-[9px] text-white/70 break-all">{form.email && <div>{form.email}</div>}{form.phone && <div>{form.phone}</div>}{form.linkedin && <div>{form.linkedin}</div>}</div></div>
+        {form.skills && <div><div className="text-[9px] font-bold text-white/90 uppercase tracking-wide mb-1">Tech Stack</div>
+          <div className="space-y-1">{form.skills.split(',').map((s: string, i: number) => s.trim() && <div key={i} className="text-[8px] text-white/70">{s.trim()}</div>)}</div></div>}
+      </div>
+      <div className="flex-1 p-5 space-y-3" style={{ backgroundColor: bg }}>
+        <div className="border-b-2 pb-2" style={{ borderColor: accent }}>
+          <div className="text-xl font-bold text-gray-900">{form.name || 'Your Name'}</div>
+          <div className="text-xs text-gray-500">Frontend Developer</div>
+        </div>
+        <Summary />
+        <div><SectionTitle text="Portfolio" accent={accent} />
+          {form.projects.filter((p: any) => p.title).length > 0 ? <Projects /> : <p className="text-xs text-gray-500">Showcase your frontend projects, designs, and live demos here.</p>}
+        </div>
+        <Experience /><Education /><Certs />
+      </div>
+    </div>
+  );
+
+  /* ── AI/ML layout (two-column, research & publications focus) ── */
+  const AiMlLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden flex" style={{ minHeight: '800px' }}>
+      <div className="w-[35%] p-4 flex flex-col gap-4" style={{ backgroundColor: accent }}>
+        {form.photo ? <div className="w-16 h-16 rounded-full mx-auto overflow-hidden border-2 border-white/30"><img src={form.photo} alt="" className="w-full h-full object-cover" /></div> : <div className="w-14 h-14 rounded-full bg-white/20 mx-auto" />}
+        <div><div className="text-[9px] font-bold text-white/90 uppercase mb-1">Contact</div>
+          <div className="space-y-0.5 text-[9px] text-white/70 break-all">{form.email && <div>{form.email}</div>}{form.linkedin && <div>{form.linkedin}</div>}{form.github && <div>{form.github}</div>}</div></div>
+        {form.skills && <div><div className="text-[9px] font-bold text-white/90 uppercase mb-1.5">ML/AI Skills</div>
+          <div className="flex flex-wrap gap-1">{form.skills.split(',').map((s, i) => s.trim() && <span key={i} className="text-[7px] px-1.5 py-0.5 rounded bg-white/10 text-white/80">{s.trim()}</span>)}</div></div>}
+        {form.education.some((e: any) => e.degree || e.institution) && (
+          <div><div className="text-[9px] font-bold text-white/90 uppercase mb-1">Research</div>
+            <div className="space-y-1">{form.education.filter((e: any) => e.degree || e.institution).map((edu: any, i: number) => (
+              <div key={i} className="text-[8px] text-white/70">{edu.degree}<br/>{edu.institution}</div>
+            ))}</div></div>)}
+      </div>
+      <div className="flex-1 p-5 space-y-3" style={{ backgroundColor: bg }}>
+        <div className="flex justify-between items-start border-b pb-1" style={{ borderColor: accent }}>
+          <div><div className="text-xl font-bold text-gray-900">{form.name || 'Your Name'}</div><div className="text-xs text-gray-500">AI/ML Engineer</div></div>
+          <div className="text-right text-[10px] text-gray-400"><div>Research</div><div>Publications</div></div>
         </div>
         <Summary /><Experience /><Projects /><Certs />
       </div>
@@ -2914,6 +3401,11 @@ function ResumePreview({ template, form, accent, bg }: {
 
   // pick layout based on template id
   switch (tid) {
+    case 'ats-beginner': return <AtsBeginnerLayout />;
+    case 'sde': return <SdeLayout />;
+    case 'backend': return <BackendLayout />;
+    case 'frontend': return <FrontendLayout />;
+    case 'ai-ml': return <AiMlLayout />;
     case 'fullstack': return <FullstackLayout />;
     case 'executive': return <ExecutiveLayout />;
     case 'minimalist': return <MinimalistLayout />;
