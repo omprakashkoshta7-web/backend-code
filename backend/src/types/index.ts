@@ -370,11 +370,12 @@ export interface ShopProduct {
   id: string;
   title: string;
   description: string;
-  category: 'pdf' | 'notes' | 'interview-notes' | 'company-specific';
+  category: 'pdf' | 'notes' | 'interview-notes' | 'company-specific' | 'template';
   price: { amount: number; label: string } | 'free';
   icon: string;
   color: string;
   tags: string[];
+  template_html?: string;
   popular?: boolean;
   pages?: number;
   author?: string;

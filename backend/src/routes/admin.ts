@@ -437,7 +437,7 @@ router.get('/shop/products/:id', (req: Request, res: Response) => {
 });
 
 router.post('/shop/products', (req: Request, res: Response) => {
-  const { title, description, category, price, icon, color, tags, popular, pages, author, download_url } = req.body;
+  const { title, description, category, price, icon, color, tags, template_html, popular, pages, author, download_url } = req.body;
   if (!title || !category) return res.status(400).json({ error: 'Title and category required' });
   const db = getDb();
   const id = 'sp_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -445,7 +445,7 @@ router.post('/shop/products', (req: Request, res: Response) => {
   const product: ShopProduct = {
     id, title, description: description || '', category, price: price || 'free',
     icon: icon || '📦', color: color || 'from-slate-500 to-slate-600',
-    tags: tags || [], popular: !!popular, pages, author, download_url,
+    tags: tags || [], template_html: template_html || '', popular: !!popular, pages, author, download_url,
     created_at: now, updated_at: now,
   };
   db.shopProducts = db.shopProducts || [];
@@ -475,6 +475,101 @@ router.delete('/shop/products/:id', (req: Request, res: Response) => {
   db.shopProducts.splice(idx, 1);
   saveDb();
   res.json({ success: true });
+});
+
+router.post('/shop/templates/seed', (_req: Request, res: Response) => {
+  const db = getDb();
+  db.shopProducts = db.shopProducts || [];
+  const now = new Date().toISOString();
+  const seedTemplates: ShopProduct[] = [
+    {
+      id: 'tpl_hero',
+      title: 'Landing Page Hero',
+      description: 'A hero section template with headline, text, and CTA button.',
+      category: 'template',
+      price: 'free',
+      icon: '🎨',
+      color: 'from-fuchsia-500 to-pink-500',
+      tags: ['hero', 'landing', 'marketing'],
+      template_html: `<div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div class="max-w-2xl">
+          <p class="text-sm font-semibold uppercase tracking-[0.3em] text-fuchsia-600">Launch faster</p>
+          <h2 class="mt-4 text-4xl font-bold tracking-tight text-slate-900">Build beautiful landing pages in minutes.</h2>
+          <p class="mt-4 text-base leading-7 text-slate-600">Use this responsive hero section to introduce your product and drive action with a strong CTA.</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#" class="inline-flex items-center rounded-full bg-fuchsia-600 px-6 py-3 text-sm font-semibold text-white hover:bg-fuchsia-700">Get started</a>
+            <a href="#" class="inline-flex items-center rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Learn more</a>
+          </div>
+        </div>
+      </div>`,
+      created_at: now,
+      updated_at: now,
+    },
+    {
+      id: 'tpl_features',
+      title: 'Feature Grid',
+      description: 'A three-column feature grid for product benefits.',
+      category: 'template',
+      price: 'free',
+      icon: '🎨',
+      color: 'from-cyan-500 to-sky-500',
+      tags: ['features', 'product', 'grid'],
+      template_html: `<div class="grid gap-6 lg:grid-cols-3">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Fast setup</p>
+          <h3 class="mt-3 text-xl font-semibold text-slate-900">Instant deployment</h3>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Launch your product quickly with built-in workflows and automation.</p>
+        </div>
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Flexible</p>
+          <h3 class="mt-3 text-xl font-semibold text-slate-900">Custom layouts</h3>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Design flexible content sections that match your branding instantly.</p>
+        </div>
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Support</p>
+          <h3 class="mt-3 text-xl font-semibold text-slate-900">Reliable components</h3>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Use consistent reusable blocks for a professional product experience.</p>
+        </div>
+      </div>`,
+      created_at: now,
+      updated_at: now,
+    },
+    {
+      id: 'tpl_card',
+      title: 'Info Card Row',
+      description: 'A row of stylized info cards with CTA buttons.',
+      category: 'template',
+      price: 'free',
+      icon: '🎨',
+      color: 'from-rose-500 to-orange-500',
+      tags: ['cards', 'info', 'cta'],
+      template_html: `<div class="grid gap-5 md:grid-cols-2">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h3 class="text-xl font-semibold text-slate-900">Analytics dashboard</h3>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Visualize your metrics with clean cards and easy-to-read insights.</p>
+          <a href="#" class="mt-6 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800">View report</a>
+        </div>
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h3 class="text-xl font-semibold text-slate-900">Team collaboration</h3>
+          <p class="mt-3 text-sm leading-6 text-slate-600">Showcase features, resources, or user stories in a polished layout.</p>
+          <a href="#" class="mt-6 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800">Get started</a>
+        </div>
+      </div>`,
+      created_at: now,
+      updated_at: now,
+    },
+  ];
+
+  const existing = new Set((db.shopProducts || []).map((p: ShopProduct) => p.id));
+  let added = 0;
+  for (const tpl of seedTemplates) {
+    if (!existing.has(tpl.id)) {
+      db.shopProducts.push({ ...tpl });
+      added += 1;
+    }
+  }
+  if (added > 0) saveDb();
+  res.json({ success: true, added });
 });
 
 // ========== SHOP PURCHASES (admin view) ==========

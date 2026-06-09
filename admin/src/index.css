@@ -2,9 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; }
 
-.card { @apply bg-white rounded-xl shadow-sm border border-gray-200; }
-.btn-primary { @apply bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors disabled:opacity-50; }
-.btn-secondary { @apply bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors; }
-.btn-danger { @apply bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors; }
+.card { @apply bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-200/70; }
+.btn-primary { @apply bg-gradient-to-r from-primary-600 to-sky-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-sky-600 transition-colors disabled:opacity-50; }
+.btn-secondary { @apply bg-slate-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-slate-200 transition-colors; }
+.btn-danger { @apply bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-red-700 transition-colors; }
+.panel-card { @apply bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200/70 shadow-lg; }
+.badge-accent { @apply inline-flex items-center gap-2 rounded-full bg-primary-600 px-3 py-1 text-xs font-semibold text-white; }

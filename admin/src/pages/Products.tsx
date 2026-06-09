@@ -3,7 +3,7 @@ import { adminApi } from '../api/client'
 import toast from 'react-hot-toast'
 import { Plus, Edit2, Trash2, X } from 'lucide-react'
 
-const CATEGORIES = ['pdf', 'notes', 'interview-notes', 'company-specific'] as const
+const CATEGORIES = ['pdf', 'notes', 'interview-notes', 'company-specific', 'template'] as const
 const PRESET_COLORS = [
   'from-blue-500 to-cyan-500', 'from-purple-500 to-indigo-500', 'from-yellow-500 to-orange-500',
   'from-cyan-500 to-blue-500', 'from-emerald-500 to-teal-500', 'from-sky-500 to-blue-500',
@@ -16,7 +16,7 @@ const EMOJIS = ['📄', '📝', '🎤', '🏢', '📚', '📖', '⭐', '🎯', '
 const defaultForm = {
   title: '', description: '', category: 'pdf' as string, priceType: 'free' as string,
   priceAmount: 0, priceLabel: '', icon: '📄', color: 'from-blue-500 to-cyan-500',
-  tags: '', popular: false, pages: 0, author: '', download_url: '',
+  tags: '', template_html: '', popular: false, pages: 0, author: '', download_url: '',
 }
 
 export default function Products() {
@@ -43,7 +43,7 @@ export default function Products() {
       const tags = form.tags.split(',').map(t => t.trim()).filter(Boolean)
       const data = {
         title: form.title, description: form.description, category: form.category,
-        price, icon: form.icon, color: form.color, tags,
+        price, icon: form.icon, color: form.color, tags, template_html: form.template_html,
         popular: form.popular, pages: form.pages || undefined, author: form.author || undefined,
         download_url: form.download_url || undefined,
       }
@@ -72,7 +72,7 @@ export default function Products() {
       priceAmount: isFree ? 0 : p.price.amount,
       priceLabel: isFree ? '' : p.price.label,
       icon: p.icon, color: p.color, tags: (p.tags || []).join(', '),
-      popular: !!p.popular, pages: p.pages || 0, author: p.author || '', download_url: p.download_url || '',
+      template_html: p.template_html || '', popular: !!p.popular, pages: p.pages || 0, author: p.author || '', download_url: p.download_url || '',
     })
     setEditId(p.id); setShowForm(true)
   }
@@ -112,6 +112,14 @@ export default function Products() {
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Download URL (link users get after payment)</label>
               <input type="url" value={form.download_url} onChange={e => set('download_url', e.target.value)} placeholder="https://drive.google.com/... or https://example.com/file.pdf" className="w-full px-4 py-2.5 rounded-xl border border-gray-200" />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Template HTML</label>
+              <textarea value={form.template_html} onChange={e => set('template_html', e.target.value)} rows={6} className="w-full px-4 py-2.5 rounded-xl border border-gray-200" placeholder="Paste template HTML or markup for preview..." />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Preview</label>
+              <div className="min-h-[120px] p-4 rounded-xl border border-gray-200 bg-white text-sm text-gray-900" dangerouslySetInnerHTML={{ __html: form.template_html || '<div class="text-gray-400">Template preview will render here</div>' }} />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Price Type</label>
@@ -172,6 +180,7 @@ export default function Products() {
               <th className="text-left px-6 py-3 font-medium">Title</th>
               <th className="text-left px-6 py-3 font-medium">Category</th>
               <th className="text-left px-6 py-3 font-medium">Price</th>
+              <th className="text-left px-6 py-3 font-medium">Template</th>
               <th className="text-left px-6 py-3 font-medium">Tags</th>
               <th className="text-right px-6 py-3 font-medium">Actions</th>
             </tr>
@@ -183,6 +192,7 @@ export default function Products() {
                 <td className="px-6 py-4 font-medium text-gray-900">{p.title}</td>
                 <td className="px-6 py-4 text-gray-500">{p.category}</td>
                 <td className="px-6 py-4 text-gray-500">{priceDisplay(p)}</td>
+                <td className="px-6 py-4 text-gray-500">{p.template_html ? 'Yes' : 'No'}</td>
                 <td className="px-6 py-4 text-gray-500">{p.tags?.slice(0, 2).join(', ')}{p.tags?.length > 2 ? '...' : ''}</td>
                 <td className="px-6 py-4 text-right">
                   <button onClick={() => handleEdit(p)} className="p-2 text-gray-400 hover:text-primary-600"><Edit2 className="w-4 h-4" /></button>

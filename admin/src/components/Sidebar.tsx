@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, ListChecks, FileText, BookOpen, Users, CreditCard, LogOut, Layers, ShoppingCart } from 'lucide-react'
+import { LayoutDashboard, ListChecks, FileText, BookOpen, Users, CreditCard, LogOut, Layers, ShoppingCart, LayoutGrid } from 'lucide-react'
 
 const links = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -10,6 +10,7 @@ const links = [
   { to: '/users', label: 'Users', icon: Users },
   { to: '/payments', label: 'Payments', icon: CreditCard },
   { to: '/products', label: 'Shop Products', icon: ShoppingCart },
+  { to: '/templates', label: 'Template Builder', icon: LayoutGrid },
 ]
 
 export default function Sidebar() {

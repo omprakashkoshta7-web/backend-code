@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Users, PlusCircle, BarChart3, CreditCard } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Users, PlusCircle, CreditCard, FileText, Layout } from 'lucide-react';
 import { cn } from '@/shared/utils/helpers';
 
 const links = [
@@ -7,6 +7,7 @@ const links = [
   { to: '/admin/topics', icon: PlusCircle, label: 'Manage Topics' },
   { to: '/admin/questions', icon: BookOpen, label: 'Manage Questions' },
   { to: '/admin/add-question', icon: PlusCircle, label: 'Add Question' },
+  { to: '/admin/resume-templates', icon: Layout, label: 'Resume Templates', badge: 'New' },
   { to: '/admin/users', icon: Users, label: 'Users' },
   { to: '/admin/shop-payments', icon: CreditCard, label: 'Shop Payments' },
 ];
@@ -30,7 +31,8 @@ export default function AdminSidebar() {
             )}
           >
             <link.icon className="w-5 h-5" />
-            {link.label}
+            <span className="flex-1">{link.label}</span>
+            {(link as any).badge && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-violet-600 text-white font-bold">{(link as any).badge}</span>}
           </NavLink>
         ))}
       </nav>

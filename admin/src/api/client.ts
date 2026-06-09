@@ -60,4 +60,5 @@ export const adminApi = {
   addProduct: (data: any) => api.post('/admin/shop/products', data),
   updateProduct: (id: string, data: any) => api.put(`/admin/shop/products/${id}`, data),
   deleteProduct: (id: string) => api.delete(`/admin/shop/products/${id}`),
+  seedTemplateProducts: () => api.post('/admin/shop/templates/seed'),
 }
