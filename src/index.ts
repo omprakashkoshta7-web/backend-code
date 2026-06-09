@@ -21,6 +21,7 @@ import publicStatsRouter from './routes/publicStats';
 import leaderboardRouter from './routes/leaderboard';
 import socialRouter from './routes/social';
 import interviewRouter from './routes/interview';
+import resumeRouter from './routes/resume';
 import { buildDockerImages, isDockerAvailable } from './runners/dockerRunner';
 import { initDb } from './data/db';
 import { questions, topics, cheatSheets, users, patternDetails } from './data/seed';
@@ -95,6 +96,7 @@ app.use('/api/admin', patternsRouter);
 app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api', socialRouter);
 app.use('/api', interviewRouter);
+app.use('/api/resume', resumeRouter);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
