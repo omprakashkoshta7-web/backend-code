@@ -24,6 +24,7 @@ const TEMPLATES: ResumeTemplate[] = [
   { id: 'minimalist', name: 'Minimalist Resume', description: 'Clean, spacious design with elegant typography', category: 'minimalist', preview: '/resume-templates/minimalist.png', is_ats_friendly: true, columns: 1, colors: ['#475569', '#ffffff', '#ffffff'] },
   { id: 'creative', name: 'Creative Resume', description: 'Bold gradient header with portfolio metrics section', category: 'creative', preview: '/resume-templates/creative.png', is_ats_friendly: false, columns: 1, colors: ['#7c3aed', '#fdf4ff', '#ffffff'] },
   { id: 'technical', name: 'Technical Resume', description: 'Skills-first layout with visual proficiency bars', category: 'technical', preview: '/resume-templates/technical.png', is_ats_friendly: true, columns: 1, colors: ['#0369a1', '#f0f9ff', '#ffffff'] },
+  { id: 'professional', name: 'Professional Resume', description: 'Polished one-page layout with a strong header and balanced sections', category: 'professional', preview: '', is_ats_friendly: true, columns: 1, colors: ['#0f172a', '#e2e8f0', '#ffffff'] },
   { id: 'academic', name: 'Academic Resume', description: 'Research & publication focused for academia roles', category: 'academic', preview: '/resume-templates/academic.png', is_ats_friendly: false, columns: 1, colors: ['#b91c1c', '#fef2f2', '#ffffff'] },
 ];
 
