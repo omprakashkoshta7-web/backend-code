@@ -630,6 +630,55 @@ function MiniResume({ type, colors }: { type: string; colors: string[] }) {
         </div>
       </div>
     ),
+    'blue-sidebar-profile': (
+      <div className="flex h-full text-xs">
+        <div className="w-[35%] h-full p-2.5 flex flex-col gap-1.5" style={{ backgroundColor: accent }}>
+          <div className="w-10 h-10 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div className="text-center"><div className="text-[8px] font-bold text-white">Sarah Johnson</div><div className="text-[6px] text-white/70">Product Designer</div></div>
+          <div><div className="text-[6px] font-bold text-white/80 uppercase tracking-wide">Contact</div>
+            <div className="text-[5px] text-white/60 mt-0.5 space-y-0">sarah@email.com · +1 234 567 890</div>
+          </div>
+          <div><div className="text-[6px] font-bold text-white/80 uppercase">Skills</div>
+            <div className="text-[5px] text-white/60 mt-0.5 space-y-0"><div>• UX Research</div><div>• UI Design</div><div>• Figma</div></div>
+          </div>
+          <div><div className="text-[6px] font-bold text-white/80 uppercase">Languages</div><div className="text-[5px] text-white/60">English · Spanish</div></div>
+        </div>
+        <div className="flex-1 p-2.5 space-y-1.5" style={{ backgroundColor: bg }}>
+          <div className="text-sm font-bold text-gray-900">About Me</div>
+          <div className="text-[6px] text-gray-600 leading-tight">Creative product designer with 5+ years of experience crafting user-centered digital experiences.</div>
+          <div><div className="text-[7px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Education</div>
+            <div className="text-[6px] text-gray-600 mt-0.5"><span className="font-semibold">B.Des</span> · Design School · 2016-2020</div>
+          </div>
+          <div><div className="text-[7px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[6px] text-gray-600 mt-0.5"><span className="font-semibold">Product Designer</span> · Design Co. · 2020-Present</div>
+          </div>
+        </div>
+      </div>
+    ),
+    'orange-sidebar-profile': (
+      <div className="flex h-full text-xs">
+        <div className="w-[35%] h-full p-2.5 flex flex-col gap-1.5" style={{ backgroundColor: accent }}>
+          <div className="w-10 h-10 rounded-full mx-auto border-2 border-white/30 overflow-hidden bg-white/10" />
+          <div className="text-center"><div className="text-[8px] font-bold text-white">Lorna Alvarado</div><div className="text-[6px] text-white/70">Marketing Manager</div></div>
+          <div><div className="text-[6px] font-bold text-white/80 uppercase">Contact</div>
+            <div className="text-[5px] text-white/60 mt-0.5 space-y-0">+1 234 567 890 · lorna@email.com</div>
+          </div>
+          <div><div className="text-[6px] font-bold text-white/80 uppercase">Skills</div>
+            <div className="text-[5px] text-white/60 mt-0.5 space-y-0"><div>• Marketing Strategy</div><div>• SEO</div><div>• Content</div></div>
+          </div>
+          <div><div className="text-[6px] font-bold text-white/80 uppercase">Education</div>
+            <div className="text-[5px] text-white/60">BA Marketing · University</div>
+          </div>
+        </div>
+        <div className="flex-1 p-2.5 space-y-1.5" style={{ backgroundColor: bg }}>
+          <div className="text-sm font-bold text-gray-900">About Me</div>
+          <div className="text-[6px] text-gray-600 leading-tight">Creative marketing manager with 8+ years experience in digital campaigns.</div>
+          <div><div className="text-[7px] font-bold uppercase border-b" style={{ borderColor: accent, color: accent }}>Experience</div>
+            <div className="text-[6px] text-gray-600 mt-0.5"><span className="font-semibold">Marketing Manager</span> · Agency Inc. · 2020-Present</div>
+          </div>
+        </div>
+      </div>
+    ),
   };
 
   return (
@@ -857,6 +906,8 @@ export default function TemplateWizard({ onComplete, onCancel }: Props) {
     { id: 'brown-sidebar', name: 'Brown Sidebar', description: 'White main left, brown sidebar right with photo & skills', is_ats_friendly: false, columns: 2, colors: ['#744210', '#ffffff'] },
     { id: 'dark-sidebar-right', name: 'Dark Sidebar Right', description: 'White main left, dark sidebar right with photo & contact', is_ats_friendly: false, columns: 2, colors: ['#1a202c', '#ffffff'] },
     { id: 'blank-canvas', name: 'Blank Canvas Builder', description: 'Fully editable blank canvas — add/remove sections, upload photo, two-column professional layout', is_ats_friendly: true, columns: 2, colors: ['#2563eb', '#ffffff'] },
+    { id: 'blue-sidebar-profile', name: 'Blue Sidebar Profile', description: 'Blue sidebar left with photo, skills, languages & interests, two-column', is_ats_friendly: false, columns: 2, colors: ['#1e3a5f', '#ffffff'] },
+    { id: 'orange-sidebar-profile', name: 'Orange Sidebar Profile', description: 'Orange/peach sidebar left with photo, contact, education & skills', is_ats_friendly: false, columns: 2, colors: ['#c2410c', '#ffffff'] },
   ];
 
   useEffect(() => {
@@ -2547,6 +2598,177 @@ function ResumePreview({ template, form, accent, bg }: {
     );
   };
 
+  /* ── Blue Sidebar Profile layout ── */
+  const BlueSidebarProfileLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden flex" style={{ minHeight: '800px' }}>
+      <div className="w-[35%] p-5 flex flex-col gap-4 text-white" style={{ backgroundColor: accent }}>
+        {form.photo ? (
+          <div className="w-24 h-24 rounded-full mx-auto border-3 border-white/40 overflow-hidden"><img src={form.photo} alt="Profile" className="w-full h-full object-cover" /></div>
+        ) : (
+          <div className="w-24 h-24 rounded-full mx-auto border-3 border-white/30 bg-white/10 flex items-center justify-center text-white text-2xl font-bold">
+            {(form.name || 'YN').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+          </div>
+        )}
+        <div className="text-center">
+          <div className="text-lg font-bold">{form.name || 'Your Name'}</div>
+          <div className="text-[11px] text-white/80 mt-0.5">{form.email || 'Job Title'}</div>
+        </div>
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-wide mb-1.5 text-white/90">Contact</div>
+          <div className="space-y-1 text-[11px] text-white/80">
+            {form.phone && <div>📞 {form.phone}</div>}
+            {form.email && <div>✉️ {form.email}</div>}
+            {form.linkedin && <div>🔗 {form.linkedin}</div>}
+          </div>
+        </div>
+        {form.skills && (
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-wide mb-1.5 text-white/90">Skills</div>
+            <div className="space-y-1">
+              {form.skills.split(',').map((s: string, i: number) => s.trim() && (
+                <div key={i} className="text-[11px] text-white/80">• {s.trim()}</div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="flex-1 p-6 space-y-4" style={{ backgroundColor: bg }}>
+        {form.summary && (
+          <div>
+            <SectionTitle text="Summary" accent={accent} />
+            <p className="text-[11px] text-gray-600 leading-relaxed whitespace-pre-wrap">{form.summary}</p>
+          </div>
+        )}
+        {form.education.some((e: any) => e.degree || e.institution) && (
+          <div>
+            <SectionTitle text="Education" accent={accent} />
+            {form.education.filter((e: any) => e.degree || e.institution).map((edu: any, i: number) => (
+              <div key={i} className="mb-2 flex justify-between">
+                <div>
+                  <div className="text-xs font-semibold text-gray-800">{edu.degree}</div>
+                  <div className="text-[11px] text-gray-500">{edu.institution}</div>
+                </div>
+                <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2">{edu.year}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {form.experience.some((e: any) => e.role || e.company) && (
+          <div>
+            <SectionTitle text="Experience" accent={accent} />
+            {form.experience.filter((e: any) => e.role || e.company).map((exp: any, i: number) => (
+              <div key={i} className="mb-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="text-xs font-semibold text-gray-800">{exp.role}</div>
+                    <div className="text-[11px] text-gray-500">{exp.company}</div>
+                  </div>
+                  <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2">{exp.duration}</span>
+                </div>
+                {exp.description && <div className="text-[11px] text-gray-600 mt-0.5 whitespace-pre-wrap">{exp.description}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+        {form.certifications.some((c: any) => c.name) && (
+          <div>
+            <SectionTitle text="References" accent={accent} />
+            {form.certifications.filter((c: any) => c.name).map((cert: any, i: number) => (
+              <div key={i} className="text-[11px] text-gray-600"><span className="font-semibold">{cert.name}</span> · {cert.issuer}</div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  /* ── Orange Sidebar Profile layout ── */
+  const OrangeSidebarProfileLayout = () => (
+    <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden flex" style={{ minHeight: '800px' }}>
+      <div className="w-[35%] p-5 flex flex-col gap-4 text-white" style={{ backgroundColor: accent }}>
+        {form.photo ? (
+          <div className="w-24 h-24 rounded-full mx-auto border-3 border-white/40 overflow-hidden"><img src={form.photo} alt="Profile" className="w-full h-full object-cover" /></div>
+        ) : (
+          <div className="w-24 h-24 rounded-full mx-auto border-3 border-white/30 bg-white/10 flex items-center justify-center text-white text-2xl font-bold">
+            {(form.name || 'YN').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+          </div>
+        )}
+        <div className="text-center">
+          <div className="text-lg font-bold">{form.name || 'Your Name'}</div>
+          <div className="text-[11px] text-white/80 mt-0.5">{form.email || 'Job Title'}</div>
+        </div>
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-wide mb-1.5 text-white/90">Contact</div>
+          <div className="space-y-1 text-[11px] text-white/80">
+            {form.phone && <div>📞 {form.phone}</div>}
+            {form.email && <div>✉️ {form.email}</div>}
+          </div>
+        </div>
+        {form.skills && (
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-wide mb-1.5 text-white/90">Interests / Skills</div>
+            <div className="space-y-1">
+              {form.skills.split(',').map((s: string, i: number) => s.trim() && (
+                <div key={i} className="text-[11px] text-white/80">• {s.trim()}</div>
+              ))}
+            </div>
+          </div>
+        )}
+        {form.education.some((e: any) => e.degree || e.institution) && (
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-wide mb-1.5 text-white/90">Education</div>
+            {form.education.filter((e: any) => e.degree || e.institution).map((edu: any, i: number) => (
+              <div key={i} className="mb-1.5">
+                <div className="text-[11px] font-semibold text-white/90">{edu.degree}</div>
+                <div className="text-[10px] text-white/70">{edu.institution}</div>
+                <div className="text-[9px] text-white/60">{edu.year}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="flex-1 p-6 space-y-4" style={{ backgroundColor: bg }}>
+        {form.summary && (
+          <div>
+            <SectionTitle text="About Me" accent={accent} />
+            <p className="text-[11px] text-gray-600 leading-relaxed whitespace-pre-wrap">{form.summary}</p>
+          </div>
+        )}
+        {form.experience.some((e: any) => e.role || e.company) && (
+          <div>
+            <SectionTitle text="Work Experience" accent={accent} />
+            {form.experience.filter((e: any) => e.role || e.company).map((exp: any, i: number) => (
+              <div key={i} className="mb-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="text-xs font-semibold text-gray-800">{exp.role}</div>
+                    <div className="text-[11px] text-gray-500">{exp.company}</div>
+                  </div>
+                  <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2">{exp.duration}</span>
+                </div>
+                {exp.description && <div className="text-[11px] text-gray-600 mt-0.5 whitespace-pre-wrap">{exp.description}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+        {form.education.some((e: any) => e.degree || e.institution) && (
+          <div>
+            <SectionTitle text="Education" accent={accent} />
+            {form.education.filter((e: any) => e.degree || e.institution).map((edu: any, i: number) => (
+              <div key={i} className="mb-2 flex justify-between">
+                <div>
+                  <div className="text-xs font-semibold text-gray-800">{edu.degree}</div>
+                  <div className="text-[11px] text-gray-500">{edu.institution}</div>
+                </div>
+                <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2">{edu.year}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   // pick layout based on template id
   switch (tid) {
     case 'fullstack': return <FullstackLayout />;
@@ -2566,6 +2788,8 @@ function ResumePreview({ template, form, accent, bg }: {
     case 'brown-sidebar': return <BrownSidebarLayout />;
     case 'dark-sidebar-right': return <DarkSidebarRightLayout />;
     case 'blank-canvas': return <BlankCanvasLayout />;
+    case 'blue-sidebar-profile': return <BlueSidebarProfileLayout />;
+    case 'orange-sidebar-profile': return <OrangeSidebarProfileLayout />;
     default: if (isTwoCol) return <TwoColumn />; return <SingleColumn />;
   }
 }
