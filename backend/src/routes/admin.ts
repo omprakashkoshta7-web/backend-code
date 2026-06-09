@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { authenticate, adminOnly, AuthRequest } from '../middleware/auth';
 import type { Question, CheatSheet, ShopProduct } from '../types';
-import { getDb, saveDb, addQuestion, updateQuestion, deleteQuestion, getTestCases, addTestCase, updateTestCase, deleteTestCase, addTopic, updateTopic, deleteTopic } from '../data/db';
+import { getDb, saveDb, addQuestion, updateQuestion, deleteQuestion, getTestCases, addTestCase, updateTestCase, deleteTestCase, addTopic, updateTopic, deleteTopic, getUserById } from '../data/db';
 import { getFunctionSignature } from '../data/functionSignatures';
 import { generateStarterCode } from '../data/templateGenerator';
 
@@ -475,6 +475,20 @@ router.delete('/shop/products/:id', (req: Request, res: Response) => {
   db.shopProducts.splice(idx, 1);
   saveDb();
   res.json({ success: true });
+});
+
+// ========== SHOP PURCHASES (admin view) ==========
+router.get('/shop/purchases', (_req: Request, res: Response) => {
+  const db = getDb();
+  const purchases = (db.shopPurchases || []).map((p: any) => {
+    const user = getUserById(p.user_id);
+    return {
+      ...p,
+      user_name: user?.name || p.user_name,
+      user_email: user?.email || p.user_email,
+    };
+  }).sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  res.json(purchases);
 });
 
 export default router;

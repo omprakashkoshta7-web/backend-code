@@ -19,4 +19,5 @@ export const adminApi = {
   testEmail: (type: string, to?: string) => api.post('/email/test', { type, to }),
   checkExpiring: () => api.post('/email/check-expiring', {}),
   streakNudge: (userId: string, days: number) => api.post(`/email/streak-nudge/${userId}`, { days }),
+  getShopPurchases: () => api.get<any[]>('/admin/shop/purchases'),
 };

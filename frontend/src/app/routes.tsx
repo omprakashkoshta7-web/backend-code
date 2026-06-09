@@ -38,6 +38,7 @@ const AdminDashboard = lazy(() => import('@/features/admin/pages/AdminDashboard'
 const ManageQuestions = lazy(() => import('@/features/admin/pages/ManageQuestions'));
 const AddQuestionPage = lazy(() => import('@/features/admin/pages/AddQuestionPage'));
 const ManageUsers = lazy(() => import('@/features/admin/pages/ManageUsers'));
+const ManageShopPayments = lazy(() => import('@/features/admin/pages/ManageShopPayments'));
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
@@ -791,6 +792,7 @@ export const router = createBrowserRouter([
       { path: 'questions', element: lazyRoute(ManageQuestions) },
       { path: 'add-question', element: lazyRoute(AddQuestionPage) },
       { path: 'users', element: lazyRoute(ManageUsers) },
+      { path: 'shop-payments', element: lazyRoute(ManageShopPayments) },
     ],
   },
 ]);

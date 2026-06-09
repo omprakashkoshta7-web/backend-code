@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Users, PlusCircle, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Users, PlusCircle, BarChart3, CreditCard } from 'lucide-react';
 import { cn } from '@/shared/utils/helpers';
 
 const links = [
@@ -8,6 +8,7 @@ const links = [
   { to: '/admin/questions', icon: BookOpen, label: 'Manage Questions' },
   { to: '/admin/add-question', icon: PlusCircle, label: 'Add Question' },
   { to: '/admin/users', icon: Users, label: 'Users' },
+  { to: '/admin/shop-payments', icon: CreditCard, label: 'Shop Payments' },
 ];
 
 export default function AdminSidebar() {
