@@ -103,7 +103,7 @@ function TemplateForm({ data, onSave, onClose }: {
         </div>
         <div>
           <label className="text-xs text-slate-400 mb-1 block">Columns</label>
-          <select value={form.columns} onChange={e => setForm(f => ({ ...f, columns: Number(e.target.value) }))} className="w-full bg-white/5 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50">
+          <select value={form.columns} onChange={e => setForm(f => ({ ...f, columns: Number(e.target.value) as 1 | 2 }))} className="w-full bg-white/5 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50">
             <option value={1}>Single Column</option>
             <option value={2}>Two Columns</option>
           </select>
