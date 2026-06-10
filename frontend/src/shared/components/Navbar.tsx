@@ -322,7 +322,7 @@ export default function Navbar() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.15, ease: 'easeOut' }}
-              className="fixed top-[10%] md:top-[15%] left-1/2 -translate-x-1/2 w-full max-w-lg z-[70] px-3 md:px-0"
+              className="fixed top-[72px] md:top-[15%] left-1/2 -translate-x-1/2 w-[calc(100%-24px)] max-w-lg z-[70]"
             >
               <div className="bg-[#111827] rounded-2xl shadow-2xl shadow-purple-500/10 border border-white/10 overflow-hidden">
                 <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/5">
