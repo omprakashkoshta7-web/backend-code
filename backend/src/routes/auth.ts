@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { getAllUsers, getUserByEmail, getUserById, addUser, getDb, saveDb } from '../data/db';
 import { generateToken, authenticate, AuthRequest } from '../middleware/auth';
 import { sendWelcomeNotification } from '../services/notifications';
-import { sendWelcomeEmail, sendPasswordResetEmail } from '../services/email';
+import { sendWelcomeEmail, sendPasswordResetEmail, sendLoginEmail } from '../services/email';
 import { maskEmail, generateOpaqueToken } from '../services/crypto';
 import { isPremiumFresh, getSubscription } from '../data/store';
 
@@ -29,6 +29,13 @@ router.post('/login', async (req: Request, res: Response) => {
   if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
 
   const token = generateToken({ id: user.id, email: user.email, role: user.role, name: user.name });
+
+  try {
+    sendLoginEmail(user.email, user.name).catch(e => console.error('[auth] login email failed:', e));
+  } catch (e) {
+    console.error('[auth] login email error:', e);
+  }
+
   res.json({ token, user: publicUser(user) });
 });
 
@@ -148,6 +155,13 @@ router.post('/google', async (req: Request, res: Response) => {
   }
 
   const token = generateToken({ id: finalUser.id, email: finalUser.email, role: finalUser.role, name: finalUser.name });
+
+  if (!isNew) {
+    try {
+      sendLoginEmail(finalUser.email, finalUser.name).catch(e => console.error('[auth] google login email failed:', e));
+    } catch (e) { console.error('[auth] google login email error:', e); }
+  }
+
   res.json({ token, user: publicUser(finalUser), isNew });
 });
 
