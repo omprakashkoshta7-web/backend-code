@@ -135,11 +135,11 @@ export async function sendPremiumExpiringEmail(to: string, name: string, daysLef
     <div style="font-size:32px;text-align:center;margin-bottom:8px;">⏰</div>
     <h1 style="margin:0 0 12px;font-size:22px;color:#fff;text-align:center;">Hey ${name || 'coder'}, your premium is ending in ${daysLeft} day${daysLeft === 1 ? '' : 's'}</h1>
     <p>Your <strong>${daysLeft}-day</strong> streak of awesomeness expires on <strong>${endDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</strong>. Don't let the momentum die!</p>
-    <p>Renew for just <strong>₹1</strong> and keep crushing those Hard problems. (Yes, you read that right — one rupee. We just want you coding. 💜)</p>
+    <p>Renew for just <strong>₹49</strong> and keep crushing those Hard problems. 💜</p>
     <p style="margin-top:20px;color:${BRAND_MUTED};font-size:13px;">No auto-renewal. No surprise charges. Just vibes.</p>
   `,
     `${FRONTEND_URL}/pricing`,
-    'Renew for ₹1'
+    'Renew for ₹49'
   );
   await send(to, `⏰ ${daysLeft} day${daysLeft === 1 ? '' : 's'} left on your CodeSprout Premium`, html);
 }
@@ -157,6 +157,55 @@ export async function sendStreakReminderEmail(to: string, name: string, streakDa
     'Solve today\'s problem'
   );
   await send(to, `🔥 Don't break your ${streakDays}-day streak!`, html);
+}
+
+export async function sendLoginEmail(to: string, name: string) {
+  const now = new Date();
+  const timeStr = now.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const html = baseLayout(
+    'Login detected',
+    `
+    <div style="font-size:32px;text-align:center;margin-bottom:8px;">🔐</div>
+    <h1 style="margin:0 0 12px;font-size:22px;color:#fff;text-align:center;">Login successful!</h1>
+    <p>Hi ${name || 'there'},</p>
+    <p>Your CodeSprout account was just logged into.</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;background:rgba(124,108,246,0.1);border:1px solid rgba(124,108,246,0.3);border-radius:12px;padding:16px;">
+      <tr><td>
+        <div style="font-size:11px;color:${BRAND_MUTED};text-transform:uppercase;letter-spacing:1px;">Time</div>
+        <div style="font-size:15px;font-weight:600;color:#fff;margin-top:2px;">${timeStr} IST</div>
+      </td></tr>
+    </table>
+    <p style="color:${BRAND_MUTED};font-size:13px;">If this wasn't you, please change your password immediately or contact support.</p>
+  `,
+    `${FRONTEND_URL}/dashboard`,
+    'Go to Dashboard'
+  );
+  await send(to, '🔐 CodeSprout login detected', html);
+}
+
+export async function sendShopPurchaseEmail(to: string, name: string, productTitle: string, amount: number, downloadUrl?: string) {
+  const html = baseLayout(
+    'Purchase successful!',
+    `
+    <div style="font-size:32px;text-align:center;margin-bottom:8px;">✅</div>
+    <h1 style="margin:0 0 12px;font-size:22px;color:#fff;text-align:center;">Purchase confirmed!</h1>
+    <p>Hi ${name || 'there'},</p>
+    <p>Your purchase was successful. Here are the details:</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:12px;padding:16px;">
+      <tr><td>
+        <div style="font-size:11px;color:${BRAND_MUTED};text-transform:uppercase;letter-spacing:1px;">Item</div>
+        <div style="font-size:16px;font-weight:700;color:#fff;margin-top:2px;">${productTitle}</div>
+        <div style="margin-top:12px;font-size:11px;color:${BRAND_MUTED};text-transform:uppercase;letter-spacing:1px;">Amount Paid</div>
+        <div style="font-size:18px;font-weight:700;color:#22c55e;margin-top:2px;">₹${amount}</div>
+      </td></tr>
+    </table>
+    <p>You can now access your download from the Shop section.</p>
+    <p style="margin-top:20px;color:${BRAND_MUTED};font-size:13px;">Thank you for supporting CodeSprout! 💜</p>
+  `,
+    downloadUrl || `${FRONTEND_URL}/shop`,
+    downloadUrl ? 'Download now' : 'Go to Shop'
+  );
+  await send(to, `✅ Purchase confirmed: ${productTitle}`, html);
 }
 
 export async function sendPasswordResetEmail(to: string, name: string, resetLink: string) {

@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import { authenticate, AuthRequest } from '../middleware/auth';
 import { getDb, saveDb } from '../data/db';
 import { createRazorpayOrder, verifyRazorpaySignature, isRazorpayEnabled } from '../services/razorpay';
+import { sendShopPurchaseEmail } from '../services/email';
 import type { ShopProduct } from '../types';
 
 const router = Router();
@@ -120,6 +121,15 @@ router.post('/verify', (req: AuthRequest, res: Response) => {
   purchase.status = 'verified';
   purchase.verified_at = new Date().toISOString();
   saveDb();
+
+  const product = (db.shopProducts || []).find((p: ShopProduct) => p.id === purchase!.product_id);
+  try {
+    sendShopPurchaseEmail(purchase.user_email, purchase.user_name, purchase.product_title, purchase.amount, product?.download_url).catch(e =>
+      console.error('[shop] purchase email failed:', e)
+    );
+  } catch (e) {
+    console.error('[shop] purchase email error:', e);
+  }
 
   res.json({
     success: true,
