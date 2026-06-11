@@ -118,9 +118,16 @@ const getProxy = (target: string) => {
       timeout: 60000,
       pathRewrite: (_path: string, req: any) => req.originalUrl,
       on: {
-        error: (err: any, _req: any, res: any) => {
+        error: (err: any, req: any, res: any) => {
           console.error(`[gateway] proxy error to ${target}:`, err.message);
-          if (!res.headersSent) res.status(502).json({ error: 'Service unavailable', service: target });
+          if (!res.headersSent) {
+            const origin = req.headers['origin'];
+            if (origin) {
+              res.setHeader('access-control-allow-origin', origin);
+              res.setHeader('access-control-allow-credentials', 'true');
+            }
+            res.status(502).json({ error: 'Service unavailable', service: target });
+          }
         },
         proxyRes: (proxyRes: any, req: any, _res: any) => {
           const origin = req.headers['origin'];
