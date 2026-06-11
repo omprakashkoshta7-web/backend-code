@@ -26,6 +26,9 @@ app.use(cors({
   credentials: true,
 }));
 
+// Rate limiting disabled in production — handled by Render's infra
+const skipRateLimit = () => process.env.NODE_ENV === 'production' || process.env.DISABLE_RATE_LIMIT === 'true';
+
 // Auth-specific rate limiter (stricter — login/register/Google OAuth)
 // On Render, all users share the proxy IP so limits must be high
 const authLimiter = rateLimit({
@@ -33,7 +36,7 @@ const authLimiter = rateLimit({
   max: Number(process.env.AUTH_RATE_LIMIT_MAX) || 100000,
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => req.method === 'OPTIONS',
+  skip: (req) => req.method === 'OPTIONS' || skipRateLimit(),
   // Prefer per-account keying when possible (email/username from body) to avoid
   // throttling many users behind a shared proxy IP.
   keyGenerator: (req: any) => {
@@ -68,6 +71,7 @@ const globalLimiter = rateLimit({
   legacyHeaders: false,
   skip: (req) =>
     req.method === 'OPTIONS' ||
+    skipRateLimit() ||
     req.path === '/health' ||
     req.path.startsWith('/api/notifications') ||
     req.path.startsWith('/notifications') ||
@@ -87,7 +91,7 @@ const notificationsLimiter = rateLimit({
   max: 100000,
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => req.method === 'OPTIONS',
+  skip: (req) => req.method === 'OPTIONS' || skipRateLimit(),
   message: { error: 'Too many requests, please try again later.' },
 });
 app.use('/api/notifications', notificationsLimiter);
