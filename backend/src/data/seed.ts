@@ -24691,7 +24691,7 @@ export const questions: Question[] = [
       java: "class Solution {\n    public Object solve(Object input) {\n        return null;\n    }\n}\n",
       cpp: "class Solution {\npublic:\n    auto solve(auto input) {\n        return nullptr;\n    }\n};\n",
     }} as any,
-  { id: '2637', title: 'Pattern Matching SA', slug: 'pattern-matching-sa', description: 'Find all occurrences of pattern in text using suffix array in O(m log n) time.', difficulty: 'Medium', topic_id: '46', topic_name: 'Suffix Array', pattern: 'Binary Search on Suffix Array', visualization_type: 'Array', sample_input: 'text = abcabcabc, pattern = abc', constraints: '1 <= text.length, pattern.length <= 10^5', examples: [{ input: 'text = abcabcabc, pattern = abc', output: '[0,3,6]', explanation: 'Pattern at indices 0,3,6.' }, { input: 'text = aaaaa, pattern = aa', output: '[0,1,2,3]', explanation: 'Pattern at indices 0-3.' }] ,
+  { id: '2637', title: 'Pattern Matching SA', slug: 'pattern-matching-sa', description: 'Find all occurrences of pattern in text using suffix array in O(m log n) time.', difficulty: 'Easy', topic_id: '46', topic_name: 'Suffix Array', pattern: 'Binary Search on Suffix Array', visualization_type: 'Array', sample_input: 'text = abcabcabc, pattern = abc', constraints: '1 <= text.length, pattern.length <= 10^5', examples: [{ input: 'text = abcabcabc, pattern = abc', output: '[0,3,6]', explanation: 'Pattern at indices 0,3,6.' }, { input: 'text = aaaaa, pattern = aa', output: '[0,1,2,3]', explanation: 'Pattern at indices 0-3.' }] ,
     problem_statement: 'Find all occurrences of pattern in text using suffix array in O(m log n) time.',
     input_format: 'Input: text = abcabcabc, pattern = abc',
     output_format: 'Output: [0,3,6]',

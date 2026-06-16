@@ -106,7 +106,7 @@ export const newQuestions = [
     title: 'Pattern Matching SA',
     slug: 'pattern-matching-sa',
     description: 'Find all occurrences of pattern in text using suffix array in O(m log n) time.',
-    difficulty: 'Medium',
+    difficulty: 'Easy',
     topic_id: '46',
     topic_name: 'Suffix Array',
     pattern: 'Binary Search on Suffix Array',
