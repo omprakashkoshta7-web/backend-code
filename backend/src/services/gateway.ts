@@ -104,6 +104,9 @@ const extractText = async (buffer: Buffer, mime: string): Promise<string> => {
   return buffer.toString('utf-8');
 };
 
+// ====== Feedback storage ======
+const FEEDBACKS: any[] = [];
+
 // ====== In-memory cache ======
 const memoryCache = new Map<string, { data: any; expiry: number }>();
 const CACHEABLE_PATHS = ['/topics', '/patterns', '/stats', '/leaderboard', '/roadmaps', '/questions'];
@@ -215,6 +218,15 @@ const handle = async (req: Request, res: Response, next: NextFunction) => {
         res.status(500).json({ error: 'Failed to parse resume', details: e.message });
       }
     });
+  }
+
+  // ====== Feedback ======
+  if (path === '/feedback' && req.method === 'POST') {
+    FEEDBACKS.push({ ...req.body, timestamp: new Date().toISOString() });
+    return res.json({ success: true });
+  }
+  if (path === '/feedback' && req.method === 'GET') {
+    return res.json({ feedbacks: FEEDBACKS });
   }
 
   // In-memory cache for frequent GET endpoints

@@ -7,6 +7,7 @@ import CodeEditor from '@/features/practice/components/CodeEditor';
 import { bookmarksApi } from '@/features/bookmarks/api/bookmarksApi';
 import toast from 'react-hot-toast';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import FeedbackPopup from '@/features/feedback/components/FeedbackPopup';
 import { communityApi } from '@/features/community/api/communityApi';
 import type { Answer, Discussion } from '@/features/community/types/community';
 
@@ -61,6 +62,7 @@ export default function QuestionDetailPage() {
   const [discussContent, setDiscussContent] = useState('');
   const [replyInputs, setReplyInputs] = useState<Record<string, string>>({});
   const [testCases, setTestCases] = useState<any[]>([]);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [leftWidth, setLeftWidth] = useState(40);
   const [mobileTab, setMobileTab] = useState<MobileTab>('description');
   const containerRef = useRef<HTMLDivElement>(null);
@@ -172,7 +174,14 @@ export default function QuestionDetailPage() {
     setSubmittingAnswer(false);
   };
 
-  const handleUpvote = async (answerId: string) => {
+  const handleSolved = () => {
+  const alreadySubmitted = localStorage.getItem('feedback_submitted');
+  if (!alreadySubmitted) {
+    setShowFeedback(true);
+  }
+};
+
+const handleUpvote = async (answerId: string) => {
     try {
       const res = await communityApi.upvoteAnswer(answerId);
       setAnswers(prev => prev.map(a => a.id === answerId ? res.data : a));
@@ -527,7 +536,7 @@ export default function QuestionDetailPage() {
         <span className="text-xs font-medium text-white">Code Editor</span>
       </div>
       <div className="flex-1 min-h-0 overflow-hidden">
-        <CodeEditor slug={question.slug} template={cs.template} />
+        <CodeEditor slug={question.slug} template={cs.template} onSolved={handleSolved} />
       </div>
     </div>
   );
@@ -605,6 +614,8 @@ export default function QuestionDetailPage() {
         {/* Right Side - Compiler */}
         <EditorPanel />
       </div>
+
+      <FeedbackPopup isOpen={showFeedback} onClose={() => setShowFeedback(false)} />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import {
 interface CodeEditorProps {
   slug: string;
   template: Record<string, string>;
+  onSolved?: () => void;
 }
 
 const LANGUAGES = [
@@ -67,7 +68,7 @@ interface VisualizeStep {
 
 type TabType = 'testcases' | 'result' | 'custom' | 'complexity' | 'visualize';
 
-export default function CodeEditor({ slug, template }: CodeEditorProps) {
+export default function CodeEditor({ slug, template, onSolved }: CodeEditorProps) {
   const [language, setLanguage] = useState('javascript');
   const [code, setCode] = useState(template?.javascript || '');
   const [error, setError] = useState('');
@@ -160,6 +161,7 @@ export default function CodeEditor({ slug, template }: CodeEditorProps) {
             });
           }
         } catch { /* ignore */ }
+        onSolved?.();
       }
     } catch (e: any) {
       setError(e.message || 'Failed to submit');
