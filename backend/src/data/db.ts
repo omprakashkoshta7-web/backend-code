@@ -133,7 +133,8 @@ async function persistToMongo() {
       if (naturalKey) {
         for (const doc of arr) {
           const filter = { [naturalKey]: doc[naturalKey] };
-          await c.replaceOne(filter, doc, { upsert: true });
+          const { _id, ...docWithoutId } = doc as any;
+          await c.replaceOne(filter, docWithoutId, { upsert: true });
         }
       } else {
         await c.deleteMany({});
