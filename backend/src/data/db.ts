@@ -149,6 +149,13 @@ async function persistToMongo() {
 }
 
 export function saveDb() {
+  try {
+    const dir = join(__dirname, '..', '..', 'data');
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+    writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
+  } catch (e) {
+    console.error('[DB] File save error:', e);
+  }
   if (useMongo) {
     if (savePending) return;
     savePending = true;
@@ -157,12 +164,6 @@ export function saveDb() {
       await persistToMongo();
       savePending = false;
     }, 1000);
-    return;
-  }
-  try {
-    writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
-  } catch (e) {
-    console.error('[DB] Save error:', e);
   }
 }
 
