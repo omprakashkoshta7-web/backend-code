@@ -1,107 +1,18 @@
 import express from 'express';
 import type { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import multer from 'multer';
-// pdf-parse and mammoth are loaded via require() in extractText()
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
-// Trust proxy for correct IP when behind Render's proxy
 app.set('trust proxy', 1);
-
-// Extract real client IP from X-Forwarded-For when behind proxy
-function getClientIP(req: Request): string {
-  const forwarded = req.headers['x-forwarded-for'];
-  if (typeof forwarded === 'string') {
-    return forwarded.split(',')[0].trim();
-  }
-  return req.ip || req.socket.remoteAddress || '0.0.0.0';
-}
 
 app.use(cors({
   origin: (_origin, callback) => callback(null, _origin || true),
   credentials: true,
 }));
-
-// Rate limiting disabled in production — Render's infra handles this
-// Set ENABLE_RATE_LIMIT=true to re-enable if needed
-const skipRateLimit = () => {
-  if (process.env.ENABLE_RATE_LIMIT === 'true') return false;
-  if (process.env.NODE_ENV === 'production') return true;
-  if (process.env.DISABLE_RATE_LIMIT === 'true') return true;
-  return false;
-};
-
-// Auth-specific rate limiter (stricter — login/register/Google OAuth)
-// On Render, all users share the proxy IP so limits must be high
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: Number(process.env.AUTH_RATE_LIMIT_MAX) || 500000,
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: (req) => req.method === 'OPTIONS' || skipRateLimit(),
-  // Prefer per-account keying when possible (email/username from body) to avoid
-  // throttling many users behind a shared proxy IP.
-  keyGenerator: (req: any) => {
-    const ip = getClientIP(req);
-    const ua = (req.headers['user-agent'] || '').substring(0, 64);
-    let identity = '';
-    try {
-      identity = (req.body && (req.body.email || req.body.username || req.body.username_or_email)) || '';
-    } catch (_) {
-      identity = '';
-    }
-    if (identity) return `auth:${identity}:${ua}`;
-    return `auth:${ip}:${ua}`;
-  },
-  // Custom handler: log rate-limit events to help debugging
-  handler: (req: any, res: any) => {
-    try {
-      console.warn(`[gateway] auth rate limit hit path=${req.path} ip=${getClientIP(req)} email=${req.body?.email || ''} ua=${(req.headers['user-agent']||'').slice(0,60)}`);
-    } catch (e) {
-      console.warn('[gateway] auth rate limit hit (failed to read body)');
-    }
-    res.status(429).json({ error: 'Too many auth attempts, please try again later.' });
-  },
-});
-app.use('/api/auth', authLimiter);
-app.use('/auth', authLimiter);
-
-const globalLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 1000000,
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: (req) =>
-    req.method === 'OPTIONS' ||
-    skipRateLimit() ||
-    req.path === '/health' ||
-    req.path.startsWith('/api/notifications') ||
-    req.path.startsWith('/notifications') ||
-    req.path.startsWith('/api/auth') ||
-    req.path.startsWith('/auth'),
-  keyGenerator: (req: any) => {
-    const token = req.headers['authorization'];
-    if (token) return token;
-    return getClientIP(req);
-  },
-  message: { error: 'Too many requests, please try again later.' },
-});
-app.use(globalLimiter);
-
-const notificationsLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 100000,
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: (req) => req.method === 'OPTIONS' || skipRateLimit(),
-  message: { error: 'Too many requests, please try again later.' },
-});
-app.use('/api/notifications', notificationsLimiter);
-app.use('/notifications', notificationsLimiter);
 
 const SERVICES = {
   auth: process.env.AUTH_SERVICE_URL || 'http://localhost:3001',
