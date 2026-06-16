@@ -386,9 +386,10 @@ export interface ShopProduct {
 
 // ====== RESUME ======
 export interface ResumeSection {
-  type: 'name' | 'email' | 'phone' | 'linkedin' | 'github' | 'portfolio' | 'education' | 'skills' | 'projects' | 'experience' | 'achievements' | 'certifications';
+  type: 'name' | 'email' | 'phone' | 'linkedin' | 'github' | 'portfolio' | 'education' | 'skills' | 'projects' | 'experience' | 'achievements' | 'certifications' | 'custom';
   value: string;
   items?: string[];
+  label?: string;
 }
 
 export interface ParsedResume {

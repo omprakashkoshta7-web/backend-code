@@ -1298,6 +1298,7 @@ export default function TemplateWizard({ onComplete, onCancel }: Props) {
     projects: [{ title: '', description: '', link: '' }],
     certifications: [{ name: '', issuer: '', year: '' }],
     summary: '',
+    customSections: [{ title: '', content: '' }],
   });
   const [showPreview, setShowPreview] = useState(false);
   const [unlockedTemplates, setUnlockedTemplates] = useState<string[]>(() => {
@@ -1416,6 +1417,22 @@ export default function TemplateWizard({ onComplete, onCancel }: Props) {
       const arr = [...f[field]];
       arr[idx] = { ...arr[idx], [key]: val };
       return { ...f, [field]: arr };
+    });
+  };
+
+  const addCustomSection = () => {
+    setForm(f => ({ ...f, customSections: [...f.customSections, { title: '', content: '' }] }));
+  };
+
+  const removeCustomSection = (idx: number) => {
+    setForm(f => ({ ...f, customSections: f.customSections.filter((_: any, i: number) => i !== idx) }));
+  };
+
+  const updateCustomSection = (idx: number, key: 'title' | 'content', val: string) => {
+    setForm(f => {
+      const arr = [...f.customSections];
+      arr[idx] = { ...arr[idx], [key]: val };
+      return { ...f, customSections: arr };
     });
   };
 
@@ -1792,6 +1809,21 @@ export default function TemplateWizard({ onComplete, onCancel }: Props) {
                 </div>
               ))}
             </FormSection>
+
+            {/* custom sections */}
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-white/80">Custom Sections</span>
+                <button onClick={addCustomSection} className="text-xs px-3 py-1.5 rounded-lg bg-violet-600/20 text-violet-300 hover:bg-violet-600/30 transition-colors border border-violet-500/20">+ Add Section</button>
+              </div>
+              {form.customSections.map((sec, i) => (
+                <div key={i} className="bg-white/5 border border-white/10 rounded-lg p-3 space-y-2 relative mb-2">
+                  {form.customSections.length > 1 && <button onClick={() => removeCustomSection(i)} className="absolute top-2 right-2 text-slate-500 hover:text-red-400"><Trash2 className="w-3.5 h-3.5" /></button>}
+                  <Input label="Section Title" value={sec.title} onChange={v => updateCustomSection(i, 'title', v)} placeholder="e.g. Languages, Volunteer Work, Publications" />
+                  <textarea value={sec.content} onChange={e => updateCustomSection(i, 'content', e.target.value)} placeholder="Section content..." className="w-full h-20 bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white placeholder-slate-500 resize-none focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50" />
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* right: live preview - full width on mobile when shown */}
@@ -1878,6 +1910,19 @@ function ResumePreview({ template, form, accent, bg }: {
     </div>
   ) : null;
 
+  const CustomSections = () => {
+    const valid = (form.customSections || []).filter((s: any) => s.title || s.content);
+    if (valid.length === 0) return null;
+    return <>
+      {valid.map((sec: any, i: number) => (
+        <div key={i} className="mb-4">
+          <SectionTitle text={sec.title || 'Custom Section'} accent={accent} />
+          <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{sec.content}</p>
+        </div>
+      ))}
+    </>;
+  };
+
   /* ── Single column layout (ATS, SDE, Backend) ── */
   const SingleColumn = () => (
     <div className="mx-auto max-w-[600px] bg-white shadow-2xl rounded-lg overflow-hidden" style={{ minHeight: '800px' }}>
@@ -1903,7 +1948,7 @@ function ResumePreview({ template, form, accent, bg }: {
         )}
       </div>
       <div className="p-6 space-y-4">
-        <Summary /><Experience /><Education /><Skills /><Projects /><Certs />
+        <Summary /><Experience /><Education /><Skills /><Projects /><Certs /><CustomSections />
       </div>
     </div>
   );
@@ -1950,7 +1995,7 @@ function ResumePreview({ template, form, accent, bg }: {
             {form.email || 'email@example.com'} {form.phone && `| ${form.phone}`}
           </div>
         </div>
-        <Summary /><Experience /><Projects /><Certs />
+        <Summary /><Experience /><Projects /><Certs /><CustomSections />
       </div>
     </div>
   );
@@ -1970,7 +2015,7 @@ function ResumePreview({ template, form, accent, bg }: {
             </div>
           </div>
           <div className="space-y-3">
-            <Summary /><Experience /><Education /><Skills /><Projects /><Certs />
+            <Summary /><Experience /><Education /><Skills /><Projects /><Certs /><CustomSections />
           </div>
         </div>
       </div>
@@ -1995,7 +2040,7 @@ function ResumePreview({ template, form, accent, bg }: {
             ))}
           </div>
         )}
-        <Summary /><Experience /><Education /><Projects /><Certs />
+        <Summary /><Experience /><Education /><Projects /><Certs /><CustomSections />
       </div>
     </div>
   );
@@ -2016,7 +2061,7 @@ function ResumePreview({ template, form, accent, bg }: {
             ))}
           </div>
         )}
-        <Summary /><Experience /><Education /><Projects /><Certs />
+        <Summary /><Experience /><Education /><Projects /><Certs /><CustomSections />
       </div>
     </div>
   );
@@ -2040,7 +2085,7 @@ function ResumePreview({ template, form, accent, bg }: {
         <div><SectionTitle text="Portfolio" accent={accent} />
           {form.projects.filter((p: any) => p.title).length > 0 ? <Projects /> : <p className="text-xs text-gray-500">Showcase your frontend projects, designs, and live demos here.</p>}
         </div>
-        <Experience /><Education /><Certs />
+        <Experience /><Education /><Certs /><CustomSections />
       </div>
     </div>
   );
@@ -2065,7 +2110,7 @@ function ResumePreview({ template, form, accent, bg }: {
           <div><div className="text-xl font-bold text-gray-900">{form.name || 'Your Name'}</div><div className="text-xs text-gray-500">AI/ML Engineer</div></div>
           <div className="text-right text-[10px] text-gray-400"><div>Research</div><div>Publications</div></div>
         </div>
-        <Summary /><Experience /><Projects /><Certs />
+        <Summary /><Experience /><Projects /><Certs /><CustomSections />
       </div>
     </div>
   );
@@ -2095,7 +2140,7 @@ function ResumePreview({ template, form, accent, bg }: {
       </div>
       <div className="flex-1 p-5 space-y-3" style={{ backgroundColor: bg }}>
         <div className="text-xl font-bold" style={{ color: accent }}>{form.name || 'Your Name'}</div>
-        <Summary /><Experience /><Education /><Projects /><Certs />
+        <Summary /><Experience /><Education /><Projects /><Certs /><CustomSections />
       </div>
     </div>
   );
@@ -2119,6 +2164,7 @@ function ResumePreview({ template, form, accent, bg }: {
         <Skills />
         <Projects />
         <Certs />
+        <CustomSections />
         <div>
           <SectionTitle text="Board & Advisory" accent={accent} />
           <div className="text-xs text-gray-600">Advisory Board Member · TechStartups Inc. (2021-Present)</div>
@@ -2164,6 +2210,7 @@ function ResumePreview({ template, form, accent, bg }: {
         <Skills />
         <Projects />
         <Certs />
+        <CustomSections />
       </div>
     </div>
   );
@@ -2201,6 +2248,7 @@ function ResumePreview({ template, form, accent, bg }: {
         <Skills />
         <Projects />
         <Certs />
+        <CustomSections />
       </div>
     </div>
   );
@@ -2233,6 +2281,7 @@ function ResumePreview({ template, form, accent, bg }: {
           <Experience />
           <Education />
           <Projects />
+          <CustomSections />
         </div>
       </div>
     </div>
