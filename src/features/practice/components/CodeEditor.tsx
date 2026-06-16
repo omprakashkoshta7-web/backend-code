@@ -161,6 +161,7 @@ export default function CodeEditor({ slug, template, onSolved }: CodeEditorProps
             });
           }
         } catch { /* ignore */ }
+        console.log('[feedback] calling onSolved, status=', data?.status);
         onSolved?.();
       }
     } catch (e: any) {

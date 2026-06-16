@@ -9,6 +9,7 @@ interface FeedbackPopupProps {
 }
 
 export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
+  console.log('[feedback] FeedbackPopup rendered, isOpen=', isOpen);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState('');

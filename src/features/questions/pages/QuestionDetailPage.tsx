@@ -175,11 +175,14 @@ export default function QuestionDetailPage() {
   };
 
   const handleSolved = () => {
-  const alreadySubmitted = localStorage.getItem('feedback_submitted');
-  if (!alreadySubmitted) {
-    setShowFeedback(true);
-  }
-};
+    console.log('[feedback] onSolved called');
+    const alreadySubmitted = localStorage.getItem('feedback_submitted');
+    console.log('[feedback] alreadySubmitted=', alreadySubmitted);
+    if (!alreadySubmitted) {
+      console.log('[feedback] showing popup');
+      setShowFeedback(true);
+    }
+  };
 
 const handleUpvote = async (answerId: string) => {
     try {
