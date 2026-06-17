@@ -109,7 +109,7 @@ const FEEDBACKS: any[] = [];
 
 // ====== In-memory cache ======
 const memoryCache = new Map<string, { data: any; expiry: number }>();
-const CACHEABLE_PATHS = ['/topics', '/patterns', '/stats', '/leaderboard', '/roadmaps', '/questions'];
+const CACHEABLE_PATHS = ['/topics', '/patterns', '/stats', '/leaderboard', '/roadmaps', '/questions', '/resume/list', '/resume/templates'];
 const CACHE_TTL = {
   '/topics': 5 * 60 * 1000,
   '/patterns': 10 * 60 * 1000,
@@ -117,6 +117,8 @@ const CACHE_TTL = {
   '/leaderboard': 2 * 60 * 1000,
   '/roadmaps': 5 * 60 * 1000,
   '/questions': 3 * 60 * 1000,
+  '/resume/list': 2 * 60 * 1000,
+  '/resume/templates': 30 * 60 * 1000,
 };
 
 function getCacheKey(path: string, req: Request): string {

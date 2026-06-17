@@ -10,15 +10,16 @@ const api = axios.create({
 });
 
 axiosRetry(api, {
-  retries: 3,
-  retryDelay: axiosRetry.exponentialDelay,
+  retries: 4,
+  retryDelay: (retryCount) => {
+    // For 429: use longer delays (2s, 4s, 8s, 16s)
+    return retryCount * 2000;
+  },
   retryCondition: (error) => {
-    // Avoid retry storms: do NOT retry when server responds 429 (rate limited).
-    // Only retry on network errors or idempotent requests that are not 429.
-    return axiosRetry.isNetworkOrIdempotentRequestError(error) && error.response?.status !== 429;
+    return axiosRetry.isNetworkError(error) || error.response?.status === 429 || error.response?.status === 502 || error.response?.status === 503;
   },
   onRetry: (retryCount, error) => {
-    console.warn(`Retry #${retryCount} for ${error.config?.url} (${error.response?.status || 'network error'})`);
+    console.warn(`[api] Retry #${retryCount} for ${error.config?.url} (status: ${error.response?.status || 'network'})`);
   },
 });
 

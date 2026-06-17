@@ -3,6 +3,7 @@ const DEFAULT_TTL = 5 * 60 * 1000;
 
 const TTL_BY_PATTERN: [RegExp, number][] = [
   [/\/resume\/templates/, 30 * 60 * 1000],
+  [/\/resume\/list/, 1 * 60 * 1000],
   [/\/topics/, 10 * 60 * 1000],
   [/\/patterns/, 10 * 60 * 1000],
   [/\/leaderboard/, 2 * 60 * 1000],
